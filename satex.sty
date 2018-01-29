@@ -1,0 +1,24 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{satex}[2014/08/24 Satex package]
+
+\RequirePackage{tikz}
+
+\newcounter{satexfig}
+\newwrite\satexout
+\immediate\openout\satexout=\jobname.satex
+
+\AtBeginDocument{\IfFileExists{\jobname.satix}{\input{\jobname.satix}}{}}
+
+\newcommand{\deftwocell}[2][]{%
+  \immediate\write\satexout{\string\deftwocell[#1]{#2}}
+}
+
+% Numbers in commands: http://www.tex.ac.uk/FAQ-linmacnames.html
+\newcommand{\defsatexfig}[2]{\expandafter\newcommand\csname satexfigure#1\endcsname{#2}}
+\newcommand{\usesatexfig}[1]{\csname satexfigure#1\endcsname}
+
+\newcommand{\twocell}[1]{%
+  \IfFileExists{\jobname.satix}{\usesatexfig{\thesatexfig}}{}
+  \immediate\write\satexout{\thesatexfig:\string\twocell{#1}}
+  \stepcounter{satexfig}
+}

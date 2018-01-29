@@ -1,0 +1,14 @@
+*~
+*.aux
+*.log
+*.pdf
+*.satex
+*.satix
+
+*.annot
+*.cmi
+*.cmx
+*.o
+
+._d
+._ncdi

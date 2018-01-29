@@ -1,0 +1,32 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{satex}
+
+\title{Satex test}
+\author{Samuel Mimram}
+
+\deftwocell[white]{mu : 2 -> 1}
+\deftwocell[white]{eta : 2 -> 1}
+
+\begin{document}
+\maketitle
+
+\[
+  \twocell{(mu * 1) * mu}
+\]
+and
+\[
+  \twocell{(eta *0 eta)
+    *
+    mu}
+\]
+
+TESTING
+
+\expandafter\newcommand\csname cul8r\endcsname{Goodbye!}
+I said, ``\csname cul8r\endcsname''.
+
+\defsatexfig5{hello}
+J'ai dit \usesatexfig5 et \usesatexfig0
+\end{document}
