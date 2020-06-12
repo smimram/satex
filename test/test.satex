@@ -1,0 +1,4 @@
+\deftwocell[white]{mu : 2 -> 1}
+\deftwocell[white]{eta : 2 -> 1}
+0:\twocell{(mu * 1) * mu}
+1:\twocell{(eta *0 eta) * mu}
