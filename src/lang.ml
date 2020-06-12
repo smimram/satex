@@ -1,3 +1,10 @@
+module Array = struct
+  include Array
+
+  let last a =
+    a.(Array.length a - 1)
+end
+
 module List = struct
   include List
 
@@ -41,9 +48,9 @@ module Generator = struct
       opts : (string * string) list; (** list of optional parameters and their value (a=b) *)
       name : name;
       shape : [`Circle | `Wire]; (** shape of the node *)
-      source : int array; (** horizontal position of the source ports *)
-      target : int array; (** horizontal position of the target ports *)
-      mutable y : int; (** vertical position *)
+      source : float array; (** horizontal position of the source ports *)
+      target : float array; (** horizontal position of the target ports *)
+      mutable y : float; (** vertical position *)
     }
 
   let name g = g.name
@@ -60,9 +67,9 @@ module Generator = struct
       opts = options;
       shape = !shape;
       name;
-      source = Array.init source (fun _ -> 0);
-      target = Array.init target (fun _ -> 0);
-      y = 0;
+      source = Array.init source (fun _ -> 0.);
+      target = Array.init target (fun _ -> 0.);
+      y = 0.;
     }
 
   let source g = Array.length g.source
@@ -83,7 +90,7 @@ type expr =
 (** Declarations. *)
 type t =
   {
-    gens : (G.name * G.t) list; (** gneerators *)
+    gens : (G.name * G.t) list; (** generators *)
     cells : (int * expr) list (** cells (which are numbered in order to be able to identify them in LaTeX) *)
   }
 
@@ -151,6 +158,17 @@ module Stack = struct
 
   type t = slice list
 
+  let to_string f =
+    let generator g =
+      let s = Array.to_list g.G.source in
+      let t = Array.to_list g.G.target in
+      let s = String.concat "," (List.map string_of_float s) in
+      let t = String.concat "," (List.map string_of_float t) in
+      Printf.sprintf "(%s)->(%s)" s t
+    in
+    let slice f = String.concat ", " (List.map generator f) in
+    String.concat "\n" (List.map slice f)
+
   let rec create env e =
     let id n = List.init n (fun _ -> G.id ()) in
     match e with
@@ -166,12 +184,12 @@ module Stack = struct
       [(List.hd f)@(List.hd g)]
     | Comp (_,f,g) -> (create env f)@(create env g)
 
-  let create env e =
+  let create env e : t =
     let ans = create env e in
     (* Set the vertical position *)
     List.iteri
       (fun i f ->
-         List.iter (fun g -> g.G.y <- i) f
+         List.iter (fun g -> g.G.y <- float_of_int i) f
       ) ans;
     ans
 
@@ -182,25 +200,41 @@ module Stack = struct
     List.map (fun g -> g.G.target) (List.last f)
 
   let typeset f =
-    let last_source = ref (-1) in
-    let last_target = ref (-1) in
+    let last_source = ref (-1.) in
+    let last_target = ref (-1.) in
     let generator g =
-      g.G.source.(0) <- max (!last_source+1) g.G.source.(0);
+      (* Space the sources *)
+      if Array.length g.G.source > 0 then
+        (
+          Printf.printf "ls (%s): %f\n%!" g.G.name !last_source;
+          g.G.source.(0) <- max (!last_source +. 1.) g.G.source.(0);
+          last_source := g.G.source.(0)
+        );
       for i = 0 to Array.length g.G.source - 2 do
-        g.G.source.(i+1) <- max (g.G.source.(i)+1) g.G.source.(i+1);
+        g.G.source.(i+1) <- max (g.G.source.(i) +. 1.) g.G.source.(i+1);
         last_source := g.G.source.(i+1)
       done;
-      (* TODO: do some other placement tricks here, e.g. for multiplication we
-         want even space between inputs and output in the middle. *)
-      g.G.target.(0) <- max (!last_target+1) g.G.target.(0);
+      (* Propagate from bottom to top *)
+      (
+        match g.G.shape with
+        | `Wire -> g.G.target.(0) <- g.G.source.(0)
+        | _ -> ()
+      );
+      (* Space up the targets *)
+      if Array.length g.G.target > 0 then
+        (
+          g.G.target.(0) <- max (!last_target +. 1.) g.G.target.(0);
+          last_target := g.G.target.(0)
+        );
       for i = 0 to Array.length g.G.target - 2 do
-        g.G.target.(i+1) <- max (g.G.target.(i)+1) g.G.target.(i+1);
+        g.G.target.(i+1) <- max (g.G.target.(i) +. 1.) g.G.target.(i+1);
         last_target := g.G.target.(i+1)
       done
     in
     let slice f =
-      last_source := (-1);
-      last_target := (-1);
+      Printf.printf "slice\n%!";
+      last_source := (-1.);
+      last_target := (-1.);
       List.iter generator f
     in
     let rec stack = function
@@ -218,16 +252,34 @@ module Stack = struct
         stack g
     in
     let f = ref f in
-    for i = 0 to 10 do
+    for i = 0 to 0 do
       stack !f
     done
 
-  (* let draw f = *)
-    (* Graphics.open_graph ""; *)
-    (* let ystep = 100 in *)
-    (* let draw_generator g = *)
-    (* in *)
-    (* List.iter (List.iter draw_generator) f *)
+  module Draw = struct
+    let xscale x =
+      int_of_float (x*.100.)
+
+    let yscale y =
+      Graphics.size_y () - int_of_float (y*.100.)
+
+    let line (x1,y1) (x2,y2) =
+      Graphics.moveto (xscale x1) (yscale y1);
+      Graphics.lineto (xscale x2) (yscale y2)
+  end
+
+  let draw f =
+    Graphics.open_graph "";
+    let draw_generator g =
+      let c =
+        if G.source g > 0 then (g.G.source.(0) +. Array.last g.G.source) /. 2.
+        else (g.G.target.(0) +. Array.last g.G.target) /. 2.
+      in
+      let y = g.G.y in
+      Array.iter (fun x -> Draw.line (x,y) (c,y+.0.5)) g.G.source;
+      Array.iter (fun x -> Draw.line (c,y+.0.5) (x,y+.1.)) g.G.target;
+    in
+    List.iter (List.iter draw_generator) f
 end
 
 (*

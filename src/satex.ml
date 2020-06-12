@@ -36,4 +36,10 @@ let () =
   let fname = ref "" in
   Arg.parse (Arg.align []) (fun s -> fname := s) usage;
   let decls = parse !fname in
-  ()
+  let e = snd (List.hd decls.cells) in
+  let f = Lang.Stack.create decls.gens e in
+  Printf.printf "before:\n%s\n\n%!" (Lang.Stack.to_string f);
+  Lang.Stack.typeset f;
+  Printf.printf "after:\n%s\n\n%!" (Lang.Stack.to_string f);
+  Lang.Stack.draw f;
+  ignore (Graphics.wait_next_event [Graphics.Key_pressed])
