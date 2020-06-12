@@ -23,7 +23,7 @@ indecls:
   | { decls_empty }
 
 gen:
-  | GEN opts LACC STRING COLON INT TO INT RACC { $4, { gen_opts = $2; gen_typ = ($6, $8) } }
+  | GEN opts LACC STRING COLON INT TO INT RACC { $4, Generator.create ~options:$2 $6 $8 }
 
 opts:
   | { [] }
