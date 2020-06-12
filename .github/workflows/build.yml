@@ -6,6 +6,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install packages
-      run: sudo DEBIAN_FRONTEND=noninteractive apt-get install ocaml-nox
+      run: sudo DEBIAN_FRONTEND=noninteractive apt-get install ocaml-nox ocaml-findlib
     - name: Build
       run: make
