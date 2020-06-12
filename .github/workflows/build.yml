@@ -1,0 +1,11 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install packages
+      run: sudo DEBIAN_FRONTEND=noninteractive apt-get install ocaml-nox
+    - name: Build
+      run: make
