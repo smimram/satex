@@ -5,4 +5,9 @@ ANNOTATE = true
 all: dnc
 	OCAMLRUNPARAM=b ./satex ../test/test.satex
 
+conflicts:
+	menhir --explain parser.mly
+	@cat parser.conflicts
+	@rm -f parser.conflicts
+
 include OCamlMakefile
