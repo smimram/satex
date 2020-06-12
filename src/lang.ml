@@ -14,6 +14,12 @@ module List = struct
     | _::l -> last l
 end
 
+module Float = struct
+  include Float
+
+  let mean x y = (x +. y) /. 2.
+end
+
 (** Operations on lists of arrays. *)
 module ArrayList = struct
   type 'a t = 'a array list
@@ -47,7 +53,7 @@ module Generator = struct
     {
       opts : (string * string) list; (** list of optional parameters and their value (a=b) *)
       name : name;
-      shape : [`Circle | `Wire]; (** shape of the node *)
+      shape : [`Circle | `Wire | `Cap]; (** shape of the node *)
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
       mutable y : float; (** vertical position *)
@@ -55,11 +61,23 @@ module Generator = struct
 
   let name g = g.name
 
+  let copy g =
+    {
+      opts = g.opts;
+      name = g.name;
+      shape = g.shape;
+      source = Array.copy g.source;
+      target = Array.copy g.target;
+      y = g.y;
+    }
+
   let create ?(options=[]) name source target =
     let shape = ref `Circle in
     List.iter
       (function
         | "shape", "wire" -> assert (source = 1 && target = 1); shape := `Wire
+        | "shape", "cap"
+        | "shape", "cup" -> assert ((source = 2 && target = 0) || (source = 0 && target = 2)); shape := `Cap
         | l, v -> Printf.printf "Unknown option %s%s%s!\n%!" l (if v = "" then "" else "=") v
       ) options;
     (* TODO: parse options *)
@@ -172,7 +190,7 @@ module Stack = struct
   let rec create env e =
     let id n = List.init n (fun _ -> G.id ()) in
     match e with
-    | Gen g -> [[List.assoc g env]]
+    | Gen g -> [[Generator.copy (List.assoc g env)]]
     | Obj n -> [id n]
     | Comp (_, f, Obj n) -> List.map (fun f -> f@(id n)) (create env f)
     | Comp (_, Obj n, f) -> List.map (fun f -> (id n)@f) (create env f)
@@ -206,7 +224,6 @@ module Stack = struct
       (* Space the sources *)
       if Array.length g.G.source > 0 then
         (
-          Printf.printf "ls (%s): %f\n%!" g.G.name !last_source;
           g.G.source.(0) <- max (!last_source +. 1.) g.G.source.(0);
           last_source := g.G.source.(0)
         );
@@ -214,10 +231,12 @@ module Stack = struct
         g.G.source.(i+1) <- max (g.G.source.(i) +. 1.) g.G.source.(i+1);
         last_source := g.G.source.(i+1)
       done;
-      (* Propagate from bottom to top *)
+      (* Propagate in morphism *)
       (
         match g.G.shape with
-        | `Wire -> g.G.target.(0) <- g.G.source.(0)
+        | `Wire ->
+          g.G.target.(0) <- max g.G.source.(0) g.G.target.(0);
+          g.G.source.(0) <- g.G.target.(0)
         | _ -> ()
       );
       (* Space up the targets *)
@@ -232,7 +251,6 @@ module Stack = struct
       done
     in
     let slice f =
-      Printf.printf "slice\n%!";
       last_source := (-1.);
       last_target := (-1.);
       List.iter generator f
@@ -252,32 +270,45 @@ module Stack = struct
         stack g
     in
     let f = ref f in
-    for i = 0 to 0 do
+    for i = 0 to 1 do
       stack !f
     done
 
   module Draw = struct
-    let xscale x =
-      int_of_float (x*.100.)
-
-    let yscale y =
-      Graphics.size_y () - int_of_float (y*.100.)
+    let scale x = int_of_float (x*.100.)
+    let xscale x = scale x
+    let yscale y = Graphics.size_y () - scale y
 
     let line (x1,y1) (x2,y2) =
       Graphics.moveto (xscale x1) (yscale y1);
       Graphics.lineto (xscale x2) (yscale y2)
+
+    let arc (x,y) (rx,ry) (a,b) =
+      Graphics.draw_arc (xscale x) (yscale y) (scale rx) (scale ry) a b
   end
 
   let draw f =
     Graphics.open_graph "";
     let draw_generator g =
-      let c =
-        if G.source g > 0 then (g.G.source.(0) +. Array.last g.G.source) /. 2.
-        else (g.G.target.(0) +. Array.last g.G.target) /. 2.
-      in
       let y = g.G.y in
-      Array.iter (fun x -> Draw.line (x,y) (c,y+.0.5)) g.G.source;
-      Array.iter (fun x -> Draw.line (c,y+.0.5) (x,y+.1.)) g.G.target;
+      if g.G.shape = `Wire then
+        Draw.line (g.G.source.(0),y) (g.G.target.(0),g.G.y+.1.)
+      else if g.G.shape = `Cap then
+        if Array.length g.G.source = 2 then
+          let d = g.G.source.(1) -. g.G.source.(0) in
+          let x = Float.mean g.G.source.(0) g.G.source.(1) in
+          Draw.arc (x,y) (d /. 2., 0.5) (0,-180)
+        else
+          let d = g.G.target.(1) -. g.G.target.(0) in
+          let x = Float.mean g.G.target.(0) g.G.target.(1) in
+          Draw.arc (x,y+.1.) (d /. 2., 0.5) (0,180)
+      else
+        let c =
+          if G.source g > 0 then Float.mean g.G.source.(0) (Array.last g.G.source)
+          else (g.G.target.(0) +. Array.last g.G.target) /. 2.
+        in
+        Array.iter (fun x -> Draw.line (x,y) (c,y+.0.5)) g.G.source;
+        Array.iter (fun x -> Draw.line (c,y+.0.5) (x,y+.1.)) g.G.target;
     in
     List.iter (List.iter draw_generator) f
 end
