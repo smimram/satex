@@ -5,6 +5,10 @@ ANNOTATE = true
 all: dnc
 	OCAMLRUNPARAM=b ./satex ../test/test.satex
 
+ci:
+	git ci . -m "Worked on satex."
+	git push
+
 conflicts:
 	menhir --explain parser.mly
 	@cat parser.conflicts

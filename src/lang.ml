@@ -1,13 +1,34 @@
-module Seq = struct
-  include Seq
+module List = struct
+  include List
 
-  (* Sequence of the n first numbers. *)
-  let ordinal n =
-    let rec aux i () =
-      if i >= n then Nil
-      else Cons (i, aux (i+1))
-    in
-    aux 0
+  let rec last = function
+    | [] -> raise Not_found
+    | [x] -> x
+    | _::l -> last l
+end
+
+(** Operations on lists of arrays. *)
+module ArrayList = struct
+  type 'a t = 'a array list
+
+  let length l =
+    List.fold_left (fun n a -> n + Array.length a) 0 l
+
+  let rec get l n =
+    match l with
+    | a::l ->
+      let len = Array.length a in 
+      if n < len then a.(n)
+      else get l (n-len)
+    | [] -> raise Not_found
+
+  let rec set l n v =
+    match l with
+    | a::l ->
+      let len = Array.length a in
+      if n < len then a.(n) <- v
+      else set l (n-len) v
+    | [] -> raise Not_found
 end
 
 (** Generators. *)
@@ -51,16 +72,18 @@ module Generator = struct
   let id () = create ~options:["shape","wire"] "1" 1 1
 end
 
+module G = Generator
+
 (** Expression for a cell. *)
 type expr =
-  | Gen of Generator.name (** a generator *)
+  | Gen of G.name (** a generator *)
   | Obj of int (** an object *)
   | Comp of int option * expr * expr (** composite in maximal codimension - 1 *)
 
 (** Declarations. *)
 type t =
   {
-    gens : (Generator.name * Generator.t) list; (** gneerators *)
+    gens : (G.name * G.t) list; (** gneerators *)
     cells : (int * expr) list (** cells (which are numbered in order to be able to identify them in LaTeX) *)
   }
 
@@ -69,7 +92,7 @@ let decls_empty = { gens = []; cells = [] }
 
 (** Add a generator. *)
 let add_gen l g =
-  { l with gens = (Generator.name g, g)::l.gens }
+  { l with gens = (G.name g, g)::l.gens }
 
 (** Dimension of a cell. *)
 let rec dim = function
@@ -86,7 +109,7 @@ let rec typ gens = function
     (
       try
         let g = List.assoc s gens in
-        Generator.source g, Generator.target g
+        G.source g, G.target g
       with
       | Not_found -> raise (Typing ("unknown cell " ^ s))
     )
@@ -124,12 +147,12 @@ let add_cell l (id,cell) =
 
 (** Normalized form for expressions. *)
 module Stack = struct
-  type slice = Generator.t list
+  type slice = G.t list
 
   type t = slice list
 
   let rec create env e =
-    let id n = List.init n (fun _ -> Generator.id ()) in
+    let id n = List.init n (fun _ -> G.id ()) in
     match e with
     | Gen g -> [[List.assoc g env]]
     | Obj n -> [id n]
@@ -148,9 +171,63 @@ module Stack = struct
     (* Set the vertical position *)
     List.iteri
       (fun i f ->
-         List.iter (fun g -> g.Generator.y <- i) f
+         List.iter (fun g -> g.G.y <- i) f
       ) ans;
     ans
+
+  let sources f =
+    List.map (fun g -> g.G.source) (List.hd f)
+
+  let targets f =
+    List.map (fun g -> g.G.target) (List.last f)
+
+  let typeset f =
+    let last_source = ref (-1) in
+    let last_target = ref (-1) in
+    let generator g =
+      g.G.source.(0) <- max (!last_source+1) g.G.source.(0);
+      for i = 0 to Array.length g.G.source - 2 do
+        g.G.source.(i+1) <- max (g.G.source.(i)+1) g.G.source.(i+1);
+        last_source := g.G.source.(i+1)
+      done;
+      (* TODO: do some other placement tricks here, e.g. for multiplication we
+         want even space between inputs and output in the middle. *)
+      g.G.target.(0) <- max (!last_target+1) g.G.target.(0);
+      for i = 0 to Array.length g.G.target - 2 do
+        g.G.target.(i+1) <- max (g.G.target.(i)+1) g.G.target.(i+1);
+        last_target := g.G.target.(i+1)
+      done
+    in
+    let slice f =
+      last_source := (-1);
+      last_target := (-1);
+      List.iter generator f
+    in
+    let rec stack = function
+      | [] -> assert false
+      | [f] -> slice f
+      | f::g ->
+        slice f;
+        let t = targets [f] in
+        let s = sources g in
+        let len = ArrayList.length t in
+        assert (len = ArrayList.length s);
+        for i = 0 to len - 1 do
+          ArrayList.set s i (ArrayList.get t i)
+        done;
+        stack g
+    in
+    let f = ref f in
+    for i = 0 to 10 do
+      stack !f
+    done
+
+  (* let draw f = *)
+    (* Graphics.open_graph ""; *)
+    (* let ystep = 100 in *)
+    (* let draw_generator g = *)
+    (* in *)
+    (* List.iter (List.iter draw_generator) f *)
 end
 
 (*
@@ -158,7 +235,7 @@ end
 module Typeset = struct
   type t =
     {
-      env : (string * Generator.t) list; (** declared generators *)
+      env : (string * G.t) list; (** declared generators *)
       expr : expr; (** the cell *)
       pos : (Port.t * (int * int) ref) list; (** position of a port *)
       source : string; (** fake generator for the source *)
@@ -169,7 +246,7 @@ module Typeset = struct
     let s, t = typ env expr in
     let source = "@src" in
     let target = "@tgt" in
-    let env = (source, Generator.create 0 s)::(target, Generator.create t 0)::env in
+    let env = (source, G.create 0 s)::(target, G.create t 0)::env in
     let expr' = Comp (Some 1, Gen source, Comp (Some 1, expr, Gen target)) in
     let pos = Port.all env expr' in
     let pos = List.flatten pos in
@@ -191,8 +268,8 @@ module Typeset = struct
     List.iter
       (fun g ->
          let gen = List.assoc g t.env in
-         for i = 0 to Generator.source gen - 1 do
-           for j = 0 to Generator.target gen - 1 do
+         for i = 0 to G.source gen - 1 do
+           for j = 0 to G.target gen - 1 do
              add (`Next (g,`Source,i) (g,`Source,j))
            done
          done
