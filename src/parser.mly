@@ -23,7 +23,7 @@ indecls:
   | { decls_empty }
 
 gen:
-  | GEN opts LACC STRING COLON INT TO INT RACC { $4, Generator.create ~options:$2 $6 $8 }
+  | GEN opts LACC STRING COLON INT TO INT RACC { Generator.create ~options:$2 $4 $6 $8 }
 
 opts:
   | { [] }
@@ -42,6 +42,6 @@ cell:
 
 expr:
   | STRING { Gen $1 }
-  | INT { Id $1 }
+  | INT { Obj $1 }
   | expr COMP expr { Comp ($2,$1,$3) }
   | LPAR expr RPAR { $2 }
