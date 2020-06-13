@@ -263,9 +263,12 @@ module Stack = struct
         let t = targets [f] in
         let s = sources g in
         let len = ArrayList.length t in
+        (* Match targets with next sources. *)
         assert (len = ArrayList.length s);
         for i = 0 to len - 1 do
-          ArrayList.set s i (ArrayList.get t i)
+          let j = max (ArrayList.get s i) (ArrayList.get t i) in
+          ArrayList.set s i j;
+          ArrayList.set t i j
         done;
         stack g
     in
