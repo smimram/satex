@@ -32,14 +32,22 @@ module Generator = struct
   let create name source target options =
     let shape = ref `Circle in
     let label = ref "" in
-    (* Set default options *)
-    let options = ["labelwidth", ".5"; "labelheight", ".5"]@options in
+    (* Set default options. *)
+    let options = ["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"]@options in
     let options =
       (* 1->1 are rigid by default *)
       if source = 1 && target = 1 then ["rigid","true"]@options
       else options
     in
-    (* Parse options *)
+    (* Normalize options. *)
+    let options =
+      List.map
+        (function
+          | "arrow","" -> "arrow","right"
+          | lv -> lv
+        ) options
+    in
+    (* Parse options. *)
     List.iter
       (function
         | "shape", "none" ->
@@ -52,9 +60,11 @@ module Generator = struct
           shape := `Cap
         | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
           label := String.sub l 1 (String.length l - 2)
-        | l, v -> Printf.printf "Unknown option %s%s%s!\n%!" l (if v = "" then "" else "=") v
+        | l, v ->
+          (* Printf.printf "Unknown option %s%s%s!\n%!" l (if v = "" then "" else "=") v *)
+          ()
       ) options;
-    (* TODO: parse options *)
+    let options = List.rev options in
     {
       options;
       name;
@@ -269,7 +279,7 @@ module Stack = struct
     val create : string -> int -> t
     val close : t -> unit
     val line : t -> float * float -> float * float -> unit
-    val arc : t -> float * float -> float * float -> float * float -> unit
+    val arc : t -> ?options:[`Middle_arrow of [`Left | `Right]] list -> float * float -> float * float -> float * float -> unit
     val disk : t -> float * float -> float * float -> unit
     val text : t -> float * float -> string -> unit
   end
@@ -291,7 +301,7 @@ module Stack = struct
       Graphics.moveto (xscale x1) (yscale y1);
       Graphics.lineto (xscale x2) (yscale y2)
 
-    let arc () (x,y) (rx,ry) (a,b) =
+    let arc () ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = int_of_float a in
       let b = int_of_float b in
       Graphics.draw_arc (xscale x) (yscale y) (scale rx) (scale ry) a b
@@ -316,12 +326,20 @@ module Stack = struct
     let line oc (x1,y1) (x2,y2) =
       output_string oc (Printf.sprintf "\\draw (%f,%f) -- (%f,%f); " x1 y1 x2 y2)
 
-    let arc oc (x,y) (rx,ry) (a,b) =
+    let arc oc ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = -.a in
       let b = -.b in
       (* The starting point is supposed to be horizontal for now... *)
       assert (int_of_float a mod 180 = 0);
-      output_string oc (Printf.sprintf "\\draw ([shift=(0:%f)]%f,%f) arc (%f:%f:%f and %f); " rx x y a b rx ry)
+      let o = ref [] in
+      List.iter
+        (function
+          | `Middle_arrow `Right -> o := "middlearrow={>}" :: !o
+          | `Middle_arrow `Left -> o := "middlearrow={<}" :: !o
+        ) options;
+      let o = String.concat "," !o in
+      let o = if o = "" then "" else Printf.sprintf "[%s]" o in
+      output_string oc (Printf.sprintf "\\draw%s ([shift=(%f:%f)]%f,%f) arc (%f:%f:%f and %f); " o a rx x y a b rx ry)
 
     let disk oc (x,y) (rx,ry) =
       output_string oc (Printf.sprintf "\\filldraw[fill=white] (%f,%f) ellipse (%f and %f); " x y rx ry)
@@ -354,12 +372,18 @@ module Stack = struct
       (* Draw wires. *)
       (
         if g.G.shape = `Cap then
+          let options =
+            match G.get g "arrow" with
+            | "right" -> [`Middle_arrow `Right]
+            | "left" -> [`Middle_arrow `Left]
+            | _ -> []
+          in
           if Array.length g.G.source = 2 then
             let l = g.G.source.(1) -. g.G.source.(0) in
-            Draw.arc d (x,y-.0.5) (l /. 2., 0.5) (0.,-180.)
+            Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.)
           else
             let l = g.G.target.(1) -. g.G.target.(0) in
-            Draw.arc d (x,y+.0.5) (l /. 2., 0.5) (0.,180.)
+            Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.)
         else
           let c = x in
           Array.iter (fun x -> Draw.line d (x,y-.0.5) (c,y)) g.G.source;
