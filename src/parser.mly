@@ -42,6 +42,11 @@ cell:
 
 expr:
   | STRING { GName $1 }
-  | INT { Obj $1 }
-  | expr COMP expr { Comp ($2,$1,$3) }
-  | LPAR expr RPAR { $2 }
+  | INT { Id $1 }
+  | expr COMP expr { Comp (1,$1,$3) }
+  | LPAR hexpr RPAR { $2 }
+
+hexpr:
+  | STRING { GName $1 }
+  | INT { Id $1 }
+  | hexpr COMP hexpr { Comp (0,$1,$3) }

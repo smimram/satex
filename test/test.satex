@@ -1,4 +1,4 @@
 \deftwocell[cap]{eta : 0 -> 2}
 \deftwocell[cup]{eps : 2 -> 0}
 0:\twocell{(eta * 1) * (1 * eps)}
-1:\twocell{(eta *0 eta) * (1 * eps * 1)}
+1:\twocell{(eta * eta) * (1 * eps * 1)}

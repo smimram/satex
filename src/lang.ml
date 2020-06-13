@@ -66,8 +66,19 @@ module G = Generator
 (** Expression for a cell. *)
 type expr =
   | GName of G.name (** a generator *)
-  | Obj of int (** an object *)
-  | Comp of int option * expr * expr (** composite in maximal codimension - 1 *)
+  | Id of int (** an object *)
+  | Comp of int * expr * expr (** composite in given dimension *)
+
+let rec string_of_expr ?(p=false) = function
+  | GName g -> g
+  | Id n -> string_of_int n
+  | Comp (n, f, g) ->
+    Printf.sprintf "%s%s *%d %s%s"
+      (if p then "(" else "")
+      (string_of_expr ~p:true f)
+      n
+      (string_of_expr ~p:true g)
+      (if p then ")" else "")
 
 let satix_fname = ref "out.satix"
 
@@ -89,7 +100,7 @@ let add_gen l g =
 (** Dimension of a cell. *)
 let rec dim = function
   | GName _ -> 2
-  | Obj _ -> 1
+  | Id _ -> 1
   | Comp (_, e1, e2) -> max (dim e1) (dim e2)
 
 (** Typing error. *)
@@ -105,13 +116,8 @@ let rec typ gens = function
       with
       | Not_found -> raise (Typing ("unknown cell " ^ s))
     )
-  | Obj n -> n, n
+  | Id n -> n, n
   | Comp (n, e1, e2) ->
-    let n =
-      match n with
-      | Some n -> n
-      | None -> min (dim e1) (dim e2) - 1
-    in
     let s1, t1 = typ gens e1 in
     let s2, t2 = typ gens e2 in
     match n with
@@ -129,6 +135,7 @@ let rec typ gens = function
 
 (** Add a cell to declarations. *)
 let add_cell l (id,cell) =
+  Printf.printf "add cell %d: %s\n%!" id (string_of_expr cell);
   ignore (typ l.gens cell);
   { l with cells = l.cells@[id,cell] }
 
@@ -153,16 +160,17 @@ module Stack = struct
     let id n = List.init n (fun _ -> G.id ()) in
     match e with
     | GName g -> [[Generator.copy (List.assoc g env)]]
-    | Obj n -> [id n]
-    | Comp (_, f, Obj n) -> List.map (fun f -> f@(id n)) (create env f)
-    | Comp (_, Obj n, f) -> List.map (fun f -> (id n)@f) (create env f)
-    | Comp (Some 0,f,g) ->
+    | Id n -> [id n]
+    | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (create env f)
+    | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (create env f)
+    | Comp (0,f,g) ->
       let f = create env f in
       let g = create env g in
       assert (List.length f = 1);
       assert (List.length g = 1);
       [(List.hd f)@(List.hd g)]
-    | Comp (_,f,g) -> (create env f)@(create env g)
+    | Comp (1,f,g) -> (create env f)@(create env g)
+    | _ -> assert false
 
   let create env e : t =
     let ans = create env e in

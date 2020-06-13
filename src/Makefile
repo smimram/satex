@@ -6,7 +6,7 @@ ANNOTATE = true
 all: dnc
 	OCAMLRUNPARAM=b ./satex ../test/test.satex
 
-ci:
+test ci:
 	$(MAKE) -C .. $@
 
 conflicts:
