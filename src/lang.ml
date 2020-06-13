@@ -7,7 +7,7 @@ module Generator = struct
   (** A generator. *)
   type t =
     {
-      opts : (string * string) list; (** list of optional parameters and their value (a=b) *)
+      options : (string * string) list; (** list of optional parameters and their value (a=b) *)
       name : name;
       shape : [`Circle | `Wire | `Cap]; (** shape of the node *)
       source : float array; (** horizontal position of the source ports *)
@@ -19,7 +19,7 @@ module Generator = struct
 
   let copy g =
     {
-      opts = g.opts;
+      options = g.options;
       name = g.name;
       shape = g.shape;
       source = Array.copy g.source;
@@ -29,6 +29,14 @@ module Generator = struct
 
   let create ?(options=[]) name source target =
     let shape = ref `Circle in
+    (* Normalize options *)
+    let optn =
+      [
+        ("cap",""),("shape","cap");
+        ("cup",""),("shape","cup")
+      ]
+    in
+    let options = List.map (fun o -> try List.assoc o optn with Not_found -> o) options in
     List.iter
       (function
         | "shape", "wire" -> assert (source = 1 && target = 1); shape := `Wire
@@ -38,7 +46,7 @@ module Generator = struct
       ) options;
     (* TODO: parse options *)
     {
-      opts = options;
+      options;
       shape = !shape;
       name;
       source = Array.init source (fun _ -> 0.);
@@ -76,7 +84,7 @@ let decls_empty () = { fname = !satix_fname; gens = []; cells = [] }
 
 (** Add a generator. *)
 let add_gen l g =
-  { l with gens = (G.name g, g)::l.gens }
+  { l with gens = l.gens@[G.name g, g] }
 
 (** Dimension of a cell. *)
 let rec dim = function
@@ -122,7 +130,7 @@ let rec typ gens = function
 (** Add a cell to declarations. *)
 let add_cell l (id,cell) =
   ignore (typ l.gens cell);
-  { l with cells = (id,cell)::l.cells }
+  { l with cells = l.cells@[id,cell] }
 
 (** Normalized form for expressions. *)
 module Stack = struct
@@ -231,41 +239,101 @@ module Stack = struct
       stack !f
     done
 
-  module Draw = struct
+  module type Draw = sig
+    (** A device for drawing. *)
+    type t
+
+    (** Start outputing in given filename morphism with given id. *)
+    val create : string -> int -> t
+    val close : t -> unit
+    val line : t -> float * float -> float * float -> unit
+    val arc : t -> float * float -> float * float -> float * float -> unit
+  end
+
+  module DrawGraphics = struct
     let scale x = int_of_float (x*.100.)
     let xscale x = scale x
     let yscale y = Graphics.size_y () - scale y
 
-    let line (x1,y1) (x2,y2) =
+    type t = unit
+
+    let create fname id =
+      Graphics.open_graph ""
+
+    let close () =
+      ignore (Graphics.wait_next_event [Graphics.Key_pressed])
+
+    let line () (x1,y1) (x2,y2) =
       Graphics.moveto (xscale x1) (yscale y1);
       Graphics.lineto (xscale x2) (yscale y2)
 
-    let arc (x,y) (rx,ry) (a,b) =
+    let arc () (x,y) (rx,ry) (a,b) =
+      let a = int_of_float a in
+      let b = int_of_float b in
       Graphics.draw_arc (xscale x) (yscale y) (scale rx) (scale ry) a b
   end
 
-  let draw f =
-    Graphics.open_graph "";
+  module DrawTikz = struct
+    type t = out_channel
+
+    let create fname id =
+      let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\\begin{tikzpicture}[yscale=-1] " id);
+      oc
+
+    let close oc =
+      output_string oc "\\end{tikzpicture}}\n";
+      close_out oc
+
+    let line oc (x1,y1) (x2,y2) =
+      output_string oc (Printf.sprintf "\\draw (%f,%f) -- (%f,%f); " x1 y1 x2 y2)
+
+    let arc oc (x,y) (rx,ry) (a,b) =
+      let a = -.a in
+      let b = -.b in
+      (* The starting point is supposed to be horizontal for now... *)
+      assert (int_of_float a mod 180 = 0);
+      output_string oc (Printf.sprintf "\\draw ([shift=(0:%f)]%f,%f) arc (%f:%f:%f and %f); " rx x y a b rx ry)
+  end
+
+  let draw device id f =
+    let m, fname =
+        match device with
+          | `Graphics -> (module DrawGraphics : Draw), ""
+          | `Tikz fname -> (module DrawTikz : Draw), fname
+    in
+    let module Draw = (val m : Draw) in
+    let d = Draw.create fname id in
     let draw_generator g =
       let y = g.G.y in
       if g.G.shape = `Wire then
-        Draw.line (g.G.source.(0),y) (g.G.target.(0),g.G.y+.1.)
+        Draw.line d (g.G.source.(0),y) (g.G.target.(0),g.G.y+.1.)
       else if g.G.shape = `Cap then
         if Array.length g.G.source = 2 then
-          let d = g.G.source.(1) -. g.G.source.(0) in
+          let l = g.G.source.(1) -. g.G.source.(0) in
           let x = Float.mean g.G.source.(0) g.G.source.(1) in
-          Draw.arc (x,y) (d /. 2., 0.5) (0,-180)
+          Draw.arc d (x,y) (l /. 2., 0.5) (0.,-180.)
         else
-          let d = g.G.target.(1) -. g.G.target.(0) in
+          let l = g.G.target.(1) -. g.G.target.(0) in
           let x = Float.mean g.G.target.(0) g.G.target.(1) in
-          Draw.arc (x,y+.1.) (d /. 2., 0.5) (0,180)
+          Draw.arc d (x,y+.1.) (l /. 2., 0.5) (0.,180.)
       else
         let c =
           if G.source g > 0 then Float.mean g.G.source.(0) (Array.last g.G.source)
           else (g.G.target.(0) +. Array.last g.G.target) /. 2.
         in
-        Array.iter (fun x -> Draw.line (x,y) (c,y+.0.5)) g.G.source;
-        Array.iter (fun x -> Draw.line (c,y+.0.5) (x,y+.1.)) g.G.target;
+        Array.iter (fun x -> Draw.line d (x,y) (c,y+.0.5)) g.G.source;
+        Array.iter (fun x -> Draw.line d (c,y+.0.5) (x,y+.1.)) g.G.target;
     in
-    List.iter (List.iter draw_generator) f
+    List.iter (List.iter draw_generator) f;
+    Draw.close d
 end
+
+let draw l =
+  (try Sys.remove l.fname with _ -> ());
+  List.iter
+    (fun (id,e) ->
+       let f = Stack.create l.gens e in
+       Stack.typeset f;
+       Stack.draw (`Tikz l.fname) id f
+    ) l.cells

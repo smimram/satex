@@ -6,27 +6,37 @@
 \title{Satex test}
 \author{Samuel Mimram}
 
-\deftwocell[white]{mu : 2 -> 1}
-\deftwocell[white]{eta : 2 -> 1}
+\deftwocell[cap]{eta : 0 -> 2}
+\deftwocell[cup]{eps : 2 -> 0}
 
 \begin{document}
 \maketitle
 
+we are here:
 \[
-  \twocell{(mu * 1) * mu}
-\]
-and
-\[
-  \twocell{(eta *0 eta)
-    *
-    mu}
+  \twocell{(eta * 1) * (1 * eps)}
 \]
 
-TESTING
+\[
+  \twocell{(eta *0 eta) * (1 * eps * 1)}
+\]
 
-\expandafter\newcommand\csname cul8r\endcsname{Goodbye!}
-I said, ``\csname cul8r\endcsname''.
 
-\defsatexfig5{hello}
-J'ai dit \usesatexfig5 et \usesatexfig0
+% \[
+  % \twocell{(mu * 1) * mu}
+% \]
+% and
+% \[
+  % \twocell{(eta *0 eta)
+    % *
+    % mu}
+% \]
+
+% TESTING
+
+% \expandafter\newcommand\csname cul8r\endcsname{Goodbye!}
+% I said, ``\csname cul8r\endcsname''.
+
+% \defsatexfig5{hello}
+% J'ai dit \usesatexfig5 et \usesatexfig0
 \end{document}
