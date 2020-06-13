@@ -65,12 +65,14 @@ module G = Generator
 
 (** Expression for a cell. *)
 type expr =
-  | GName of G.name (** a generator *)
+  | GName of G.name (** a generator name *)
+  | Gen of G.t (** a generator *)
   | Id of int (** an object *)
   | Comp of int * expr * expr (** composite in given dimension *)
 
 let rec string_of_expr ?(p=false) = function
   | GName g -> g
+  | Gen g -> Printf.sprintf "(%d->%d)" (G.source g) (G.target g)
   | Id n -> string_of_int n
   | Comp (n, f, g) ->
     Printf.sprintf "%s%s *%d %s%s"
@@ -97,12 +99,6 @@ let decls_empty () = { fname = !satix_fname; gens = []; cells = [] }
 let add_gen l g =
   { l with gens = l.gens@[G.name g, g] }
 
-(** Dimension of a cell. *)
-let rec dim = function
-  | GName _ -> 2
-  | Id _ -> 1
-  | Comp (_, e1, e2) -> max (dim e1) (dim e2)
-
 (** Typing error. *)
 exception Typing of string
 
@@ -116,6 +112,7 @@ let rec typ gens = function
       with
       | Not_found -> raise (Typing ("unknown cell " ^ s))
     )
+  | Gen g -> G.source g, G.target g
   | Id n -> n, n
   | Comp (n, e1, e2) ->
     let s1, t1 = typ gens e1 in
@@ -160,6 +157,7 @@ module Stack = struct
     let id n = List.init n (fun _ -> G.id ()) in
     match e with
     | GName g -> [[Generator.copy (List.assoc g env)]]
+    | Gen g -> [[Generator.copy g]]
     | Id n -> [id n]
     | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (create env f)
     | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (create env f)

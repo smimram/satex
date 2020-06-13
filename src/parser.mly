@@ -11,7 +11,7 @@
 
 %start decls
 %type <Lang.t> decls
-%left COMP
+%right COMP
 %%
 
 decls:
@@ -41,12 +41,15 @@ cell:
   | CELL LACC expr RACC { $1,$3 }
 
 expr:
-  | STRING { GName $1 }
-  | INT { Id $1 }
+  | base { $1 }
   | expr COMP expr { Comp (1,$1,$3) }
   | LPAR hexpr RPAR { $2 }
 
 hexpr:
+  | base { $1 }
+  | hexpr COMP hexpr { Comp (0,$1,$3) }
+
+base:
   | STRING { GName $1 }
   | INT { Id $1 }
-  | hexpr COMP hexpr { Comp (0,$1,$3) }
+  | LPAR INT TO INT RPAR opts { Gen (G.create ~options:$6 (Printf.sprintf "(%d->%d)" $2 $4) $2 $4) }
