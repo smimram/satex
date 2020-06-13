@@ -1,4 +1,4 @@
-SOURCES = lang.ml parser.mly lexer.mll satex.ml
+SOURCES = extlib.ml lang.ml parser.mly lexer.mll satex.ml
 RESULT = satex
 PACKS = graphics
 ANNOTATE = true

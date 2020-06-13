@@ -20,7 +20,7 @@ decls:
 indecls:
   | indecls gen { add_gen $1 $2 }
   | indecls cell { add_cell $1 $2 }
-  | { decls_empty }
+  | { decls_empty () }
 
 gen:
   | GEN opts LACC STRING COLON INT TO INT RACC { Generator.create ~options:$2 $4 $6 $8 }

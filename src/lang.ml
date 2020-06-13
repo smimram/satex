@@ -1,48 +1,4 @@
-module Array = struct
-  include Array
-
-  let last a =
-    a.(Array.length a - 1)
-end
-
-module List = struct
-  include List
-
-  let rec last = function
-    | [] -> raise Not_found
-    | [x] -> x
-    | _::l -> last l
-end
-
-module Float = struct
-  include Float
-
-  let mean x y = (x +. y) /. 2.
-end
-
-(** Operations on lists of arrays. *)
-module ArrayList = struct
-  type 'a t = 'a array list
-
-  let length l =
-    List.fold_left (fun n a -> n + Array.length a) 0 l
-
-  let rec get l n =
-    match l with
-    | a::l ->
-      let len = Array.length a in 
-      if n < len then a.(n)
-      else get l (n-len)
-    | [] -> raise Not_found
-
-  let rec set l n v =
-    match l with
-    | a::l ->
-      let len = Array.length a in
-      if n < len then a.(n) <- v
-      else set l (n-len) v
-    | [] -> raise Not_found
-end
+open Extlib
 
 (** Generators. *)
 module Generator = struct
@@ -105,15 +61,18 @@ type expr =
   | Obj of int (** an object *)
   | Comp of int option * expr * expr (** composite in maximal codimension - 1 *)
 
+let satix_fname = ref "out.satix"
+
 (** Declarations. *)
 type t =
   {
+    fname : string; (** file to output *)
     gens : (G.name * G.t) list; (** generators *)
     cells : (int * expr) list (** cells (which are numbered in order to be able to identify them in LaTeX) *)
   }
 
 (** Empty declaration list. *)
-let decls_empty = { gens = []; cells = [] }
+let decls_empty () = { fname = !satix_fname; gens = []; cells = [] }
 
 (** Add a generator. *)
 let add_gen l g =
@@ -159,11 +118,6 @@ let rec typ gens = function
     | _ ->
       (* n-dimensional diagrams with n>2 are not (yet) supported *)
       assert false
-
-(* let rec generators = function *)
-  (* | Gen g -> [g] *)
-  (* | Obj _ -> [] *)
-  (* | Comp (_, f, g) -> (generators f)@(generators g) *)
 
 (** Add a cell to declarations. *)
 let add_cell l (id,cell) =
@@ -315,50 +269,3 @@ module Stack = struct
     in
     List.iter (List.iter draw_generator) f
 end
-
-(*
-(** Compute the placement of cells. *)
-module Typeset = struct
-  type t =
-    {
-      env : (string * G.t) list; (** declared generators *)
-      expr : expr; (** the cell *)
-      pos : (Port.t * (int * int) ref) list; (** position of a port *)
-      source : string; (** fake generator for the source *)
-      target : string; (** fake generator for the target *)
-    }
-
-  let create env expr =
-    let s, t = typ env expr in
-    let source = "@src" in
-    let target = "@tgt" in
-    let env = (source, G.create 0 s)::(target, G.create t 0)::env in
-    let expr' = Comp (Some 1, Gen source, Comp (Some 1, expr, Gen target)) in
-    let pos = Port.all env expr' in
-    let pos = List.flatten pos in
-    let pos = List.map (fun p -> p, ref (0,0)) pos in
-    { env; expr; pos; source; target }
-
-  (** All the generators. *)
-  let generators t =
-    generators t.expr
-
-  (** Position of a port. *)
-  let position t p =
-    snd (List.find (fun (p',_) -> Port.eq p p') t.pos)
-
-  (** Generate constraints on ports. *)
-  let constraints t =
-    let ans = ref [] in
-    let add c = ans := c :: !ans in
-    List.iter
-      (fun g ->
-         let gen = List.assoc g t.env in
-         for i = 0 to G.source gen - 1 do
-           for j = 0 to G.target gen - 1 do
-             add (`Next (g,`Source,i) (g,`Source,j))
-           done
-         done
-      ) (generators t)
-end
-*)
