@@ -8,6 +8,10 @@ end
 module List = struct
   include List
 
+  let rec iter_right f = function
+    | [] -> ()
+    | x::l -> iter_right f l; f x
+
   let rec last = function
     | [] -> raise Not_found
     | [x] -> x

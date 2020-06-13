@@ -33,10 +33,10 @@ module Generator = struct
     let shape = ref `Circle in
     let label = ref "" in
     (* Set default options. *)
-    let options = ["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"]@options in
+    let options = options@["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"] in
     let options =
       (* 1->1 are rigid by default *)
-      if source = 1 && target = 1 then ["rigid","true"]@options
+      if source = 1 && target = 1 then options@["rigid","true"]
       else options
     in
     (* Normalize options. *)
@@ -48,7 +48,7 @@ module Generator = struct
         ) options
     in
     (* Parse options. *)
-    List.iter
+    List.iter_right
       (function
         | "shape", "none" ->
           assert (source = 1 && target = 1); shape := `None
@@ -64,7 +64,6 @@ module Generator = struct
           (* Printf.printf "Unknown option %s%s%s!\n%!" l (if v = "" then "" else "=") v *)
           ()
       ) options;
-    let options = List.rev options in
     {
       options;
       name;
@@ -86,6 +85,10 @@ module Generator = struct
   let get g o = List.assoc o g.options
 
   let get_float g o = float_of_string (get g o)
+
+  let label_width g = try get_float g "labelwidth" with Not_found -> 0.5
+
+  let label_height g = try get_float g "labelheight" with Not_found -> 0.5
 end
 
 module G = Generator
@@ -271,47 +274,7 @@ module Stack = struct
       stack !f
     done
 
-  module type Draw = sig
-    (** A device for drawing. *)
-    type t
-
-    (** Start outputing in given filename morphism with given id. *)
-    val create : string -> int -> t
-    val close : t -> unit
-    val line : t -> float * float -> float * float -> unit
-    val arc : t -> ?options:[`Middle_arrow of [`Left | `Right]] list -> float * float -> float * float -> float * float -> unit
-    val disk : t -> float * float -> float * float -> unit
-    val text : t -> float * float -> string -> unit
-  end
-
-  module DrawGraphics = struct
-    let scale x = int_of_float (x*.100.)
-    let xscale x = scale x
-    let yscale y = Graphics.size_y () - scale y
-
-    type t = unit
-
-    let create fname id =
-      Graphics.open_graph ""
-
-    let close () =
-      ignore (Graphics.wait_next_event [Graphics.Key_pressed])
-
-    let line () (x1,y1) (x2,y2) =
-      Graphics.moveto (xscale x1) (yscale y1);
-      Graphics.lineto (xscale x2) (yscale y2)
-
-    let arc () ?(options=[]) (x,y) (rx,ry) (a,b) =
-      let a = int_of_float a in
-      let b = int_of_float b in
-      Graphics.draw_arc (xscale x) (yscale y) (scale rx) (scale ry) a b
-
-    let disk () = failwith "TODO"
-
-    let text () = failwith "TODO"
-  end
-
-  module DrawTikz = struct
+  module Draw = struct
     type t = out_channel
 
     let create fname id =
@@ -348,13 +311,7 @@ module Stack = struct
       output_string oc (Printf.sprintf "\\draw (%f,%f) node {$%s$}; " x y s)
   end
 
-  let draw device id f =
-    let m, fname =
-        match device with
-          | `Graphics -> (module DrawGraphics : Draw), ""
-          | `Tikz fname -> (module DrawTikz : Draw), fname
-    in
-    let module Draw = (val m : Draw) in
+  let draw fname id f =
     let d = Draw.create fname id in
     let draw_generator g =
       (* x-coordinate of the center *)
@@ -393,8 +350,8 @@ module Stack = struct
       (
         match g.G.shape with
         | `Circle ->
-          let rx = G.get_float g "labelwidth" /. 2. in
-          let ry = G.get_float g "labelheight" /. 2. in
+          let rx = G.label_width g /. 2. in
+          let ry = G.label_height g /. 2. in
           Draw.disk d (x,y) (rx,ry)
         | _ -> ()
       );
@@ -414,5 +371,5 @@ let draw l =
     (fun (id,e) ->
        let f = Stack.create l.gens e in
        Stack.typeset f;
-       Stack.draw (`Tikz l.fname) id f
+       Stack.draw l.fname id f
     ) l.cells

@@ -1,6 +1,6 @@
 SOURCES = extlib.ml lang.ml parser.mly lexer.mll satex.ml
 RESULT = satex
-PACKS = graphics unix
+PACKS = unix
 ANNOTATE = true
 
 all: dnc
