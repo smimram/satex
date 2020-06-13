@@ -3,20 +3,24 @@
 
 \RequirePackage{tikz}
 
+% Commands for figures
+
 \newcounter{satexfig}
 \newwrite\satexout
 \immediate\openout\satexout=\jobname.satex
 
 \AtBeginDocument{\IfFileExists{\jobname.satix}{\input{\jobname.satix}}{}}
 
-\newcommand{\deftwocell}[2][]{\immediate\write\satexout{\string\deftwocell[#1]{#2}}}
-
-% Numbers in commands: http://www.tex.ac.uk/FAQ-linmacnames.html
 \newcommand{\defsatexfig}[2]{\expandafter\newcommand\csname satexfigure#1\endcsname{#2}}
 \newcommand{\usesatexfig}[1]{\csname satexfigure#1\endcsname}
 
+\newcommand{\deftwocell}[2][]{\immediate\write\satexout{\string\deftwocell[#1]{#2}}}
 \newcommand{\twocell}[1]{%
   \IfFileExists{\jobname.satix}{\usesatexfig{\thesatexfig}}{}
   \immediate\write\satexout{\thesatexfig:\string\twocell{#1}}
   \stepcounter{satexfig}
 }
+
+% Tikz shortucts
+
+\tikzset{middlearrow/.style={decoration={markings,mark=at position 0.5 with {\arrow{#1}}}, postaction={decorate}}}

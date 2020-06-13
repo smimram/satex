@@ -23,7 +23,7 @@ indecls:
   | { decls_empty () }
 
 gen:
-  | GEN opts LACC STRING COLON INT TO INT RACC { Generator.create ~options:$2 $4 $6 $8 }
+  | GEN opts LACC STRING COLON INT TO INT RACC { Generator.create $4 $6 $8 $2 }
 
 opts:
   | { [] }
@@ -52,4 +52,4 @@ hexpr:
 base:
   | STRING { GName $1 }
   | INT { Id $1 }
-  | LPAR INT TO INT RPAR opts { Gen (G.create ~options:$6 (Printf.sprintf "(%d->%d)" $2 $4) $2 $4) }
+  | LPAR INT TO INT RPAR opts { Gen (G.create (Printf.sprintf "(%d->%d)" $2 $4) $2 $4 $6) }

@@ -31,6 +31,7 @@ rule token = parse
   | ']' { RBRA }
   | '*'(['0'-'9']* as n) { COMP (if n = "" then None else Some (int_of_string n)) }
   | (['a'-'z''A'-'Z']+ as str) { STRING str }
+  | ('"'['a'-'z''A'-'Z']*'"' as str) { STRING str }
   | (['0'-'9']+ as n) { INT (int_of_string n) }
   | space+ { token lexbuf }
   | newline { on_newline lexbuf; token lexbuf }

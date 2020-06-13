@@ -9,7 +9,8 @@ module Generator = struct
     {
       options : (string * string) list; (** list of optional parameters and their value (a=b) *)
       name : name;
-      shape : [`Circle | `Wire | `Cap]; (** shape of the node *)
+      label : string;
+      shape : [`Circle | `None | `Cap]; (** shape of the node *)
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
       mutable y : float; (** vertical position *)
@@ -21,34 +22,44 @@ module Generator = struct
     {
       options = g.options;
       name = g.name;
+      label = g.label;
       shape = g.shape;
       source = Array.copy g.source;
       target = Array.copy g.target;
       y = g.y;
     }
 
-  let create ?(options=[]) name source target =
+  let create name source target options =
     let shape = ref `Circle in
-    (* Normalize options *)
-    let optn =
-      [
-        ("cap",""),("shape","cap");
-        ("cup",""),("shape","cup")
-      ]
+    let label = ref "" in
+    (* Set default options *)
+    let options = ["labelwidth", ".5"; "labelheight", ".5"]@options in
+    let options =
+      (* 1->1 are rigid by default *)
+      if source = 1 && target = 1 then ["rigid","true"]@options
+      else options
     in
-    let options = List.map (fun o -> try List.assoc o optn with Not_found -> o) options in
+    (* Parse options *)
     List.iter
       (function
-        | "shape", "wire" -> assert (source = 1 && target = 1); shape := `Wire
+        | "shape", "none" ->
+          assert (source = 1 && target = 1); shape := `None
+        | "cap", ""
+        | "cup", ""
         | "shape", "cap"
-        | "shape", "cup" -> assert ((source = 2 && target = 0) || (source = 0 && target = 2)); shape := `Cap
+        | "shape", "cup" ->
+          assert ((source = 2 && target = 0) || (source = 0 && target = 2));
+          shape := `Cap
+        | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
+          label := String.sub l 1 (String.length l - 2)
         | l, v -> Printf.printf "Unknown option %s%s%s!\n%!" l (if v = "" then "" else "=") v
       ) options;
     (* TODO: parse options *)
     {
       options;
-      shape = !shape;
       name;
+      label = !label;
+      shape = !shape;
       source = Array.init source (fun _ -> 0.);
       target = Array.init target (fun _ -> 0.);
       y = 0.;
@@ -58,7 +69,13 @@ module Generator = struct
 
   let target g = Array.length g.target
 
-  let id () = create ~options:["shape","wire"] "1" 1 1
+  let id () = create "1" 1 1 ["shape","none";"rigid","true"]
+
+  let rigid g = List.mem_assoc "rigid" g.options
+
+  let get g o = List.assoc o g.options
+
+  let get_float g o = float_of_string (get g o)
 end
 
 module G = Generator
@@ -175,7 +192,7 @@ module Stack = struct
     (* Set the vertical position *)
     List.iteri
       (fun i f ->
-         List.iter (fun g -> g.G.y <- float_of_int i) f
+         List.iter (fun g -> g.G.y <- float_of_int i +. 0.5) f
       ) ans;
     ans
 
@@ -200,13 +217,12 @@ module Stack = struct
         last_source := g.G.source.(i+1)
       done;
       (* Propagate in morphism *)
-      (
-        match g.G.shape with
-        | `Wire ->
+      if G.rigid g then
+        (
+          assert (G.source g = 1 && G.target g = 1);
           g.G.target.(0) <- max g.G.source.(0) g.G.target.(0);
           g.G.source.(0) <- g.G.target.(0)
-        | _ -> ()
-      );
+        );
       (* Space up the targets *)
       if Array.length g.G.target > 0 then
         (
@@ -254,6 +270,8 @@ module Stack = struct
     val close : t -> unit
     val line : t -> float * float -> float * float -> unit
     val arc : t -> float * float -> float * float -> float * float -> unit
+    val disk : t -> float * float -> float * float -> unit
+    val text : t -> float * float -> string -> unit
   end
 
   module DrawGraphics = struct
@@ -277,6 +295,10 @@ module Stack = struct
       let a = int_of_float a in
       let b = int_of_float b in
       Graphics.draw_arc (xscale x) (yscale y) (scale rx) (scale ry) a b
+
+    let disk () = failwith "TODO"
+
+    let text () = failwith "TODO"
   end
 
   module DrawTikz = struct
@@ -300,6 +322,12 @@ module Stack = struct
       (* The starting point is supposed to be horizontal for now... *)
       assert (int_of_float a mod 180 = 0);
       output_string oc (Printf.sprintf "\\draw ([shift=(0:%f)]%f,%f) arc (%f:%f:%f and %f); " rx x y a b rx ry)
+
+    let disk oc (x,y) (rx,ry) =
+      output_string oc (Printf.sprintf "\\filldraw[fill=white] (%f,%f) ellipse (%f and %f); " x y rx ry)
+
+    let text oc (x,y) s =
+      output_string oc (Printf.sprintf "\\draw (%f,%f) node {$%s$}; " x y s)
   end
 
   let draw device id f =
@@ -311,25 +339,46 @@ module Stack = struct
     let module Draw = (val m : Draw) in
     let d = Draw.create fname id in
     let draw_generator g =
+      (* x-coordinate of the center *)
+      let x =
+        let x1 = if G.source g > 0 then Some (Float.mean g.G.source.(0) g.G.source.(G.source g - 1)) else None in
+        let x2 = if G.target g > 0 then Some (Float.mean g.G.target.(0) g.G.target.(G.target g - 1)) else None in
+        match x1, x2 with
+        | Some x1, Some x2 -> Float.mean x1 x2
+        | Some x1, None -> x1
+        | None, Some x2 -> x2
+        | None, None -> assert false
+      in
+      (* y-coordinate of the center *)
       let y = g.G.y in
-      if g.G.shape = `Wire then
-        Draw.line d (g.G.source.(0),y) (g.G.target.(0),g.G.y+.1.)
-      else if g.G.shape = `Cap then
-        if Array.length g.G.source = 2 then
-          let l = g.G.source.(1) -. g.G.source.(0) in
-          let x = Float.mean g.G.source.(0) g.G.source.(1) in
-          Draw.arc d (x,y) (l /. 2., 0.5) (0.,-180.)
+      (* Draw wires. *)
+      (
+        if g.G.shape = `Cap then
+          if Array.length g.G.source = 2 then
+            let l = g.G.source.(1) -. g.G.source.(0) in
+            Draw.arc d (x,y-.0.5) (l /. 2., 0.5) (0.,-180.)
+          else
+            let l = g.G.target.(1) -. g.G.target.(0) in
+            Draw.arc d (x,y+.0.5) (l /. 2., 0.5) (0.,180.)
         else
-          let l = g.G.target.(1) -. g.G.target.(0) in
-          let x = Float.mean g.G.target.(0) g.G.target.(1) in
-          Draw.arc d (x,y+.1.) (l /. 2., 0.5) (0.,180.)
-      else
-        let c =
-          if G.source g > 0 then Float.mean g.G.source.(0) (Array.last g.G.source)
-          else (g.G.target.(0) +. Array.last g.G.target) /. 2.
-        in
-        Array.iter (fun x -> Draw.line d (x,y) (c,y+.0.5)) g.G.source;
-        Array.iter (fun x -> Draw.line d (c,y+.0.5) (x,y+.1.)) g.G.target;
+          let c = x in
+          Array.iter (fun x -> Draw.line d (x,y-.0.5) (c,y)) g.G.source;
+          Array.iter (fun x -> Draw.line d (c,y) (x,y+.0.5)) g.G.target;
+      );
+      (* Draw shape. *)
+      (
+        match g.G.shape with
+        | `Circle ->
+          let rx = G.get_float g "labelwidth" /. 2. in
+          let ry = G.get_float g "labelheight" /. 2. in
+          Draw.disk d (x,y) (rx,ry)
+        | _ -> ()
+      );
+      (* Draw label. *)
+      (
+        if g.G.label <> "" then
+          Draw.text d (x,y) g.G.label
+      );
     in
     List.iter (List.iter draw_generator) f;
     Draw.close d
