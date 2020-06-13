@@ -41,7 +41,7 @@ cell:
   | CELL LACC expr RACC { $1,$3 }
 
 expr:
-  | STRING { Gen $1 }
+  | STRING { GName $1 }
   | INT { Obj $1 }
   | expr COMP expr { Comp ($2,$1,$3) }
   | LPAR expr RPAR { $2 }

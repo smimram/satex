@@ -65,7 +65,7 @@ module G = Generator
 
 (** Expression for a cell. *)
 type expr =
-  | Gen of G.name (** a generator *)
+  | GName of G.name (** a generator *)
   | Obj of int (** an object *)
   | Comp of int option * expr * expr (** composite in maximal codimension - 1 *)
 
@@ -88,7 +88,7 @@ let add_gen l g =
 
 (** Dimension of a cell. *)
 let rec dim = function
-  | Gen _ -> 2
+  | GName _ -> 2
   | Obj _ -> 1
   | Comp (_, e1, e2) -> max (dim e1) (dim e2)
 
@@ -97,7 +97,7 @@ exception Typing of string
 
 (** Type of a cell. *)
 let rec typ gens = function
-  | Gen s ->
+  | GName s ->
     (
       try
         let g = List.assoc s gens in
@@ -152,7 +152,7 @@ module Stack = struct
   let rec create env e =
     let id n = List.init n (fun _ -> G.id ()) in
     match e with
-    | Gen g -> [[Generator.copy (List.assoc g env)]]
+    | GName g -> [[Generator.copy (List.assoc g env)]]
     | Obj n -> [id n]
     | Comp (_, f, Obj n) -> List.map (fun f -> f@(id n)) (create env f)
     | Comp (_, Obj n, f) -> List.map (fun f -> (id n)@f) (create env f)
