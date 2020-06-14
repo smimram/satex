@@ -15,11 +15,10 @@
     end
 %}
 
-%token LACC RACC LPAR RPAR LBRA RBRA EQ COLON COMMA EOF
-%token GEN TO
+%token LACC RACC LPAR RPAR LBRA RBRA EQ COLON COMMA COMP EOF
+%token GEN TO LABEL
 %token <int> CELL
 %token <int> INT
-%token <int option> COMP
 %token <string> STRING
 
 %start decls
@@ -63,6 +62,6 @@ hexpr:
   | hexpr COMP hexpr { Comp (0,$1,$3) }
 
 base:
-  | STRING { Gen (Generator.find $1) }
+  | STRING opts { Gen (Generator.add_options (Generator.find $1) $2) }
   | INT { Id $1 }
   | LPAR INT TO INT RPAR opts { Gen (Generator.create (Printf.sprintf "(%d->%d)" $2 $4) $2 $4 $6) }

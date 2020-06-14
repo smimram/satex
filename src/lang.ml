@@ -10,7 +10,13 @@ module Generator = struct
       options : (string * string) list; (** list of optional parameters and their value (a=b) *)
       name : name;
       label : string;
-      shape : [`Circle | `None | `Cap]; (** shape of the node *)
+      shape : (** shape of the node *)
+        [
+          | `Circle (** traditional circled node *)
+          | `None (** no node decoration *)
+          | `Cap (** special: a cap / cup *)
+          | `Label (** a label only *)
+        ];
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
       mutable y : float; (** vertical position *)
@@ -24,11 +30,14 @@ module Generator = struct
       target = Array.copy g.target;
     }
 
+  let add_options g o =
+    { g with options = o@g.options }
+
   let create name source target options =
     let shape = ref `Circle in
     let label = ref "" in
     (* Set default options. *)
-    let options = options@["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"] in
+    let options = options@["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"; "position", "0.5"] in
     let options =
       (* 1->1 are rigid by default *)
       if source = 1 && target = 1 then options@["rigid","true"]
@@ -39,6 +48,8 @@ module Generator = struct
       List.map
         (function
           | "arrow","" -> "arrow","right"
+          | "up","" -> "position","0.2"
+          | "down","" -> "position","0.8"
           | lv -> lv
         ) options
     in
@@ -55,9 +66,7 @@ module Generator = struct
           shape := `Cap
         | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
           label := String.sub l 1 (String.length l - 2)
-        | l, v ->
-          (* Printf.printf "Unknown option %s%s%s!\n%!" l (if v = "" then "" else "=") v *)
-          ()
+        | l, v -> ()
       ) options;
     {
       options;
