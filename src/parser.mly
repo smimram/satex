@@ -26,7 +26,7 @@
              | _ -> false
             ) o
         in
-        let o = ["shape", "label"] in
+        let o = o@["shape", "label"] in
         anonymous n n o
     end
 %}

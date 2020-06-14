@@ -50,6 +50,11 @@ module Generator = struct
           | "arrow","" -> "arrow","right"
           | "up","" -> "position","0.2"
           | "down","" -> "position","0.8"
+          | "cap", ""
+          | "cup", ""
+          | "shape", "cup" -> "shape", "cap"
+          | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
+            "label", String.sub l 1 (String.length l - 2)
           | lv -> lv
         ) options
     in
@@ -58,16 +63,16 @@ module Generator = struct
       (function
         | "shape", "none" ->
           assert (source = 1 && target = 1); shape := `None
-        | "cap", ""
-        | "cup", ""
-        | "shape", "cap"
-        | "shape", "cup" ->
+        | "shape", "cap" ->
           assert ((source = 2 && target = 0) || (source = 0 && target = 2));
           shape := `Cap
-        | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
-          label := String.sub l 1 (String.length l - 2)
+        | "shape", "label" ->
+          shape := `Label
+        | "label", l ->
+          label := l
         | l, v -> ()
       ) options;
+    (* Printf.printf "options for %s: %s\n%!" name (String.concat ", " (List.map (fun (l,v) -> l^"="^v) options)); *)
     {
       options;
       name;
@@ -81,6 +86,10 @@ module Generator = struct
   let source g = Array.length g.source
 
   let target g = Array.length g.target
+
+  let shape g = g.shape
+
+  let label g = g.label
 
   let id () = create "1" 1 1 ["shape","none";"rigid","true"]
 
@@ -158,24 +167,24 @@ module Stack = struct
     let slice f = String.concat ", " (List.map generator f) in
     String.concat "\n" (List.map slice f)
 
-  let rec create e =
-    let id n = List.init n (fun _ -> G.id ()) in
-    match e with
-    | Gen g -> [[Generator.copy g]]
-    | Id n -> [id n]
-    | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (create f)
-    | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (create f)
-    | Comp (0,f,g) ->
-      let f = create f in
-      let g = create g in
-      assert (List.length f = 1);
-      assert (List.length g = 1);
-      [(List.hd f)@(List.hd g)]
-    | Comp (1,f,g) -> (create f)@(create g)
-    | _ -> assert false
-
   let create e : t =
-    let ans = create e in
+    let rec aux e =
+      let id n = List.init n (fun _ -> G.id ()) in
+      match e with
+      | Gen g -> [[Generator.copy g]]
+      | Id n -> [id n]
+      | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (aux f)
+      | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (aux f)
+      | Comp (0,f,g) ->
+        let f = aux f in
+        let g = aux g in
+        assert (List.length f = 1);
+        assert (List.length g = 1);
+        [(List.hd f)@(List.hd g)]
+      | Comp (1,f,g) -> (aux f)@(aux g)
+      | _ -> assert false
+    in
+    let ans = aux e in
     (* Set the vertical position *)
     List.iteri
       (fun i f ->
@@ -193,8 +202,8 @@ module Stack = struct
     let last_source = ref (-1.) in
     let last_target = ref (-1.) in
     let generator g =
-      (* Space the sources *)
-      if Array.length g.G.source > 0 then
+      (* Space the sources. *)
+      if G.source g > 0 then
         (
           g.G.source.(0) <- max (!last_source +. 1.) g.G.source.(0);
           last_source := g.G.source.(0)
@@ -203,15 +212,23 @@ module Stack = struct
         g.G.source.(i+1) <- max (g.G.source.(i) +. 1.) g.G.source.(i+1);
         last_source := g.G.source.(i+1)
       done;
-      (* Propagate in morphism *)
+      (* Propagate down and up. *)
       if G.rigid g then
         (
           assert (G.source g = 1 && G.target g = 1);
           g.G.target.(0) <- max g.G.source.(0) g.G.target.(0);
           g.G.source.(0) <- g.G.target.(0)
         );
-      (* Space up the targets *)
-      if Array.length g.G.target > 0 then
+      if G.shape g = `Label then
+        (
+          assert (G.source g = G.target g);
+          for i = 0 to G.source g - 1 do
+            g.G.target.(i) <- max g.G.source.(i) g.G.target.(i);
+            g.G.source.(i) <- g.G.target.(i)
+          done
+        );
+      (* Space up the targets. *)
+      if G.target g > 0 then
         (
           g.G.target.(0) <- max (!last_target +. 1.) g.G.target.(0);
           last_target := g.G.target.(0)
@@ -253,15 +270,15 @@ module Stack = struct
 
     let create fname id =
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\\begin{tikzpicture}[yscale=-1] " id);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1]\n" id);
       oc
 
     let close oc =
-      output_string oc "\\end{tikzpicture}}\n";
+      output_string oc "  \\end{tikzpicture}\n}\n";
       close_out oc
 
     let line oc (x1,y1) (x2,y2) =
-      output_string oc (Printf.sprintf "\\draw (%f,%f) -- (%f,%f); " x1 y1 x2 y2)
+      output_string oc (Printf.sprintf "    \\draw (%f,%f) -- (%f,%f);\n" x1 y1 x2 y2)
 
     let arc oc ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = -.a in
@@ -276,13 +293,13 @@ module Stack = struct
         ) options;
       let o = String.concat "," !o in
       let o = if o = "" then "" else Printf.sprintf "[%s]" o in
-      output_string oc (Printf.sprintf "\\draw%s ([shift=(%f:%f)]%f,%f) arc (%f:%f:%f and %f); " o a rx x y a b rx ry)
+      output_string oc (Printf.sprintf "    \\draw%s ([shift=(%f:%f)]%f,%f) arc (%f:%f:%f and %f);\n" o a rx x y a b rx ry)
 
     let disk oc (x,y) (rx,ry) =
-      output_string oc (Printf.sprintf "\\filldraw[fill=white] (%f,%f) ellipse (%f and %f); " x y rx ry)
+      output_string oc (Printf.sprintf "    \\filldraw[fill=white] (%f,%f) ellipse (%f and %f);\n" x y rx ry)
 
     let text oc (x,y) s =
-      output_string oc (Printf.sprintf "\\draw (%f,%f) node {$%s$}; " x y s)
+      output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$%s$};\n" x y s)
   end
 
   let draw fname id f =
@@ -302,19 +319,20 @@ module Stack = struct
       let y = g.G.y in
       (* Draw wires. *)
       (
-        if g.G.shape = `Cap then
+        if G.shape g = `Cap then
           let options =
             match G.get g "arrow" with
             | "right" -> [`Middle_arrow `Right]
-            | "left" -> [`Middle_arrow `Left]
+            | "left"  -> [`Middle_arrow `Left]
             | _ -> []
           in
-          if Array.length g.G.source = 2 then
+          if G.source g = 2 then
             let l = g.G.source.(1) -. g.G.source.(0) in
             Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.)
           else
             let l = g.G.target.(1) -. g.G.target.(0) in
             Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.)
+        else if G.shape g = `Label then ()
         else
           let c = x in
           Array.iter (fun x -> Draw.line d (x,y-.0.5) (c,y)) g.G.source;
@@ -322,7 +340,7 @@ module Stack = struct
       );
       (* Draw shape. *)
       (
-        match g.G.shape with
+        match G.shape g with
         | `Circle ->
           let rx = G.label_width g /. 2. in
           let ry = G.label_height g /. 2. in
@@ -331,8 +349,15 @@ module Stack = struct
       );
       (* Draw label. *)
       (
-        if g.G.label <> "" then
-          Draw.text d (x,y) g.G.label
+        if G.shape g = `Label then
+          let label = List.find_all (fun (l,_) -> l = "label") g.G.options |> List.map snd |> List.rev |> Array.of_list in
+          for i = 0 to G.source g - 1 do
+            let x = g.G.source.(i) in
+            let y = y -. 0.5 +. G.get_float g "position" in
+            Draw.text d (x,y) label.(i)
+          done
+        else if G.label g <> "" then
+          Draw.text d (x,y) (G.label g)
       );
     in
     List.iter (List.iter draw_generator) f;
