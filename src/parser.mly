@@ -1,4 +1,5 @@
 %{
+    open Extlib
     open Lang
 
     module Generator = struct
@@ -12,6 +13,21 @@
       let find n =
         try List.assoc n !env
         with Not_found -> failwith ("Could not find generator "^n)
+
+      let anonymous s t o =
+        create (Printf.sprintf "(%d->%d)" s t) s t o
+
+      let label o =
+        let n =
+          List.count
+            (function
+             | "label", _ -> true
+             | l, "" when String.length l >= 2 && l.[0] = '"' && String.last l = '"' -> true
+             | _ -> false
+            ) o
+        in
+        let o = ["shape", "label"] in
+        anonymous n n o
     end
 %}
 
@@ -63,5 +79,6 @@ hexpr:
 
 base:
   | STRING opts { Gen (Generator.add_options (Generator.find $1) $2) }
+  | LABEL opts { Gen (Generator.label $2) }
   | INT { Id $1 }
-  | LPAR INT TO INT RPAR opts { Gen (Generator.create (Printf.sprintf "(%d->%d)" $2 $4) $2 $4 $6) }
+  | LPAR INT TO INT RPAR opts { Gen (Generator.anonymous $2 $4 $6) }
