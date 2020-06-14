@@ -10,7 +10,8 @@
         env := (n, create n s t o) :: !env
 
       let find n =
-        List.assoc n !env
+        try List.assoc n !env
+        with Not_found -> failwith ("Could not find generator "^n)
     end
 %}
 

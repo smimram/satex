@@ -2,4 +2,4 @@
 \deftwocell[cup,arrow]{eps : 2 -> 0}
 0:\twocell{(eta * (1->1)["f"]) * (1 * eps)}
 1:\twocell{(eta * eta) * (1 * eps * 1) * ((2->0)[cup])}
-2:\twocell{(1 * 1 * 1 * 1)}
+2:\twocell{(1 * 1 * 1 * 1)*4}
