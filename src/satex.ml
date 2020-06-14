@@ -35,9 +35,9 @@ let parse f =
 let () =
   let fname = ref "" in
   Arg.parse (Arg.align []) (fun s -> fname := s) usage;
-  Lang.satix_fname := Filename.chop_extension !fname ^ ".satix";
+  let satix_fname = Filename.chop_extension !fname ^ ".satix" in
   let decls = parse !fname in
-  Lang.draw decls;
+  Lang.draw satix_fname decls;
   
   (* let id, e = List.hd decls.cells in *)
   (* let f = Lang.Stack.create decls.gens e in *)

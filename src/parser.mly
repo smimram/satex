@@ -1,5 +1,17 @@
 %{
     open Lang
+
+    module Generator = struct
+      include Generator
+
+      let env = ref []
+
+      let add n s t o =
+        env := (n, create n s t o) :: !env
+
+      let find n =
+        List.assoc n !env
+    end
 %}
 
 %token LACC RACC LPAR RPAR LBRA RBRA EQ COLON COMMA EOF
@@ -18,12 +30,12 @@ decls:
   | indecls EOF { $1 }
 
 indecls:
-  | indecls gen { add_gen $1 $2 }
-  | indecls cell { add_cell $1 $2 }
-  | { decls_empty () }
+  | gen indecls { $2 }
+  | cell indecls { Printf.printf "add cell %d: %s\n%!" (fst $1) (string_of_expr (snd $1)); $1::$2 }
+  | { [] }
 
 gen:
-  | GEN opts LACC STRING COLON INT TO INT RACC { Generator.create $4 $6 $8 $2 }
+  | GEN opts LACC STRING COLON INT TO INT RACC { Printf.printf "add generator %s\n%!" $4; Generator.add $4 $6 $8 $2 }
 
 opts:
   | { [] }
@@ -50,6 +62,6 @@ hexpr:
   | hexpr COMP hexpr { Comp (0,$1,$3) }
 
 base:
-  | STRING { GName $1 }
+  | STRING { Gen (Generator.find $1) }
   | INT { Id $1 }
-  | LPAR INT TO INT RPAR opts { Gen (G.create (Printf.sprintf "(%d->%d)" $2 $4) $2 $4 $6) }
+  | LPAR INT TO INT RPAR opts { Gen (Generator.create (Printf.sprintf "(%d->%d)" $2 $4) $2 $4 $6) }

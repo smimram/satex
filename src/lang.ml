@@ -19,14 +19,9 @@ module Generator = struct
   let name g = g.name
 
   let copy g =
-    {
-      options = g.options;
-      name = g.name;
-      label = g.label;
-      shape = g.shape;
+    { g with 
       source = Array.copy g.source;
       target = Array.copy g.target;
-      y = g.y;
     }
 
   let create name source target options =
@@ -95,13 +90,11 @@ module G = Generator
 
 (** Expression for a cell. *)
 type expr =
-  | GName of G.name (** a generator name *)
   | Gen of G.t (** a generator *)
   | Id of int (** an object *)
   | Comp of int * expr * expr (** composite in given dimension *)
 
 let rec string_of_expr ?(p=false) = function
-  | GName g -> g
   | Gen g -> Printf.sprintf "(%d->%d)" (G.source g) (G.target g)
   | Id n -> string_of_int n
   | Comp (n, f, g) ->
@@ -112,36 +105,15 @@ let rec string_of_expr ?(p=false) = function
       (string_of_expr ~p:true g)
       (if p then ")" else "")
 
-let satix_fname = ref "out.satix"
-
-(** Declarations. *)
-type t =
-  {
-    fname : string; (** file to output *)
-    gens : (G.name * G.t) list; (** generators *)
-    cells : (int * expr) list (** cells (which are numbered in order to be able to identify them in LaTeX) *)
-  }
-
-(** Empty declaration list. *)
-let decls_empty () = { fname = !satix_fname; gens = []; cells = [] }
-
-(** Add a generator. *)
-let add_gen l g =
-  { l with gens = l.gens@[G.name g, g] }
+(** Cell declarations (numbered in order to be able to identify them in
+   LaTeX). *)
+type t = (int * expr) list
 
 (** Typing error. *)
 exception Typing of string
 
 (** Type of a cell. *)
 let rec typ gens = function
-  | GName s ->
-    (
-      try
-        let g = List.assoc s gens in
-        G.source g, G.target g
-      with
-      | Not_found -> raise (Typing ("unknown cell " ^ s))
-    )
   | Gen g -> G.source g, G.target g
   | Id n -> n, n
   | Comp (n, e1, e2) ->
@@ -160,12 +132,6 @@ let rec typ gens = function
       (* n-dimensional diagrams with n>2 are not (yet) supported *)
       assert false
 
-(** Add a cell to declarations. *)
-let add_cell l (id,cell) =
-  Printf.printf "add cell %d: %s\n%!" id (string_of_expr cell);
-  ignore (typ l.gens cell);
-  { l with cells = l.cells@[id,cell] }
-
 (** Normalized form for expressions. *)
 module Stack = struct
   type slice = G.t list
@@ -183,25 +149,24 @@ module Stack = struct
     let slice f = String.concat ", " (List.map generator f) in
     String.concat "\n" (List.map slice f)
 
-  let rec create env e =
+  let rec create e =
     let id n = List.init n (fun _ -> G.id ()) in
     match e with
-    | GName g -> [[Generator.copy (List.assoc g env)]]
     | Gen g -> [[Generator.copy g]]
     | Id n -> [id n]
-    | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (create env f)
-    | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (create env f)
+    | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (create f)
+    | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (create f)
     | Comp (0,f,g) ->
-      let f = create env f in
-      let g = create env g in
+      let f = create f in
+      let g = create g in
       assert (List.length f = 1);
       assert (List.length g = 1);
       [(List.hd f)@(List.hd g)]
-    | Comp (1,f,g) -> (create env f)@(create env g)
+    | Comp (1,f,g) -> (create f)@(create g)
     | _ -> assert false
 
-  let create env e : t =
-    let ans = create env e in
+  let create e : t =
+    let ans = create e in
     (* Set the vertical position *)
     List.iteri
       (fun i f ->
@@ -365,11 +330,11 @@ module Stack = struct
     Draw.close d
 end
 
-let draw l =
-  (try Sys.remove l.fname with _ -> ());
+let draw fname cells =
+  (try Sys.remove fname with _ -> ());
   List.iter
     (fun (id,e) ->
-       let f = Stack.create l.gens e in
+       let f = Stack.create e in
        Stack.typeset f;
-       Stack.draw l.fname id f
-    ) l.cells
+       Stack.draw fname id f
+    ) cells
