@@ -1,0 +1,43 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{satex}
+
+\newcommand{\ol}{\overline}
+
+\title{Remarks on 2-groups}
+\author{Samuel Mimram}
+
+\deftwocell[cap,arrow=right]{I : 2 -> 0}
+\deftwocell[cup,arrow=left]{J : 2 -> 0}
+\deftwocell[cap,arrow=left]{I- : 0 -> 2}
+\deftwocell[cap,arrow=right]{J- : 0 -> 2}
+\deftwocell["f"]{f : 1 -> 1}
+\deftwocell["f^{-1}"]{f- : 1 -> 1}
+\deftwocell["g"]{g : 1 -> 1}
+
+\begin{document}
+\maketitle
+
+\noindent
+Given $f:x\to y$, we define $\ol f:\ol x\to\ol y$ by
+\[
+  \twocell{label[d,"\ol x"]*(1*J-)*(1*f-*1)*(I*1)*label[u,"\ol y"]}
+\]
+we define $N:\ol{\ol x}\to x$ by
+\[
+  \twocell{label[d,"\ol{\ol x}"]*(1*I-)*(I*1)*label[u,"x"]}
+\]
+% we define $E:\ol 1\to 1$ by
+% \[
+  % \twocell{}
+  % \]
+we define $T:\ol x(xy)\to y$ by
+\[
+  \twocell{label[d,"\ol x","x","y"]*(J*1)*label[u,"y"]}
+\]
+we define $U:x(\ol xy)$ by
+\[
+  \twocell{label[d,"x","\ol x","y"]*(I*1)*label[u,"y"]}
+\]
+\end{document}

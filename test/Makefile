@@ -10,6 +10,9 @@ all: 2groups.pdf
 clean:
 	rm -f *.satex *.satix
 
+ci:
+	$(MAKE) -C .. $@
+
 %.satex: %.tex
 	pdflatex $<
 
