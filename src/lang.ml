@@ -71,8 +71,8 @@ module Generator = struct
     {
       options;
       shape = !shape;
-      source = Array.init source (fun _ -> 0.);
-      target = Array.init target (fun _ -> 0.);
+      source = Array.init source (fun _ -> -1.);
+      target = Array.init target (fun _ -> -1.);
       y = 0.;
     }
 
@@ -218,6 +218,17 @@ module Stack = struct
         last_source := G.get_source g (i+1)
       done;
       if G.shape g = `Space then last_source := !last_source +. G.get_float g "width";
+      (* Space up the targets. *)
+      if G.target g > 0 then
+        (
+          G.set_target g 0 (!last_target +. 1.);
+          last_target := G.get_target g 0
+        );
+      for i = 0 to Array.length g.G.target - 2 do
+        G.set_target g (i+1) (G.get_target g i +. 1.);
+        last_target := G.get_target g (i+1)
+      done;
+      if G.shape g = `Space then last_target := !last_target +. G.get_float g "width";
       (* Propagate down and up. *)
       if G.shape g = `Label then
         (
@@ -237,18 +248,7 @@ module Stack = struct
         (
           G.set_source g 0 ((G.get_target g 0 +. G.get_target g (G.target g-1)) /. 2.);
           G.set_target g (G.target g-1) (2. *. G.get_source g 0 -. G.get_target g 0)
-        );
-      (* Space up the targets. *)
-      if G.target g > 0 then
-        (
-          G.set_target g 0 (!last_target +. 1.);
-          last_target := G.get_target g 0
-        );
-      for i = 0 to Array.length g.G.target - 2 do
-        G.set_target g (i+1) (G.get_target g i +. 1.);
-        last_target := G.get_target g (i+1)
-      done;
-      if G.shape g = `Space then last_target := !last_target +. G.get_float g "width";
+        )
     in
     let slice f =
       last_source := (-1.);
