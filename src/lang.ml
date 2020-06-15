@@ -28,9 +28,6 @@ module Generator = struct
       target = Array.copy g.target;
     }
 
-  let add_options g o =
-    { g with options = o@g.options }
-
   let create source target options =
     let shape = ref `Circle in
     let label = ref "" in

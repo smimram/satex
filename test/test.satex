@@ -2,4 +2,4 @@
 \deftwocell[cup,arrow]{eps : 2 -> 0}
 \deftwocell[triangle]{mu : 2 -> 1}
 \deftwocell[triangle]{delta : 1 -> 2}
-0:\twocell{(1 * delta) * (mu * 1) * (1 * space1 * delta)}
+0:\twocell{(1 * delta) * (mu * 1) * (1 * space1 * delta[name=DELTA,"d"])}

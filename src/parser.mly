@@ -5,10 +5,14 @@
     module Generator = struct
       include Generator
 
+      let string_of_options o =
+        o |> List.map (fun (l,v) -> l^"="^v) |> String.concat ","
+
       let env = ref []
 
       let create name s t o =
         let o = o@["name", name] in
+        Printf.printf "create %s : %d -> %d [%s]\n%!" name s t (string_of_options o);
         create s t o
 
       let add name s t o =
@@ -17,6 +21,9 @@
       let find n =
         try List.assoc n !env
         with Not_found -> failwith ("Could not find generator "^n)
+
+      let add_options g o =
+        create (G.name g) (G.source g) (G.target g) (o@g.G.options)
 
       let anonymous s t o =
         create (Printf.sprintf "(%d->%d)" s t) s t o
