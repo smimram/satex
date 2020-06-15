@@ -11,3 +11,8 @@ generator for LaTeX. It takes as input a formula such as
 ![left Frobenius](doc/fig/frobl.svg)
 
 generated using TikZ.
+
+It is inspired from [Catex](https://webusers.imj-prg.fr/~yves.guiraud/) (see
+also the
+[documentation](https://webusers.imj-prg.fr/~yves.guiraud/catex/catex.pdf)) for
+which the sources where unfortunately not available.
