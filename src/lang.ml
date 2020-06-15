@@ -296,7 +296,7 @@ module Stack = struct
 
     let create fname id =
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1,every path/.style={join=round,cap=round}]\n" id);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[baseline=(current bounding box.center),yscale=-1,every path/.style={join=round,cap=round}]\n" id);
       oc
 
     let close oc =

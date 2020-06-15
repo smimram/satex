@@ -1,3 +1,5 @@
+PREFIX=/usr
+
 all:
 	$(MAKE) -C src
 
