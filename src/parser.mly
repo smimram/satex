@@ -7,8 +7,12 @@
 
       let env = ref []
 
-      let add n s t o =
-        env := (n, create n s t o) :: !env
+      let create name s t o =
+        let o = o@["name", name] in
+        create s t o
+
+      let add name s t o =
+        env := (name, create name s t o) :: !env
 
       let find n =
         try List.assoc n !env
@@ -28,6 +32,10 @@
         in
         let o = o@["shape", "label"] in
         anonymous n n o
+
+      let space n o =
+        let o = o@["width", string_of_float n; "shape", "space"] in
+        create ("shape"^string_of_float n) 0 0 o
     end
 %}
 
@@ -36,6 +44,7 @@
 %token <int> CELL
 %token <int> INT
 %token <string> STRING
+%token <float> SPACE
 
 %start decls
 %type <Lang.t> decls
@@ -81,4 +90,5 @@ base:
   | STRING opts { Gen (Generator.add_options (Generator.find $1) $2) }
   | LABEL opts { Gen (Generator.label $2) }
   | INT { Id $1 }
+  | SPACE opts { Gen (Generator.space $1 $2) }
   | LPAR INT TO INT RPAR opts { Gen (Generator.anonymous $2 $4 $6) }

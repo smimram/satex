@@ -8,22 +8,19 @@ module Generator = struct
   type t =
     {
       options : (string * string) list; (** list of optional parameters and their value (a=b) *)
-      name : name;
-      label : string;
       shape : (** shape of the node *)
         [
           | `Circle (** traditional circled node *)
           | `Triangle
           | `None (** no node decoration *)
           | `Cap (** special: a cap / cup *)
-          | `Label (** a label only *)
+          | `Label (** labels only *)
+          | `Space (** a space *)
         ];
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
       mutable y : float; (** vertical position *)
     }
-
-  let name g = g.name
 
   let copy g =
     { g with 
@@ -34,7 +31,7 @@ module Generator = struct
   let add_options g o =
     { g with options = o@g.options }
 
-  let create name source target options =
+  let create source target options =
     let shape = ref `Circle in
     let label = ref "" in
     (* Set default options. *)
@@ -67,6 +64,8 @@ module Generator = struct
           shape := `Label
         | "shape", "triangle" ->
           shape := `Triangle
+        | "shape", "space" ->
+          shape := `Space
         | "label", l ->
           label := l
         | l, v -> ()
@@ -74,8 +73,6 @@ module Generator = struct
     (* Printf.printf "options for %s: %s\n%!" name (String.concat ", " (List.map (fun (l,v) -> l^"="^v) options)); *)
     {
       options;
-      name;
-      label = !label;
       shape = !shape;
       source = Array.init source (fun _ -> 0.);
       target = Array.init target (fun _ -> 0.);
@@ -88,13 +85,15 @@ module Generator = struct
 
   let shape g = g.shape
 
-  let label g = g.label
-
-  let id () = create "1" 1 1 ["shape","none"]
+  let id () = create 1 1 ["name", "1"; "shape","none"]
 
   let get g o = List.assoc o g.options
 
   let get_float g o = float_of_string (get g o)
+
+  let name g = get g "name"
+
+  let label g = try get g "label" with Not_found -> ""
 
   let label_width g = try get_float g "labelwidth" with Not_found -> 0.5
 
@@ -221,6 +220,7 @@ module Stack = struct
         G.set_source g (i+1) (G.get_source g i +. 1.);
         last_source := G.get_source g (i+1)
       done;
+      if G.shape g = `Space then last_source := !last_source +. G.get_float g "width";
       (* Propagate down and up. *)
       if G.shape g = `Label then
         (
@@ -250,7 +250,8 @@ module Stack = struct
       for i = 0 to Array.length g.G.target - 2 do
         G.set_target g (i+1) (G.get_target g i +. 1.);
         last_target := G.get_target g (i+1)
-      done
+      done;
+      if G.shape g = `Space then last_target := !last_target +. G.get_float g "width";
     in
     let slice f =
       last_source := (-1.);
@@ -275,7 +276,8 @@ module Stack = struct
         stack g
     in
     let f = ref f in
-    for i = 0 to 5 do
+    for i = 0 to 10 do
+      Printf.printf "round %d\n%!" i;
       stack !f
     done
 
@@ -284,7 +286,7 @@ module Stack = struct
 
     let create fname id =
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1,join=round]\n" id);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1,every path/.style={thick,join=round,cap=round}]\n" id);
       oc
 
     let close oc =
@@ -331,7 +333,7 @@ module Stack = struct
         | Some x1, Some x2 -> Float.mean x1 x2
         | Some x1, None -> x1
         | None, Some x2 -> x2
-        | None, None -> assert false
+        | None, None -> assert (G.shape g = `Space); 0.
       in
       (* y-coordinate of the center *)
       let y = g.G.y in

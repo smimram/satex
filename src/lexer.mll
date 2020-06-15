@@ -31,6 +31,7 @@ rule token = parse
   | ']' { RBRA }
   | '*' { COMP }
   | "label" { LABEL }
+  | "space"(['0'-'9''.']+ as n) { SPACE (float_of_string n) }
   | (['a'-'z''A'-'Z''-''+']+ as str) { STRING str }
   | ('"'[^'"']*'"' as str) { STRING str }
   | (['0'-'9']+ as n) { INT (int_of_string n) }
