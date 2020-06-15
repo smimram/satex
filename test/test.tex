@@ -10,6 +10,10 @@
 \deftwocell[cup,arrow]{eps : 2 -> 0}
 \deftwocell[triangle]{mu : 2 -> 1}
 \deftwocell[triangle]{delta : 1 -> 2}
+\deftwocell[cap,arrow=left]{I : 2 -> 0}
+\deftwocell[cup,arrow=right]{J : 2 -> 0}
+\deftwocell[cap,arrow=right]{I- : 0 -> 2}
+\deftwocell[cap,arrow=left]{J- : 0 -> 2}
 
 \begin{document}
 \maketitle
@@ -27,8 +31,13 @@ we are here:
   % \twocell{label[down,"x","y"] * 2 * mu * delta}
 % \]
 
+% \[
+  % \twocell{(1 * delta) * (mu * 1) * (1 * delta[name=DELTA,"d"])}
+% \]
+
+
 \[
-  \twocell{(1 * delta) * (mu * 1) * (1 * delta[name=DELTA,"d"])}
+  \twocell{(2 * J- * (1 -> 1)[name=X,"x"])}
 \]
 
 

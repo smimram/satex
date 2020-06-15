@@ -80,6 +80,7 @@ inopts:
 opt:
   | STRING { $1,"" }
   | STRING EQ STRING { $1, $3 }
+  | STRING EQ INT { $1, string_of_int $3 }
 
 cell:
   | CELL LACC expr RACC { $1,$3 }

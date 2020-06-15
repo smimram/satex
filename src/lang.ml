@@ -46,8 +46,16 @@ module Generator = struct
           | "triangle", "" -> "shape", "triangle"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
+          | "ls",x -> "labelsize",x
           | lv -> lv
         ) options
+    in
+    let options =
+      List.map
+        (function
+          | "labelsize",x -> ["labelwidth",x;"labelheight",x]
+          | lv -> [lv]
+        ) options |> List.flatten
     in
     (* Parse options. *)
     List.iter_right
@@ -136,12 +144,12 @@ type t = (int * expr) list
 exception Typing of string
 
 (** Type of a cell. *)
-let rec typ gens = function
+let rec typ = function
   | Gen g -> G.source g, G.target g
   | Id n -> n, n
   | Comp (n, e1, e2) ->
-    let s1, t1 = typ gens e1 in
-    let s2, t2 = typ gens e2 in
+    let s1, t1 = typ e1 in
+    let s2, t2 = typ e2 in
     match n with
     | 0 -> s1+s2, t1+t2
     | 1 ->
@@ -239,6 +247,11 @@ module Stack = struct
             G.set_source g i (G.get_target g i)
           done
         )
+      else if G.source g = 1 && G.target g = 1 then
+        (
+          G.set_target g 0 (G.get_source g 0);
+          G.set_source g 0 (G.get_target g 0)
+        )
       else if G.target g = 1 then
         (
           G.set_target g 0 ((G.get_source g 0 +. G.get_source g (G.source g -1)) /. 2.);
@@ -273,7 +286,7 @@ module Stack = struct
         stack g
     in
     let f = ref f in
-    for i = 0 to 10 do
+    for i = 0 to 7 do
       Printf.printf "round %d\n%!" i;
       stack !f
     done
@@ -283,7 +296,7 @@ module Stack = struct
 
     let create fname id =
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1,every path/.style={thick,join=round,cap=round}]\n" id);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1,every path/.style={join=round,cap=round}]\n" id);
       oc
 
     let close oc =

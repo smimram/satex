@@ -8,16 +8,26 @@
 \title{Remarks on 2-groups}
 \author{Samuel Mimram}
 
-\deftwocell[cap,arrow=right]{I : 2 -> 0}
-\deftwocell[cup,arrow=left]{J : 2 -> 0}
-\deftwocell[cap,arrow=left]{I- : 0 -> 2}
-\deftwocell[cap,arrow=right]{J- : 0 -> 2}
+\deftwocell[cap,arrow=left]{I : 2 -> 0}
+\deftwocell[cup,arrow=right]{J : 2 -> 0}
+\deftwocell[cap,arrow=right]{I- : 0 -> 2}
+\deftwocell[cap,arrow=left]{J- : 0 -> 2}
 \deftwocell["f"]{f : 1 -> 1}
-\deftwocell["f^{-1}"]{f- : 1 -> 1}
+\deftwocell["f^{-1}",ls=0.7]{f- : 1 -> 1}
 \deftwocell["g"]{g : 1 -> 1}
+\deftwocell[triangle]{mu : 2 -> 1}
 
 \begin{document}
 \maketitle
+
+We draw $I:\ol xx\to 1$ by
+\[
+  \twocell{label[d,"\ol x","x"] * I}
+\]
+and $J:x\ol x\to 1$ by
+\[
+  \twocell{label[d,"x","\ol x"] * J}
+\]
 
 \noindent
 Given $f:x\to y$, we define $\ol f:\ol x\to\ol y$ by
@@ -39,5 +49,9 @@ we define $T:\ol x(xy)\to y$ by
 we define $U:x(\ol xy)$ by
 \[
   \twocell{label[d,"x","\ol x","y"]*(I*1)*label[u,"y"]}
+\]
+we define $H:\ol{xy}\to\ol y\,\ol x$ by
+\[
+  \twocell{(1*J-)*(2*J-*1)*(1*mu*2)*(I*2)}
 \]
 \end{document}
