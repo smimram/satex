@@ -105,11 +105,11 @@ module Generator = struct
   let get_target g i = g.target.(i)
 
   let set_source g i x =
-    if x > g.source.(i) then Printf.printf "update source %d of %s to %f\n%!" i (name g) x;
+    if x > get_source g i then Printf.printf "update source %d of %s to %f\n%!" i (name g) x;
     g.source.(i) <- max g.source.(i) x
 
   let set_target g i x =
-    if x > g.source.(i) then Printf.printf "update target %d of %s to %f\n%!" i (name g) x;
+    if x > get_target g i then Printf.printf "update target %d of %s to %f\n%!" i (name g) x;
     g.target.(i) <- max g.target.(i) x
 end
 
@@ -373,7 +373,7 @@ module Stack = struct
           if G.target g = 1 then
             Draw.polygon d [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
           else
-            Draw.polygon d [G.get_target g 0,y-.0.25; G.get_target g (G.source g-1), y-.0.25; G.get_source g 0, y+.0.25]
+            Draw.polygon d [G.get_target g 0,y+.0.25; G.get_target g (G.target g-1), y+.0.25; G.get_source g 0, y-.0.25]
         | _ -> ()
       );
       (* Draw label. *)

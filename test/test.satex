@@ -1,4 +1,6 @@
 \deftwocell[cap,arrow]{eta : 0 -> 2}
 \deftwocell[cup,arrow]{eps : 2 -> 0}
 \deftwocell[triangle]{mu : 2 -> 1}
-0:\twocell{2 * mu}
+\deftwocell[triangle]{delta : 1 -> 2}
+0:\twocell{2 * mu * delta}
+1:\twocell{(1 * delta) * (mu * 1) * (1 * delta)}
