@@ -3,6 +3,7 @@ all:
 
 install:
 	$(MAKE) -C src $@
+	install statex.sty $(PREFIX)/share/texlive/texmf-dist/tex/latex/satex/
 
 test: all
 	$(MAKE) -C test
