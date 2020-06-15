@@ -45,6 +45,7 @@ let () =
   try
     let fname = ref "" in
     Arg.parse (Arg.align []) (fun s -> fname := s) usage;
+    if !fname = "" then Common.error "Please provide a .satex file name as input.";
     let satix_fname = Filename.chop_extension !fname ^ ".satix" in
     let decls = parse !fname in
     List.iter (fun (_,e) -> ignore (Lang.typ e)) decls;
