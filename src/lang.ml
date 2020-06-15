@@ -13,6 +13,7 @@ module Generator = struct
       shape : (** shape of the node *)
         [
           | `Circle (** traditional circled node *)
+          | `Triangle
           | `None (** no node decoration *)
           | `Cap (** special: a cap / cup *)
           | `Label (** a label only *)
@@ -38,11 +39,6 @@ module Generator = struct
     let label = ref "" in
     (* Set default options. *)
     let options = options@["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"; "position", "0.5"] in
-    let options =
-      (* 1->1 are rigid by default *)
-      if source = 1 && target = 1 then options@["rigid","true"]
-      else options
-    in
     (* Normalize options. *)
     let options =
       List.map
@@ -53,6 +49,7 @@ module Generator = struct
           | "cap", ""
           | "cup", ""
           | "shape", "cup" -> "shape", "cap"
+          | "triangle", "" -> "shape", "triangle"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
           | lv -> lv
@@ -68,6 +65,8 @@ module Generator = struct
           shape := `Cap
         | "shape", "label" ->
           shape := `Label
+        | "shape", "triangle" ->
+          shape := `Triangle
         | "label", l ->
           label := l
         | l, v -> ()
@@ -91,9 +90,7 @@ module Generator = struct
 
   let label g = g.label
 
-  let id () = create "1" 1 1 ["shape","none";"rigid","true"]
-
-  let rigid g = List.mem_assoc "rigid" g.options
+  let id () = create "1" 1 1 ["shape","none"]
 
   let get g o = List.assoc o g.options
 
@@ -102,6 +99,18 @@ module Generator = struct
   let label_width g = try get_float g "labelwidth" with Not_found -> 0.5
 
   let label_height g = try get_float g "labelheight" with Not_found -> 0.5
+
+  let get_source g i = g.source.(i)
+
+  let get_target g i = g.target.(i)
+
+  let set_source g i x =
+    if x > g.source.(i) then Printf.printf "update source %d of %s to %f\n%!" i (name g) x;
+    g.source.(i) <- max g.source.(i) x
+
+  let set_target g i x =
+    if x > g.source.(i) then Printf.printf "update target %d of %s to %f\n%!" i (name g) x;
+    g.target.(i) <- max g.target.(i) x
 end
 
 module G = Generator
@@ -202,40 +211,45 @@ module Stack = struct
     let last_source = ref (-1.) in
     let last_target = ref (-1.) in
     let generator g =
-      (* Space the sources. *)
+      (* Space up the sources. *)
       if G.source g > 0 then
         (
-          g.G.source.(0) <- max (!last_source +. 1.) g.G.source.(0);
-          last_source := g.G.source.(0)
+          G.set_source g 0 (!last_source +. 1.);
+          last_source := G.get_source g 0
         );
       for i = 0 to Array.length g.G.source - 2 do
-        g.G.source.(i+1) <- max (g.G.source.(i) +. 1.) g.G.source.(i+1);
-        last_source := g.G.source.(i+1)
+        G.set_source g (i+1) (G.get_source g i +. 1.);
+        last_source := G.get_source g (i+1)
       done;
       (* Propagate down and up. *)
-      if G.rigid g then
-        (
-          assert (G.source g = 1 && G.target g = 1);
-          g.G.target.(0) <- max g.G.source.(0) g.G.target.(0);
-          g.G.source.(0) <- g.G.target.(0)
-        );
       if G.shape g = `Label then
         (
+          (* For labels we pairwaise align sources. *)
           assert (G.source g = G.target g);
           for i = 0 to G.source g - 1 do
-            g.G.target.(i) <- max g.G.source.(i) g.G.target.(i);
-            g.G.source.(i) <- g.G.target.(i)
+            G.set_target g i (G.get_source g i);
+            G.set_source g i (G.get_target g i)
           done
+        )
+      else if G.target g = 1 then
+        (
+          G.set_target g 0 ((G.get_source g 0 +. G.get_source g (G.source g -1)) /. 2.);
+          G.set_source g (G.source g-1) (2. *. G.get_target g 0 -. G.get_source g 0)
+        )
+      else if G.source g = 1 then
+        (
+          G.set_source g 0 ((G.get_target g 0 +. G.get_target g (G.target g-1)) /. 2.);
+          G.set_target g (G.target g-1) (2. *. G.get_source g 0 -. G.get_target g 0)
         );
       (* Space up the targets. *)
       if G.target g > 0 then
         (
-          g.G.target.(0) <- max (!last_target +. 1.) g.G.target.(0);
-          last_target := g.G.target.(0)
+          G.set_target g 0 (!last_target +. 1.);
+          last_target := G.get_target g 0
         );
       for i = 0 to Array.length g.G.target - 2 do
-        g.G.target.(i+1) <- max (g.G.target.(i) +. 1.) g.G.target.(i+1);
-        last_target := g.G.target.(i+1)
+        G.set_target g (i+1) (G.get_target g i +. 1.);
+        last_target := G.get_target g (i+1)
       done
     in
     let slice f =
@@ -261,7 +275,7 @@ module Stack = struct
         stack g
     in
     let f = ref f in
-    for i = 0 to 1 do
+    for i = 0 to 5 do
       stack !f
     done
 
@@ -270,7 +284,7 @@ module Stack = struct
 
     let create fname id =
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1]\n" id);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[yscale=-1,join=round]\n" id);
       oc
 
     let close oc =
@@ -294,6 +308,10 @@ module Stack = struct
       let o = String.concat "," !o in
       let o = if o = "" then "" else Printf.sprintf "[%s]" o in
       output_string oc (Printf.sprintf "    \\draw%s ([shift=(%f:%f)]%f,%f) arc (%f:%f:%f and %f);\n" o a rx x y a b rx ry)
+
+    let polygon oc p =
+      let p = p |> List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) |> String.concat " -- " in
+      output_string oc (Printf.sprintf "    \\filldraw[fill=white] %s -- cycle;\n" p)
 
     let disk oc (x,y) (rx,ry) =
       output_string oc (Printf.sprintf "    \\filldraw[fill=white] (%f,%f) ellipse (%f and %f);\n" x y rx ry)
@@ -333,10 +351,16 @@ module Stack = struct
             let l = g.G.target.(1) -. g.G.target.(0) in
             Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.)
         else if G.shape g = `Label then ()
+        else if G.shape g = `Triangle then
+          (
+            Array.iter (fun x -> Draw.line d (x,y-.0.5) (x,y-.0.25)) g.G.source;
+            Array.iter (fun x -> Draw.line d (x,y+.0.25) (x,y+.0.5)) g.G.target;
+          )
         else
-          let c = x in
-          Array.iter (fun x -> Draw.line d (x,y-.0.5) (c,y)) g.G.source;
-          Array.iter (fun x -> Draw.line d (c,y) (x,y+.0.5)) g.G.target;
+          (
+            Array.iter (fun x' -> Draw.line d (x',y-.0.5) (x,y)) g.G.source;
+            Array.iter (fun x' -> Draw.line d (x,y) (x',y+.0.5)) g.G.target;
+          )
       );
       (* Draw shape. *)
       (
@@ -345,6 +369,11 @@ module Stack = struct
           let rx = G.label_width g /. 2. in
           let ry = G.label_height g /. 2. in
           Draw.disk d (x,y) (rx,ry)
+        | `Triangle ->
+          if G.target g = 1 then
+            Draw.polygon d [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
+          else
+            Draw.polygon d [G.get_target g 0,y-.0.25; G.get_target g (G.source g-1), y-.0.25; G.get_source g 0, y+.0.25]
         | _ -> ()
       );
       (* Draw label. *)

@@ -1,3 +1,4 @@
 \deftwocell[cap,arrow]{eta : 0 -> 2}
 \deftwocell[cup,arrow]{eps : 2 -> 0}
-0:\twocell{label[down,"x","y"] * 2}
+\deftwocell[triangle]{mu : 2 -> 1}
+0:\twocell{2 * mu}
