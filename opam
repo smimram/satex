@@ -1,0 +1,22 @@
+opam-version: "2.0"
+name: "satex"
+version: "0.0"
+maintainer: "smimram@gmail.com"
+homepage: "https://github.com/smimram/satex/"
+authors: "Samuel Mimram"
+build: [
+  [make]
+]
+install: [
+  [make "install" "PREFIX=" prefix]
+]
+depends: [
+  "ocaml" {>= "4.08.0"}
+]
+bug-reports: "https://github.com/smimram/satex/issues"
+dev-repo: "git+https://github.com/smimram/satex.git"
+synopsis: "String diagram generator for LaTeX"
+description: """
+Satex takes descriptions of string diagrams in the form of categorical
+compositions and converts them to string diagrams drawn in TikZ.
+"""

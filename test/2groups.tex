@@ -28,6 +28,10 @@ and $J:x\ol x\to 1$ by
 \[
   \twocell{label[d,"x","\ol x"] * J}
 \]
+We sometimes draw the identity $xy\to xy$ as
+\[
+  \twocell{label[d,"x","y"]*mu*label[u,"xy"]}
+\]
 
 \noindent
 Given $f:x\to y$, we define $\ol f:\ol x\to\ol y$ by
@@ -52,6 +56,6 @@ we define $U:x(\ol xy)$ by
 \]
 we define $H:\ol{xy}\to\ol y\,\ol x$ by
 \[
-  \twocell{(1*J-)*(2*J-*1)*(1*mu*2)*(I*2)}
+  \twocell{label[d,"\ol{xy}"]*(1*J-)*(2*J-*1)*(1*mu*2)*(I*2)*label[u,"\ol y","\ol x"]}
 \]
 \end{document}

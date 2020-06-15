@@ -1,6 +1,9 @@
 all:
 	$(MAKE) -C src
 
+install:
+	$(MAKE) -C src $@
+
 test: all
 	$(MAKE) -C test
 

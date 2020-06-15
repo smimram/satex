@@ -2,8 +2,12 @@ SOURCES = extlib.ml lang.ml parser.mly lexer.mll satex.ml
 RESULT = satex
 PACKS = unix
 ANNOTATE = true
+PREFIX = /usr
 
 all: dnc
+
+install:
+	install satex $(PREFIX)/bin
 
 test ci:
 	$(MAKE) -C .. $@
