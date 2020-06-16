@@ -12,6 +12,7 @@ module Generator = struct
         [
           | `Circle (** traditional circled node *)
           | `Triangle
+          | `Rectangle
           | `None (** no node decoration *)
           | `Cap (** special: a cap / cup *)
           | `Label (** labels only *)
@@ -44,6 +45,7 @@ module Generator = struct
           | "cup", ""
           | "shape", "cup" -> "shape", "cap"
           | "triangle", "" -> "shape", "triangle"
+          | "rectangle", "" -> "shape", "rectangle"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
@@ -68,7 +70,11 @@ module Generator = struct
         | "shape", "label" ->
           shape := `Label
         | "shape", "triangle" ->
+          assert (source = 1 || target = 1);
           shape := `Triangle
+        | "shape", "rectangle" ->
+          assert (source > 0 || target > 0);
+          shape := `Rectangle
         | "shape", "space" ->
           shape := `Space
         | "label", l ->
@@ -311,19 +317,27 @@ module Stack = struct
       let b = -.b in
       (* The starting point is supposed to be horizontal for now... *)
       assert (int_of_float a mod 180 = 0);
-      let o = ref [] in
-      List.iter
-        (function
-          | `Middle_arrow `Right -> o := "middlearrow={>}" :: !o
-          | `Middle_arrow `Left -> o := "middlearrow={<}" :: !o
-        ) options;
-      let o = String.concat "," !o in
-      let o = if o = "" then "" else Printf.sprintf "[%s]" o in
-      output_string oc (Printf.sprintf "    \\draw%s ([shift=(%f:%f)]%f,%f) arc (%f:%f:%f and %f);\n" o a rx x y a b rx ry)
+      let options =
+        List.map
+          (function
+            | `Middle_arrow `Right -> "middlearrow={>}"
+            | `Middle_arrow `Left -> "middlearrow={<}"
+          ) options
+        |> String.concat ","
+      in
+      let options = if options = "" then "" else Printf.sprintf "[%s]" options in
+      output_string oc (Printf.sprintf "    \\draw%s ([shift=(%f:%f)]%f,%f) arc (%f:%f:%f and %f);\n" options a rx x y a b rx ry)
 
-    let polygon oc p =
+    let polygon oc ?(options=[]) p =
+      let options =
+        List.map
+          (function
+            | `Rounded_corners -> "rounded corners=1pt"
+          ) options
+        |> String.concat ","
+      in
       let p = p |> List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) |> String.concat " -- " in
-      output_string oc (Printf.sprintf "    \\filldraw[fill=white] %s -- cycle;\n" p)
+      output_string oc (Printf.sprintf "    \\filldraw[%s,fill=white] %s -- cycle;\n" options p)
 
     let disk oc (x,y) (rx,ry) =
       output_string oc (Printf.sprintf "    \\filldraw[fill=white] (%f,%f) ellipse (%f and %f);\n" x y rx ry)
@@ -363,7 +377,7 @@ module Stack = struct
             let l = g.G.target.(1) -. g.G.target.(0) in
             Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.)
         else if G.shape g = `Label then ()
-        else if G.shape g = `Triangle then
+        else if G.shape g = `Triangle || G.shape g = `Rectangle then
           (
             Array.iter (fun x -> Draw.line d (x,y-.0.5) (x,y-.0.25)) g.G.source;
             Array.iter (fun x -> Draw.line d (x,y+.0.25) (x,y+.0.5)) g.G.target;
@@ -386,6 +400,22 @@ module Stack = struct
             Draw.polygon d [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
           else
             Draw.polygon d [G.get_target g 0,y+.0.25; G.get_target g (G.target g-1), y+.0.25; G.get_source g 0, y-.0.25]
+        | `Rectangle ->
+          let x1 =
+            min
+              (if G.source g > 0 then G.get_source g 0 else Float.infinity)
+              (if G.target g > 0 then G.get_target g 0 else Float.infinity)
+          in
+          let x2 =
+            max
+              (if G.source g > 0 then G.get_source g (G.source g - 1) else Float.neg_infinity)
+              (if G.target g > 0 then G.get_target g (G.target g - 1) else Float.neg_infinity)
+          in
+          let x1 = x1 -. 0.25 in
+          let x2 = x2 +. 0.25 in
+          let y1 = y -. 0.25 in
+          let y2 = y +. 0.25 in
+          Draw.polygon d ~options:[`Rounded_corners] [x1,y1; x2,y1; x2,y2; x1,y2]
         | _ -> ()
       );
       (* Draw label. *)
