@@ -293,7 +293,7 @@ module Stack = struct
         stack g
     in
     let f = ref f in
-    for i = 0 to 7 do
+    for i = 0 to 15 do
       Printf.printf "round %d\n%!" i;
       stack !f
     done
