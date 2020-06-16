@@ -32,8 +32,6 @@ module Generator = struct
   let create source target options =
     let shape = ref `Circle in
     let label = ref "" in
-    (* Set default options. *)
-    let options = options@["labelwidth", ".5"; "labelheight", ".5"; "arrow", "none"; "position", "0.5"] in
     (* Normalize options. *)
     let options =
       List.map
@@ -59,6 +57,9 @@ module Generator = struct
           | lv -> [lv]
         ) options |> List.flatten
     in
+    (* Set default options. *)
+    let options = options@["arrow", "none"; "position", "0.5"] in
+    let options = options@(if List.mem_assoc "label" options then ["labelwidth", ".5"; "labelheight", ".5"] else ["labelwidth", ".2"; "labelheight", ".2"]) in
     (* Parse options. *)
     List.iter_right
       (function
