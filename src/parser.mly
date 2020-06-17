@@ -71,6 +71,7 @@ gen:
 
 opts:
   | { [] }
+  | LBRA RBRA { [] }
   | LBRA inopts RBRA { List.rev $2 }
 
 inopts:
