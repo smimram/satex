@@ -69,7 +69,7 @@ module Generator = struct
         | "shape", "none" ->
           assert (source = 1 && target = 1); shape := `None
         | "shape", "cap" ->
-          assert ((source = 2 && target = 0) || (source = 0 && target = 2));
+          assert ((source = 2 && target <= 1) || (source <= 1 && target = 2));
           shape := `Cap
         | "shape", "label" ->
           shape := `Label
@@ -221,13 +221,15 @@ module Stack = struct
       ) ans;
     ans
 
-  let sources f =
+  let copy : t -> t = List.map (List.map G.copy)
+
+  let sources (f:t) =
     List.map (fun g -> g.G.source) (List.hd f)
 
-  let targets f =
+  let targets (f:t) =
     List.map (fun g -> g.G.target) (List.last f)
 
-  let typeset f =
+  let typeset (f:t) =
     let last_source = ref (-1.) in
     let last_target = ref (-1.) in
     let generator g =
@@ -287,12 +289,12 @@ module Stack = struct
           G.set_target g 0 (G.get_source g 0);
           G.set_source g 0 (G.get_target g 0)
         )
-      else if G.target g = 1 then
+      else if G.target g = 1 && G.source g > 0 then
         (
           G.set_target g 0 ((G.get_source g 0 +. G.get_source g (G.source g -1)) /. 2.);
           G.set_source g (G.source g-1) (2. *. G.get_target g 0 -. G.get_source g 0)
         )
-      else if G.source g = 1 then
+      else if G.source g = 1 && G.target g > 0 then
         (
           G.set_source g 0 ((G.get_target g 0 +. G.get_target g (G.target g-1)) /. 2.);
           G.set_target g (G.target g-1) (2. *. G.get_source g 0 -. G.get_target g 0)
@@ -320,9 +322,14 @@ module Stack = struct
         done;
         stack g
     in
+    let prev = ref [] in
     let f = ref f in
-    for i = 0 to 15 do
-      Printf.printf "round %d\n%!" i;
+    let i = ref 0 in
+    (* Iterate until we reach a fixpoint. *)
+    while !f <> !prev && !i <= 100 do
+      incr i;
+      Printf.printf "round %d\n%!" !i;
+      prev := copy !f;
       stack !f
     done
 
@@ -401,11 +408,17 @@ module Stack = struct
             | _ -> []
           in
           if G.source g = 2 then
-            let l = g.G.source.(1) -. g.G.source.(0) in
-            Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.)
+            (
+              let l = g.G.source.(1) -. g.G.source.(0) in
+              Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.);
+              if G.target g = 1 then Draw.line d (x,y) (x,y+.0.5)
+            )
           else
-            let l = g.G.target.(1) -. g.G.target.(0) in
-            Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.)
+            (
+              let l = g.G.target.(1) -. g.G.target.(0) in
+              Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.);
+              if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
+            )
         else if G.shape g = `Label then ()
         else if G.shape g = `Triangle || G.shape g = `Rectangle then
           (

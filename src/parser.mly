@@ -63,7 +63,7 @@ decls:
 
 indecls:
   | gen indecls { $2 }
-  | cell indecls { Printf.printf "add cell %d: %s\n%!" (fst3 $1) (string_of_expr (thd3 $1)); $1::$2 }
+  | cell indecls { Printf.printf "add cell %d: %s\n%!" (fst3 $1) (string_of_expr (thd3 $1)); ignore (typ (thd3 $1)); $1::$2 }
   | { [] }
 
 gen:

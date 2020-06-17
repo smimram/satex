@@ -38,7 +38,7 @@ rule token = parse
   | "space"(['0'-'9''.']+ as n) { SPACE (float_of_string n) }
   | ('"'[^'"']*'"' as str) { STRING str }
   | (['0'-'9']+ as n) { INT (int_of_string n) }
-  | (['a'-'z''A'-'Z''0'-'9''.''-''+']+ as str) { STRING str }
+  | (['a'-'z''A'-'Z''0'-'9''.''-''+''\'']+ as str) { STRING str }
   | space+ { token lexbuf }
   | newline { on_newline lexbuf; token lexbuf }
   | eof { EOF }

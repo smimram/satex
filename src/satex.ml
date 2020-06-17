@@ -6,7 +6,10 @@ let parse f =
   let line n =
     let ic = open_in f in
     for i = 0 to n - 2 do ignore (input_line ic) done;
-    let ans = input_line ic in
+    let ans =
+      try input_line ic
+      with _ -> "???"
+    in
     close_in ic;
     ans
   in
@@ -48,7 +51,6 @@ let () =
     if !fname = "" then Common.error "Please provide a .satex file name as input.";
     let satix_fname = Filename.chop_extension !fname ^ ".satix" in
     let decls = parse !fname in
-    List.iter (fun (_,_,e) -> ignore (Lang.typ e)) decls;
     Lang.draw satix_fname decls
   with
   | Failure e ->
