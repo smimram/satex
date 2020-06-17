@@ -6,4 +6,4 @@
 \deftwocell[cup,arrow=right]{J : 2 -> 0}
 \deftwocell[cap,arrow=right]{I- : 0 -> 2}
 \deftwocell[cap,arrow=left]{J- : 0 -> 2}
-0:\twocell{(3 -> 2)}
+0:\twocell[scale=.5,thick]{(3 -> 2)}

@@ -15,9 +15,9 @@
 \newcommand{\usesatexfig}[1]{\csname satexfigure#1\endcsname}
 
 \newcommand{\deftwocell}[2][]{\immediate\write\satexout{\string\deftwocell[#1]{#2}}}
-\newcommand{\twocell}[1]{%
+\newcommand{\twocell}[2][]{%
   \IfFileExists{\jobname.satix}{\usesatexfig{\thesatexfig}}{}
-  \immediate\write\satexout{\thesatexfig:\string\twocell{#1}}
+  \immediate\write\satexout{\thesatexfig:\string\twocell[#1]{#2}}
   \stepcounter{satexfig}
 }
 

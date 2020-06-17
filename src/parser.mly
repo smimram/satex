@@ -48,7 +48,7 @@
 
 %token LACC RACC LPAR RPAR LBRA RBRA EQ COLON COMMA COMP EOF
 %token GEN TO LABEL
-%token <int> CELL
+%token <int * string list> CELL
 %token <int> INT
 %token <string> STRING
 %token <float> SPACE
@@ -63,7 +63,7 @@ decls:
 
 indecls:
   | gen indecls { $2 }
-  | cell indecls { Printf.printf "add cell %d: %s\n%!" (fst $1) (string_of_expr (snd $1)); $1::$2 }
+  | cell indecls { Printf.printf "add cell %d: %s\n%!" (fst3 $1) (string_of_expr (thd3 $1)); $1::$2 }
   | { [] }
 
 gen:
@@ -83,7 +83,7 @@ opt:
   | STRING EQ INT { $1, string_of_int $3 }
 
 cell:
-  | CELL LACC expr RACC { $1,$3 }
+  | CELL LACC expr RACC { fst $1,snd $1,$3 }
 
 expr:
   | base { $1 }

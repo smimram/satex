@@ -1,3 +1,7 @@
+let fst3 (x,_,_) = x
+let snd3 (_,y,_) = y
+let thd3 (_,_,z) = z
+
 module Array = struct
   include Array
 

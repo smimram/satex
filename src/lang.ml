@@ -144,8 +144,8 @@ let rec string_of_expr ?(p=false) = function
       (if p then ")" else "")
 
 (** Cell declarations (numbered in order to be able to identify them in
-   LaTeX). *)
-type t = (int * expr) list
+    LaTeX). The list contains the TikZ options for the cell. *)
+type t = (int * string list * expr) list
 
 (** Typing error. *)
 exception Typing of string
@@ -301,9 +301,10 @@ module Stack = struct
   module Draw = struct
     type t = out_channel
 
-    let create fname id =
+    let create fname id options =
+      let options = String.concat "," options in
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[baseline=(current bounding box.center),yscale=-1,every path/.style={join=round,cap=round}]\n" id);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[baseline=(current bounding box.center),yscale=-1,every path/.style={join=round,cap=round},%s]\n" id options);
       oc
 
     let close oc =
@@ -347,8 +348,8 @@ module Stack = struct
       output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$%s$};\n" x y s)
   end
 
-  let draw fname id f =
-    let d = Draw.create fname id in
+  let draw fname id options f =
+    let d = Draw.create fname id options in
     let draw_generator g =
       (* x-coordinate of the center *)
       let x =
@@ -439,8 +440,8 @@ end
 let draw fname cells =
   (try Sys.remove fname with _ -> ());
   List.iter
-    (fun (id,e) ->
+    (fun (id,o,e) ->
        let f = Stack.create e in
        Stack.typeset f;
-       Stack.draw fname id f
+       Stack.draw fname id o f
     ) cells
