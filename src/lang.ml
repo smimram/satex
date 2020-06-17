@@ -82,10 +82,10 @@ module Generator = struct
         | "shape", "space" ->
           shape := `Space
         | "shape", "mergeleft" ->
-          assert (source = 2 && target = 1);
+          assert ((source = 2 && target = 1) || (source = 1 && target = 2));
           shape := `Merge `Left
         | "shape", "mergeright" ->
-          assert (source = 2 && target = 1);
+          assert ((source = 2 && target = 1) || (source = 1 && target = 2));
           shape := `Merge `Right
         | "label", l ->
           label := l
@@ -265,13 +265,22 @@ module Stack = struct
         )
       else if G.shape g = `Merge `Left then
         (
-          G.set_target g 0 (G.get_source g 1);
-          G.set_source g 1 (G.get_target g 0);
+          if G.source g = 2 then
+            (
+              G.set_target g 0 (G.get_source g 1);
+              G.set_source g 1 (G.get_target g 0)
+            )
+          else
+            (
+              G.set_target g 1 (G.get_source g 0);
+              G.set_source g 0 (G.get_target g 1)
+            )
+              
         )
       else if G.shape g = `Merge `Right then
         (
           G.set_target g 0 (G.get_source g 0);
-          G.set_source g 0 (G.get_target g 0);          
+          G.set_source g 0 (G.get_target g 0)       
         )
       else if G.source g = 1 && G.target g = 1 then
         (
@@ -405,11 +414,14 @@ module Stack = struct
           )
         else if G.shape g = `Merge `Left || G.shape g = `Merge `Right then
           (
-            let x1 = G.get_source g 0 in
-            let x2 = G.get_source g 1 in
+            let x1, x2 =
+              if G.source g = 2 then G.get_source g 0, G.get_source g 1
+              else G.get_target g 0, G.get_target g 1
+            in
             let x1, x2 = if G.shape g = `Merge `Left then x1, x2 else x2, x1 in
             Draw.line d (x2,y-.0.5) (x2,y+.0.5);
-            Draw.arc d (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
+            if G.source g = 2 then Draw.arc d (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
+            else Draw.arc d (x2,y+.0.5) (x2-.x1,0.5) (180.,90.)
           )
         else
           (
