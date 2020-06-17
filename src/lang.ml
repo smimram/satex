@@ -13,6 +13,7 @@ module Generator = struct
           | `Circle (** traditional circled node *)
           | `Triangle
           | `Rectangle
+          | `Merge of [`Left | `Right] (** the left / right wire is merged into the main one *)
           | `None (** no node decoration *)
           | `Cap (** special: a cap / cup *)
           | `Label (** labels only *)
@@ -44,6 +45,8 @@ module Generator = struct
           | "shape", "cup" -> "shape", "cap"
           | "triangle", "" -> "shape", "triangle"
           | "rectangle", "" -> "shape", "rectangle"
+          | "mergeleft", "" -> "shape", "mergeleft"
+          | "mergeright", "" -> "shape", "mergeright"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
@@ -78,6 +81,12 @@ module Generator = struct
           shape := `Rectangle
         | "shape", "space" ->
           shape := `Space
+        | "shape", "mergeleft" ->
+          assert (source = 2 && target = 1);
+          shape := `Merge `Left
+        | "shape", "mergeright" ->
+          assert (source = 2 && target = 1);
+          shape := `Merge `Right
         | "label", l ->
           label := l
         | l, v -> ()
@@ -254,6 +263,16 @@ module Stack = struct
             G.set_source g i (G.get_target g i)
           done
         )
+      else if G.shape g = `Merge `Left then
+        (
+          G.set_target g 0 (G.get_source g 1);
+          G.set_source g 1 (G.get_target g 0);
+        )
+      else if G.shape g = `Merge `Right then
+        (
+          G.set_target g 0 (G.get_source g 0);
+          G.set_source g 0 (G.get_target g 0);          
+        )
       else if G.source g = 1 && G.target g = 1 then
         (
           G.set_target g 0 (G.get_source g 0);
@@ -383,6 +402,14 @@ module Stack = struct
           (
             Array.iter (fun x -> Draw.line d (x,y-.0.5) (x,y-.0.25)) g.G.source;
             Array.iter (fun x -> Draw.line d (x,y+.0.25) (x,y+.0.5)) g.G.target;
+          )
+        else if G.shape g = `Merge `Left || G.shape g = `Merge `Right then
+          (
+            let x1 = G.get_source g 0 in
+            let x2 = G.get_source g 1 in
+            let x1, x2 = if G.shape g = `Merge `Left then x1, x2 else x2, x1 in
+            Draw.line d (x2,y-.0.5) (x2,y+.0.5);
+            Draw.arc d (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
           )
         else
           (
