@@ -40,3 +40,5 @@ on. For instance,
 will declare the following operator:
 
 ![](fig/mu.svg)
+
+One can then generate diagrams by using commands of the form
