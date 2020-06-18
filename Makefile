@@ -17,7 +17,5 @@ ci:
 	git push
 
 satex.pdf: README.md fig
+	@$(MAKE) -C fig
 	pandoc -V title:"SaTeX" -V author:"Samuel Mimram" -N --toc -V papersize:a4 $< -o $@
-
-fig:
-	$(MAKE) -C fig

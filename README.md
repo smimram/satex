@@ -69,3 +69,14 @@ satex file.satex
 
 which will generate a file `file.satix` containing the generated TikZ figures,
 which are automatically included in the next run of `pdflatex` on your file.
+
+# Options for operators
+
+## Shapes
+
+Various shapes are available for operators:
+
+- `circle` (default one): ![](fig/circle.svg)
+- `triangle`: ![](fig/mu.svg)
+- `rectangle`: ![](fig/rectangle.svg)
+- `mergeleft` / `mergeright`: ![](fig/mergeleft.svg) / ![](fig/mergeright.svg)
