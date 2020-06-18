@@ -5,7 +5,7 @@ generator for LaTeX. It takes as input a formula such as
 ```
 (appropriately written in the LaTeX file) and produces a diagram such as
 
-![](fig/frobl)
+![](fig/frobl.svg)
 
 generated using TikZ.
 
@@ -39,4 +39,4 @@ on. For instance,
 
 will declare the following operator:
 
-![](fig/mu)
+![](fig/mu.svg)

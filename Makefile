@@ -15,7 +15,7 @@ ci:
 	git push
 
 satex.pdf: README.md fig
-	pandoc -V title:"SaTeX" -V author:"Samuel Mimram" -N --toc --default-image-extension=.pdf $< -o $@
+	pandoc -V title:"SaTeX" -V author:"Samuel Mimram" -N --toc $< -o $@
 
 fig:
 	$(MAKE) -C fig
