@@ -80,3 +80,16 @@ Various shapes are available for operators:
 - `triangle`: ![](fig/mu.svg)
 - `rectangle`: ![](fig/rectangle.svg)
 - `mergeleft` / `mergeright`: ![](fig/mergeleft.svg) / ![](fig/mergeright.svg)
+
+## Labels
+
+Labels are indicated between double quotes. For instance
+
+```
+\deftwocell[triangle,"\mu"]{mu : 2 -> 1}
+
+```
+
+typesets
+
+![](fig/mu-label.svg)

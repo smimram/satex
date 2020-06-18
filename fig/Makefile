@@ -9,6 +9,9 @@ pdf: $(PDF)
 
 svg: $(SVG)
 
+add:
+	git add *.tex *.svg
+
 clean:
 	rm -f $(PDF) $(SVG)
 
