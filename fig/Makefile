@@ -1,9 +1,9 @@
 FIG = $(wildcard *.tex)
 PDF = $(FIG:.tex=.pdf)
 SVG = $(PDF:.pdf=.svg)
-SATEX = ../../src/satex
+SATEX = ../src/satex
 
-all: pdf
+all: pdf svg
 
 pdf: $(PDF)
 
