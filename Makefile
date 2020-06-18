@@ -1,7 +1,9 @@
 PREFIX=/usr
 
-all: satex.pdf
+all:
 	$(MAKE) -C src
+
+doc: satex.pdf
 
 install:
 	$(MAKE) -C src $@
@@ -15,7 +17,7 @@ ci:
 	git push
 
 satex.pdf: README.md fig
-	pandoc -V title:"SaTeX" -V author:"Samuel Mimram" -N --toc $< -o $@
+	pandoc -V title:"SaTeX" -V author:"Samuel Mimram" -N --toc -V papersize:a4 $< -o $@
 
 fig:
 	$(MAKE) -C fig

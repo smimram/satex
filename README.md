@@ -42,3 +42,30 @@ will declare the following operator:
 ![](fig/mu.svg)
 
 One can then generate diagrams by using commands of the form
+
+```
+\twocell{expr}
+```
+
+where `expr` is a categorical expression involving operators and identities. The
+identity on _n_ wires is simply written as the corresponding number and
+compositions are noted `*`: toplevel compositions are vertical ones and those
+inside parenthesis are horizontal. For instance
+
+```
+\twocell{(2 * mu) * (1 * mu) * mu}
+```
+
+will typeset
+
+![](fig/rcomb4.svg)
+
+A run of `pdflatex` on your file, say `file.tex`, will generate a file named
+`file.satex`. You should then run
+
+```
+satex file.satex
+```
+
+which will generate a file `file.satix` containing the generated TikZ figures,
+which are automatically included in the next run of `pdflatex` on your file.
