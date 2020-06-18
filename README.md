@@ -110,3 +110,17 @@ is used for labels. For instance
 typesets
 
 ![](fig/mu-lwires.svg)
+
+## Inline operators
+
+You can use operators which have not been declared beforehand: the syntax is `(m
+-> n)[options]` to use an operator with `m` inputs, `n` outputs and given
+options. For instance,
+
+```
+(1 * (1 -> 2)[rectangle,"f"]) * ((2 -> 1)["g"] * 1)
+```
+
+typesets
+
+![](fig/inline.svg)
