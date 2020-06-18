@@ -80,16 +80,30 @@ Various shapes are available for operators:
 - `triangle`: ![](fig/mu.svg)
 - `rectangle`: ![](fig/rectangle.svg)
 - `mergeleft` / `mergeright`: ![](fig/mergeleft.svg) / ![](fig/mergeright.svg)
+- `cup` / `cap`: ![](fig/cup.svg) / ![](fig/cap.svg)
 
-## Labels
+## Labels on operators
 
 Labels are indicated between double quotes. For instance
 
 ```
 \deftwocell[triangle,"\mu"]{mu : 2 -> 1}
-
 ```
 
 typesets
 
 ![](fig/mu-label.svg)
+
+## Labels on wires
+
+The special operator `label` allows adding labels to wires. The option `d` or
+`u` indicates whether the labels should be put down or up, and the above syntax
+is used for labels. For instance
+
+```
+\twocell{label[d,"x","y"] * mu * label[u,"z"]}
+```
+
+typesets
+
+![](fig/mu-lwires.svg)
