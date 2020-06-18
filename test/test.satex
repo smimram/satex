@@ -6,4 +6,5 @@
 \deftwocell[cup,arrow=right]{J : 2 -> 0}
 \deftwocell[cap,arrow=right]{I- : 0 -> 2}
 \deftwocell[cap,arrow=left]{J- : 0 -> 2}
-0:\twocell[]{((2 -> 1)[cup])}
+0:\twocell[]{1*1*1*1}
+1:\twocell[]{(1 -> 0)*0*0*0}

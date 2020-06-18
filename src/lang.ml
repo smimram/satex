@@ -198,7 +198,10 @@ module Stack = struct
 
   let create e : t =
     let rec aux e =
-      let id n = List.init n (fun _ -> G.id ()) in
+      let id n =
+        if n = 0 then [G.create 0 0 ["name", "0"; "shape", "space"; "width", "0"]]
+        else List.init n (fun _ -> G.id ())
+      in
       match e with
       | Gen g -> [[Generator.copy g]]
       | Id n -> [id n]
@@ -346,8 +349,16 @@ module Stack = struct
       output_string oc "  \\end{tikzpicture}\n}\n";
       close_out oc
 
-    let line oc (x1,y1) (x2,y2) =
-      output_string oc (Printf.sprintf "    \\draw (%f,%f) -- (%f,%f);\n" x1 y1 x2 y2)
+    let line oc ?(options=[]) (x1,y1) (x2,y2) =
+      let options =
+        List.map
+          (function
+            | `Phantom -> "opacity=0."
+          ) options
+        |> String.concat ","
+      in
+      let options = if options = "" then "" else Printf.sprintf "[%s]" options in
+      output_string oc (Printf.sprintf "    \\draw%s (%f,%f) -- (%f,%f);\n" options x1 y1 x2 y2)
 
     let arc oc ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = -.a in
@@ -435,6 +446,11 @@ module Stack = struct
             Draw.line d (x2,y-.0.5) (x2,y+.0.5);
             if G.source g = 2 then Draw.arc d (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
             else Draw.arc d (x2,y+.0.5) (x2-.x1,0.5) (180.,90.)
+          )
+        else if G.shape g = `Space && G.get_float g "width" = 0. then
+          (
+            (* Take some vertical space. *)
+            Draw.line d ~options:[`Phantom] (0.,y-.0.5) (0.,y+.0.5)
           )
         else
           (
