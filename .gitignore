@@ -1,4 +1,5 @@
 *~
+*#
 *.aux
 *.log
 *.pdf
@@ -7,6 +8,8 @@
 
 *.annot
 *.cmi
+*.cmt
+*.cmti
 *.cmx
 *.o
 
