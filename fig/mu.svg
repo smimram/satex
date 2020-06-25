@@ -8,17 +8,24 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="mu.pdf"
-   viewBox="0 0 38.326668 38.326668"
-   height="38.326668"
-   width="38.326668"
-   xml:space="preserve"
-   id="svg2"
-   version="1.1"><metadata
-     id="metadata8"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs6" /><sodipodi:namedview
-     id="namedview4"
+   id="svg28"
+   version="1.2"
+   viewBox="0 0 28.745 28.745"
+   height="28.745pt"
+   width="28.745pt">
+  <metadata
+     id="metadata32">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     id="namedview30"
      inkscape:window-height="480"
      inkscape:window-width="640"
      inkscape:pageshadow="2"
@@ -28,28 +35,64 @@
      objecttolerance="10"
      borderopacity="1"
      bordercolor="#666666"
-     pagecolor="#ffffff" /><g
-     transform="matrix(1.3333333,0,0,-1.3333333,0,38.326667)"
-     inkscape:label="mu"
-     inkscape:groupmode="layer"
-     id="g10"><g
-       transform="translate(0.199,28.546)"
-       id="g12"><g
-         id="g14"><g
-           id="g16"><g
-             id="g18"><path
-               id="path20"
-               style="fill:none;stroke:#000000;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-               d="M 0,0 V -7.08669" /></g><g
-             id="g22"><path
-               id="path24"
-               style="fill:none;stroke:#000000;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-               d="M 28.3468,0 V -7.08669" /></g><g
-             id="g26"><path
-               id="path28"
-               style="fill:none;stroke:#000000;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-               d="m 14.17339,-21.2601 v -7.0867" /></g><g
-             id="g30"><path
-               id="path32"
-               style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-               d="M 0,-7.08669 H 28.3468 L 14.17339,-21.2601 Z" /></g></g></g></g></g></svg>
+     pagecolor="#ffffff" />
+  <defs
+     id="defs11">
+    <clipPath
+       id="clip1">
+      <path
+         id="path2"
+         d="M 28 0 L 28.746094 0 L 28.746094 8 L 28 8 Z M 28 0 " />
+    </clipPath>
+    <clipPath
+       id="clip2">
+      <path
+         id="path5"
+         d="M 14 21 L 15 21 L 15 28.746094 L 14 28.746094 Z M 14 21 " />
+    </clipPath>
+    <clipPath
+       id="clip3">
+      <path
+         id="path8"
+         d="M 0 7 L 28.746094 7 L 28.746094 22 L 0 22 Z M 0 7 " />
+    </clipPath>
+  </defs>
+  <g
+     id="surface2">
+    <path
+       id="path13"
+       transform="matrix(1,0,0,-1,0.199,0.199)"
+       d="M 0.00021875 -0.00021875 L 0.00021875 -7.086156 "
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+    <g
+       id="g17"
+       clip-rule="nonzero"
+       clip-path="url(#clip1)">
+      <path
+         id="path15"
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 28.347875 -0.00021875 L 28.347875 -7.086156 "
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+    </g>
+    <g
+       id="g21"
+       clip-rule="nonzero"
+       clip-path="url(#clip2)">
+      <path
+         id="path19"
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 14.172094 -21.261938 L 14.172094 -28.347875 "
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+    </g>
+    <g
+       id="g25"
+       clip-rule="nonzero"
+       clip-path="url(#clip3)">
+      <path
+         id="path23"
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 0.00021875 -7.086156 L 28.347875 -7.086156 L 14.172094 -21.261938 Z M 0.00021875 -7.086156 "
+         style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+    </g>
+  </g>
+</svg>

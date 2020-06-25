@@ -25,4 +25,4 @@ clean:
 	pdflatex $<
 
 %.svg: %.pdf
-	inkscape $< -o $@
+	inkscape --pdf-poppler $< -o $@

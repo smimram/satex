@@ -8,17 +8,24 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="mergeright.pdf"
-   viewBox="0 0 38.326668 38.326668"
-   height="38.326668"
-   width="38.326668"
-   xml:space="preserve"
-   id="svg2"
-   version="1.1"><metadata
-     id="metadata8"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs6" /><sodipodi:namedview
-     id="namedview4"
+   id="svg19"
+   version="1.2"
+   viewBox="0 0 28.745 28.745"
+   height="28.745pt"
+   width="28.745pt">
+  <metadata
+     id="metadata23">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     id="namedview21"
      inkscape:window-height="480"
      inkscape:window-width="640"
      inkscape:pageshadow="2"
@@ -28,20 +35,43 @@
      objecttolerance="10"
      borderopacity="1"
      bordercolor="#666666"
-     pagecolor="#ffffff" /><g
-     transform="matrix(1.3333333,0,0,-1.3333333,0,38.326667)"
-     inkscape:label="mergeright"
-     inkscape:groupmode="layer"
-     id="g10"><g
-       transform="translate(0.199,28.546)"
-       id="g12"><g
-         id="g14"><g
-           id="g16"><g
-             id="g18"><path
-               id="path20"
-               style="fill:none;stroke:#000000;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-               d="M 0,0 V -28.3468" /></g><g
-             id="g22"><path
-               id="path24"
-               style="fill:none;stroke:#000000;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
-               d="M 28.3468,0 C 28.3468,-7.82784 15.6557,-14.17339 0,-14.17339" /></g></g></g></g></g></svg>
+     pagecolor="#ffffff" />
+  <defs
+     id="defs8">
+    <clipPath
+       id="clip1">
+      <path
+         id="path2"
+         d="M 0 0 L 1 0 L 1 28.746094 L 0 28.746094 Z M 0 0 " />
+    </clipPath>
+    <clipPath
+       id="clip2">
+      <path
+         id="path5"
+         d="M 0 0 L 28.746094 0 L 28.746094 15 L 0 15 Z M 0 0 " />
+    </clipPath>
+  </defs>
+  <g
+     id="surface2">
+    <g
+       id="g12"
+       clip-rule="nonzero"
+       clip-path="url(#clip1)">
+      <path
+         id="path10"
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 0.00021875 -0.00021875 L 0.00021875 -28.347875 "
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+    </g>
+    <g
+       id="g16"
+       clip-rule="nonzero"
+       clip-path="url(#clip2)">
+      <path
+         id="path14"
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 28.347875 -0.00021875 C 28.347875 -7.828344 15.656469 -14.172094 0.00021875 -14.172094 "
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+    </g>
+  </g>
+</svg>
