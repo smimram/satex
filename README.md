@@ -84,6 +84,7 @@ Various shapes are available for operators:
 - `rectangle`: ![](fig/rectangle.svg)
 - `mergeleft` / `mergeright`: ![](fig/mergeleft.svg) / ![](fig/mergeright.svg)
 - `cup` / `cap`: ![](fig/cup.svg) / ![](fig/cap.svg)
+- `blank`: ![](fig/blank.svg)
 
 ## Labels on operators
 
