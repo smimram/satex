@@ -14,7 +14,7 @@
 \newcommand{\defsatexfig}[2]{\expandafter\newcommand\csname satexfigure#1\endcsname{#2}}
 \newcommand{\usesatexfig}[1]{\csname satexfigure#1\endcsname}
 
-\newcommand{\deftwocell}[2][]{\immediate\write\satexout{\string\deftwocell[#1]{#2}}}
+\newcommand{\deftwocell}[2][]{\immediate\write\satexout{\string\deftwocell[\unexpanded{#1}]{#2}}}
 \newcommand{\twocell}[2][]{%
   \IfFileExists{\jobname.satix}{\usesatexfig{\thesatexfig}}{}
   \immediate\write\satexout{\thesatexfig:\string\twocell[#1]{#2}}
