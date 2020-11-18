@@ -6,5 +6,7 @@
 \deftwocell[cup,arrow=right]{J : 2 -> 0}
 \deftwocell[cap,arrow=right]{I- : 0 -> 2}
 \deftwocell[cap,arrow=left]{J- : 0 -> 2}
-0:\twocell[]{1*1*1*1}
-1:\twocell[]{(1 -> 0)*0*0*0}
+\deftwocell[shape=label,"..."]{vdots : 1 -> 1}
+0:\twocell[]{vdots}
+1:\twocell[]{1*1*1*1}
+2:\twocell[]{(1 -> 0)*0*0*0}

@@ -3,6 +3,9 @@ PREFIX=/usr
 all:
 	$(MAKE) -C src
 
+clean:
+	$(MAKE) -C src $@
+
 doc: satex.pdf
 
 install:

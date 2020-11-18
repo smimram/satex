@@ -82,6 +82,7 @@ opt:
   | STRING { $1,"" }
   | STRING EQ STRING { $1, $3 }
   | STRING EQ INT { $1, string_of_int $3 }
+  | STRING EQ LABEL { $1, "label" }
 
 cell:
   | CELL LACC expr RACC { fst $1,snd $1,$3 }
