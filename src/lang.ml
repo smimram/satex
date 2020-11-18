@@ -16,6 +16,8 @@ module Generator = struct
           | `Merge of [`Left | `Right] (** the left / right wire is merged into the main one *)
           | `None (** no node decoration *)
           | `Cap (** special: a cap / cup *)
+          | `Crossing
+          | `Dots (** horizontal dots between two wires *)
           | `Label (** labels only *)
           | `Space (** a space *)
         ];
@@ -45,6 +47,10 @@ module Generator = struct
           | "shape", "cup" -> "shape", "cap"
           | "triangle", "" -> "shape", "triangle"
           | "rectangle", "" -> "shape", "rectangle"
+          | "blank", "" -> "shape", "blank"
+          | "dots", "" -> "shape", "dots"
+          | "crossing", "" -> "shape", "crossing"
+          | "braid", "" -> "shape", "braid"
           | "mergeleft", "" -> "shape", "mergeleft"
           | "mergeright", "" -> "shape", "mergeright"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
@@ -57,8 +63,10 @@ module Generator = struct
     let options =
       List.map
         (function
-          | "labelsize",x -> ["labelwidth",x;"labelheight",x]
-          | "shape","blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
+          | "labelsize", x -> ["labelwidth", x; "labelheight", x]
+          | "shape", "blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
+          | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"]
+          | "shape", "braid" -> ["shape", "crossing"; "kind", "braid"]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -69,7 +77,7 @@ module Generator = struct
     List.iter_right
       (function
         | "shape", "none" ->
-          assert (source = 1 && target = 1); shape := `None
+          assert ((source = 1 && target = 1) || (source = 2 && target = 2)); shape := `None
         | "shape", "cap" ->
           assert ((source = 2 && target <= 1) || (source <= 1 && target = 2));
           shape := `Cap
@@ -81,6 +89,12 @@ module Generator = struct
         | "shape", "rectangle" ->
           assert (source > 0 || target > 0);
           shape := `Rectangle
+        | "shape", "dots" ->
+          assert (source = 2 && target = 2);
+          shape := `Dots
+        | "shape", "crossing" ->
+          assert (source = 2 && target = 2);
+          shape := `Crossing
         | "shape", "space" ->
           shape := `Space
         | "shape", "mergeleft" ->
@@ -261,7 +275,7 @@ module Stack = struct
       done;
       if G.shape g = `Space then last_target := !last_target +. G.get_float g "width";
       (* Propagate down and up. *)
-      if G.shape g = `Label then
+      if G.shape g = `Label || G.shape g = `Dots || G.shape g = `Crossing then
         (
           (* For labels we pairwaise align sources. *)
           assert (G.source g = G.target g);
@@ -355,6 +369,11 @@ module Stack = struct
       let options =
         List.map
           (function
+            | `Color c -> c
+            | `Thick 2 -> "very thick"
+            | `Thick 3 -> "ultra thick"
+            | `Thick _ -> "thick"
+            | `Width w -> "line width="^w
             | `Phantom -> "opacity=0."
           ) options
         |> String.concat ","
@@ -461,6 +480,27 @@ module Stack = struct
           (
             (* Take some vertical space. *)
             Draw.line d ~options:[`Phantom] (0.,y-.0.5) (0.,y+.0.5)
+          )
+        else if G.shape g = `Crossing then
+          (
+            let kind = try G.get g "kind" with Not_found -> "crossing" in
+            let x  = g.G.source.(0) in
+            let x' = g.G.source.(1) in
+            if kind = "braid" then
+              (
+                Draw.line d (x',y-.0.5) (x,y+.0.5);
+                Draw.line d ~options:[`Color "white"; `Width "2mm"] (x,y-.0.5) (x',y+.0.5);
+                Draw.line d (x,y-.0.5) (x',y+.0.5)
+              )
+            else
+              (
+                Draw.line d (x,y-.0.5) (x',y+.0.5);
+                Draw.line d (x',y-.0.5) (x,y+.0.5)
+              )
+          )
+        else if G.shape g = `Dots then
+          (
+            Array.iter2 (fun x x' -> assert (x = x'); Draw.line d (x,y-.0.5) (x,y+.0.5)) g.G.source g.G.target
           )
         else
           (

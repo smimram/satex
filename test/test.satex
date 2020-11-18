@@ -7,6 +7,7 @@
 \deftwocell[cap,arrow=right]{I- : 0 -> 2}
 \deftwocell[cap,arrow=left]{J- : 0 -> 2}
 \deftwocell[shape=blank,"\vdots "]{vdots : 1 -> 1}
-0:\twocell[]{vdots}
+\deftwocell[dots]{dots : 2 -> 2}
+0:\twocell[]{dots * mu}
 1:\twocell[]{1*1*1*1}
 2:\twocell[]{(1 -> 0)*0*0*0}
