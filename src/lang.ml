@@ -489,7 +489,7 @@ module Stack = struct
             if kind = "braid" then
               (
                 Draw.line d (x',y-.0.5) (x,y+.0.5);
-                Draw.line d ~options:[`Color "white"; `Width "2mm"] (x,y-.0.5) (x',y+.0.5);
+                Draw.disk d ~options:[`Color "white"] ((x+.x')/.2.,y) (0.1,0.1);
                 Draw.line d (x,y-.0.5) (x',y+.0.5)
               )
             else
