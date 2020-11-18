@@ -95,7 +95,7 @@ module Generator = struct
           assert (source = 2 && target = 2);
           shape := `Dots
         | "shape", "crossing" ->
-          assert (source = 2 && target = 2);
+          assert (source = target && source >= 2);
           shape := `Crossing
         | "shape", "space" ->
           shape := `Space
@@ -486,24 +486,31 @@ module Stack = struct
         else if G.shape g = `Crossing then
           (
             let kind = try G.get g "kind" with Not_found -> "crossing" in
-            let x  = g.G.source.(0) in
-            let x' = g.G.source.(1) in
+            let x = g.G.source in
+            let n = Array.length x in
             if kind = "braid" then
               (
-                Draw.line d (x',y-.0.5) (x,y+.0.5);
-                Draw.disk d ~options:[`Color "white"] ((x+.x')/.2.,y) (0.1,0.1);
-                Draw.line d (x,y-.0.5) (x',y+.0.5)
+                for i = 1 to n-1 do
+                  Draw.line d (x.(i),y-.0.5) (x.(i-1),y+.0.5);
+                  let a = float_of_int i /. float_of_int n in
+                  Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.0.5+.a) (0.1,0.1);
+                done;
+                Draw.line d (x.(0),y-.0.5) (x.(n-1),y+.0.5)
               )
             else if kind = "braid'" then
               (
-                Draw.line d (x,y-.0.5) (x',y+.0.5);
-                Draw.disk d ~options:[`Color "white"] ((x+.x')/.2.,y) (0.1,0.1);
-                Draw.line d (x',y-.0.5) (x,y+.0.5)
+                for i = 0 to n-1 do
+                  Draw.line d (x.(i),y-.0.5) (x.(i+1),y+.0.5);
+                  let a = float_of_int (i+1) /. float_of_int n in
+                  Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.0.5-.a) (0.1,0.1);
+                done;
+                Draw.line d (x.(n-1),y-.0.5) (x.(0),y+.0.5)
               )
             else
               (
-                Draw.line d (x,y-.0.5) (x',y+.0.5);
-                Draw.line d (x',y-.0.5) (x,y+.0.5)
+                for i = 0 to n-1 do
+                  Draw.line d (x.(i),y-.0.5) (x.(n-1-i),y+.0.5);
+                done
               )
           )
         else if G.shape g = `Dots then
