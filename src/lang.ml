@@ -51,6 +51,7 @@ module Generator = struct
           | "dots", "" -> "shape", "dots"
           | "crossing", "" -> "shape", "crossing"
           | "braid", "" -> "shape", "braid"
+          | "braid'", "" -> "shape", "braid'"
           | "mergeleft", "" -> "shape", "mergeleft"
           | "mergeright", "" -> "shape", "mergeright"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
@@ -67,6 +68,7 @@ module Generator = struct
           | "shape", "blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
           | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"]
           | "shape", "braid" -> ["shape", "crossing"; "kind", "braid"]
+          | "shape", "braid'" -> ["shape", "crossing"; "kind", "braid'"]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -491,6 +493,12 @@ module Stack = struct
                 Draw.line d (x',y-.0.5) (x,y+.0.5);
                 Draw.disk d ~options:[`Color "white"] ((x+.x')/.2.,y) (0.1,0.1);
                 Draw.line d (x,y-.0.5) (x',y+.0.5)
+              )
+            else if kind = "braid'" then
+              (
+                Draw.line d (x,y-.0.5) (x',y+.0.5);
+                Draw.disk d ~options:[`Color "white"] ((x+.x')/.2.,y) (0.1,0.1);
+                Draw.line d (x',y-.0.5) (x,y+.0.5)
               )
             else
               (

@@ -12,7 +12,7 @@
    viewBox="0 0 28.745 28.745"
    version="1.2"
    id="svg9"
-   sodipodi:docname="braid.pdf">
+   sodipodi:docname="braid2.pdf">
   <metadata
      id="metadata15">
     <rdf:RDF>
@@ -42,7 +42,7 @@
      id="surface2">
     <path
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M 28.347875 -0.00021875 L 0.00021875 -28.347875 "
+       d="M 0.00021875 -0.00021875 L 28.347875 -28.347875 "
        transform="matrix(1,0,0,-1,0.199,0.199)"
        id="path2" />
     <path
@@ -52,7 +52,7 @@
        id="path4" />
     <path
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M 0.00021875 -0.00021875 L 28.347875 -28.347875 "
+       d="M 28.347875 -0.00021875 L 0.00021875 -28.347875 "
        transform="matrix(1,0,0,-1,0.199,0.199)"
        id="path6" />
   </g>
