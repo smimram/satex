@@ -499,7 +499,7 @@ module Stack = struct
               )
             else if kind = "braid'" then
               (
-                for i = 0 to n-1 do
+                for i = 0 to n-2 do
                   Draw.line d (x.(i),y-.0.5) (x.(i+1),y+.0.5);
                   let a = float_of_int (i+1) /. float_of_int n in
                   Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.0.5-.a) (0.1,0.1);
