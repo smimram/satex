@@ -50,6 +50,7 @@ module Generator = struct
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
+          | "bordercolor",x -> "labelbordercolor",x
           | lv -> lv
         ) options
     in
@@ -57,6 +58,7 @@ module Generator = struct
       List.map
         (function
           | "labelsize",x -> ["labelwidth",x;"labelheight",x]
+          | "shape","blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -381,14 +383,22 @@ module Stack = struct
         List.map
           (function
             | `Rounded_corners -> "rounded corners=1pt"
+            | `Color c -> c
           ) options
         |> String.concat ","
       in
       let p = p |> List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) |> String.concat " -- " in
       output_string oc (Printf.sprintf "    \\filldraw[%s,fill=white] %s -- cycle;\n" options p)
 
-    let disk oc (x,y) (rx,ry) =
-      output_string oc (Printf.sprintf "    \\filldraw[fill=white] (%f,%f) ellipse (%f and %f);\n" x y rx ry)
+    let disk oc ?(options=[]) (x,y) (rx,ry) =
+      let options =
+        List.map
+          (function
+            | `Color c -> c
+          ) options
+        |> String.concat ","
+      in
+      output_string oc (Printf.sprintf "    \\filldraw[%s,fill=white] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
 
     let text oc (x,y) s =
       output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$%s$};\n" x y s)
@@ -460,11 +470,14 @@ module Stack = struct
       );
       (* Draw shape. *)
       (
+        let options =
+          (try [`Color (List.assoc "labelbordercolor" g.G.options)] with Not_found -> [])
+        in
         match G.shape g with
         | `Circle ->
           let rx = G.label_width g /. 2. in
           let ry = G.label_height g /. 2. in
-          Draw.disk d (x,y) (rx,ry)
+          Draw.disk d ~options (x,y) (rx,ry)
         | `Triangle ->
           if G.target g = 1 then
             Draw.polygon d [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
@@ -485,7 +498,8 @@ module Stack = struct
           let x2 = x2 +. 0.25 in
           let y1 = y -. 0.25 in
           let y2 = y +. 0.25 in
-          Draw.polygon d ~options:[`Rounded_corners] [x1,y1; x2,y1; x2,y2; x1,y2]
+          let options = `Rounded_corners::options in
+          Draw.polygon d ~options [x1,y1; x2,y1; x2,y2; x1,y2]
         | _ -> ()
       );
       (* Draw label. *)
