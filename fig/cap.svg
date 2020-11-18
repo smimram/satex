@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="cap.pdf"
-   id="svg12"
-   version="1.2"
-   viewBox="0 0 28.745 14.572"
+   width="28.745pt"
    height="14.572pt"
-   width="28.745pt">
+   viewBox="0 0 28.745 14.572"
+   version="1.2"
+   id="svg12"
+   sodipodi:docname="cap.pdf">
   <metadata
      id="metadata16">
     <rdf:RDF>
@@ -25,37 +25,37 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     id="namedview14"
-     inkscape:window-height="480"
-     inkscape:window-width="640"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0"
-     guidetolerance="10"
-     gridtolerance="10"
-     objecttolerance="10"
-     borderopacity="1"
+     pagecolor="#ffffff"
      bordercolor="#666666"
-     pagecolor="#ffffff" />
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview14" />
   <defs
      id="defs5">
     <clipPath
        id="clip1">
       <path
-         id="path2"
-         d="M 0 0 L 28.746094 0 L 28.746094 14.570312 L 0 14.570312 Z M 0 0 " />
+         d="M 0 0 L 28.746094 0 L 28.746094 14.570312 L 0 14.570312 Z M 0 0 "
+         id="path2" />
     </clipPath>
   </defs>
   <g
      id="surface2">
     <g
-       id="g9"
+       clip-path="url(#clip1)"
        clip-rule="nonzero"
-       clip-path="url(#clip1)">
+       id="g9">
       <path
-         id="path7"
-         transform="matrix(1,0,0,-1,0.199,-13.974)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 0.00021875 -28.345094 C 0.00021875 -20.520875 6.343969 -14.173219 14.172094 -14.173219 C 22.000219 -14.173219 28.347875 -20.520875 28.347875 -28.345094 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,-13.974)"
+         id="path7" />
     </g>
   </g>
 </svg>

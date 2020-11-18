@@ -58,6 +58,7 @@ module Generator = struct
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
           | "bordercolor",x -> "labelbordercolor",x
+          | "fill",x -> "labelcolor",x
           | lv -> lv
         ) options
     in
@@ -405,21 +406,23 @@ module Stack = struct
           (function
             | `Rounded_corners -> "rounded corners=1pt"
             | `Color c -> c
+            | `Fill c -> "fill="^c
           ) options
         |> String.concat ","
       in
       let p = p |> List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) |> String.concat " -- " in
-      output_string oc (Printf.sprintf "    \\filldraw[%s,fill=white] %s -- cycle;\n" options p)
+      output_string oc (Printf.sprintf "    \\filldraw[fill=white,%s] %s -- cycle;\n" options p)
 
     let disk oc ?(options=[]) (x,y) (rx,ry) =
       let options =
         List.map
           (function
             | `Color c -> c
+            | `Fill c -> "fill="^c
           ) options
         |> String.concat ","
       in
-      output_string oc (Printf.sprintf "    \\filldraw[%s,fill=white] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
+      output_string oc (Printf.sprintf "    \\filldraw[fill=white,%s] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
 
     let text oc (x,y) s =
       output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$%s$};\n" x y s)
@@ -526,7 +529,8 @@ module Stack = struct
       (* Draw shape. *)
       (
         let options =
-          (try [`Color (List.assoc "labelbordercolor" g.G.options)] with Not_found -> [])
+          (try [`Color (List.assoc "labelbordercolor" g.G.options)] with Not_found -> [])@
+          (try [`Fill (List.assoc "labelcolor" g.G.options)] with Not_found -> [])
         in
         match G.shape g with
         | `Circle ->

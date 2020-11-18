@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="mergeleft.pdf"
-   id="svg19"
-   version="1.2"
-   viewBox="0 0 28.745 28.745"
+   width="28.745pt"
    height="28.745pt"
-   width="28.745pt">
+   viewBox="0 0 28.745 28.745"
+   version="1.2"
+   id="svg19"
+   sodipodi:docname="mergeleft.pdf">
   <metadata
      id="metadata23">
     <rdf:RDF>
@@ -25,53 +25,53 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     id="namedview21"
-     inkscape:window-height="480"
-     inkscape:window-width="640"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0"
-     guidetolerance="10"
-     gridtolerance="10"
-     objecttolerance="10"
-     borderopacity="1"
+     pagecolor="#ffffff"
      bordercolor="#666666"
-     pagecolor="#ffffff" />
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview21" />
   <defs
      id="defs8">
     <clipPath
        id="clip1">
       <path
-         id="path2"
-         d="M 28 0 L 28.746094 0 L 28.746094 28.746094 L 28 28.746094 Z M 28 0 " />
+         d="M 28 0 L 28.746094 0 L 28.746094 28.746094 L 28 28.746094 Z M 28 0 "
+         id="path2" />
     </clipPath>
     <clipPath
        id="clip2">
       <path
-         id="path5"
-         d="M 0 0 L 28.746094 0 L 28.746094 15 L 0 15 Z M 0 0 " />
+         d="M 0 0 L 28.746094 0 L 28.746094 15 L 0 15 Z M 0 0 "
+         id="path5" />
     </clipPath>
   </defs>
   <g
      id="surface2">
     <g
-       id="g12"
+       clip-path="url(#clip1)"
        clip-rule="nonzero"
-       clip-path="url(#clip1)">
+       id="g12">
       <path
-         id="path10"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 28.347875 -0.00021875 L 28.347875 -28.347875 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path10" />
     </g>
     <g
-       id="g16"
+       clip-path="url(#clip2)"
        clip-rule="nonzero"
-       clip-path="url(#clip2)">
+       id="g16">
       <path
-         id="path14"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 0.00021875 -0.00021875 C 0.00021875 -7.828344 12.691625 -14.172094 28.347875 -14.172094 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path14" />
     </g>
   </g>
 </svg>

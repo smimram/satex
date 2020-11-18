@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="frobl.pdf"
-   id="svg56"
-   version="1.2"
-   viewBox="0 0 57.091 57.091"
+   width="57.091pt"
    height="57.091pt"
-   width="57.091pt">
+   viewBox="0 0 57.091 57.091"
+   version="1.2"
+   id="svg56"
+   sodipodi:docname="frobl.pdf">
   <metadata
      id="metadata60">
     <rdf:RDF>
@@ -25,140 +25,140 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     id="namedview58"
-     inkscape:window-height="480"
-     inkscape:window-width="640"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0"
-     guidetolerance="10"
-     gridtolerance="10"
-     objecttolerance="10"
-     borderopacity="1"
+     pagecolor="#ffffff"
      bordercolor="#666666"
-     pagecolor="#ffffff" />
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview58" />
   <defs
      id="defs17">
     <clipPath
        id="clip1">
       <path
-         id="path2"
-         d="M 56 21 L 57.089844 21 L 57.089844 29 L 56 29 Z M 56 21 " />
+         d="M 56 21 L 57.089844 21 L 57.089844 29 L 56 29 Z M 56 21 "
+         id="path2" />
     </clipPath>
     <clipPath
        id="clip2">
       <path
-         id="path5"
-         d="M 28 7 L 57.089844 7 L 57.089844 22 L 28 22 Z M 28 7 " />
+         d="M 28 7 L 57.089844 7 L 57.089844 22 L 28 22 Z M 28 7 "
+         id="path5" />
     </clipPath>
     <clipPath
        id="clip3">
       <path
-         id="path8"
-         d="M 14 49 L 15 49 L 15 57.089844 L 14 57.089844 Z M 14 49 " />
+         d="M 14 49 L 15 49 L 15 57.089844 L 14 57.089844 Z M 14 49 "
+         id="path8" />
     </clipPath>
     <clipPath
        id="clip4">
       <path
-         id="path11"
-         d="M 56 28 L 57.089844 28 L 57.089844 43 L 56 43 Z M 56 28 " />
+         d="M 56 28 L 57.089844 28 L 57.089844 43 L 56 43 Z M 56 28 "
+         id="path11" />
     </clipPath>
     <clipPath
        id="clip5">
       <path
-         id="path14"
-         d="M 56 42 L 57.089844 42 L 57.089844 57.089844 L 56 57.089844 Z M 56 42 " />
+         d="M 56 42 L 57.089844 42 L 57.089844 57.089844 L 56 57.089844 Z M 56 42 "
+         id="path14" />
     </clipPath>
   </defs>
   <g
      id="surface2">
     <path
-       id="path19"
-       transform="matrix(1,0,0,-1,0.199,0.199)"
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 0.00021875 -0.00021875 L 0.00021875 -14.172094 "
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
-    <path
-       id="path21"
        transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path19" />
+    <path
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 0.00021875 -14.172094 L 0.00021875 -28.347875 "
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
-    <path
-       id="path23"
        transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path21" />
+    <path
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 42.51975 -0.00021875 L 42.51975 -7.086156 "
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
-    <path
-       id="path25"
        transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path23" />
+    <path
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 28.347875 -21.261938 L 28.347875 -28.347875 "
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+       transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path25" />
     <g
-       id="g29"
+       clip-path="url(#clip1)"
        clip-rule="nonzero"
-       clip-path="url(#clip1)">
+       id="g29">
       <path
-         id="path27"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 56.695531 -21.261938 L 56.695531 -28.347875 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path27" />
     </g>
     <path
-       id="path31"
+       style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;"
        d="M 28.546875 21.460938 L 56.894531 21.460938 L 42.71875 7.285156 Z M 28.546875 21.460938 "
-       style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" />
+       id="path31" />
     <g
-       id="g35"
+       clip-path="url(#clip2)"
        clip-rule="nonzero"
-       clip-path="url(#clip2)">
+       id="g35">
       <path
-         id="path33"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 28.347875 -21.261938 L 56.695531 -21.261938 L 42.51975 -7.086156 Z M 28.347875 -21.261938 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path33" />
     </g>
     <path
-       id="path37"
-       transform="matrix(1,0,0,-1,0.199,0.199)"
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 0.00021875 -28.347875 L 0.00021875 -35.433813 "
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
-    <path
-       id="path39"
        transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path37" />
+    <path
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 28.347875 -28.347875 L 28.347875 -35.433813 "
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+       transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path39" />
     <g
-       id="g43"
+       clip-path="url(#clip3)"
        clip-rule="nonzero"
-       clip-path="url(#clip3)">
+       id="g43">
       <path
-         id="path41"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 14.172094 -49.605688 L 14.172094 -56.695531 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path41" />
     </g>
     <path
-       id="path45"
-       transform="matrix(1,0,0,-1,0.199,0.199)"
+       style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 0.00021875 -35.433813 L 28.347875 -35.433813 L 14.172094 -49.605688 Z M 0.00021875 -35.433813 "
-       style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+       transform="matrix(1,0,0,-1,0.199,0.199)"
+       id="path45" />
     <g
-       id="g49"
+       clip-path="url(#clip4)"
        clip-rule="nonzero"
-       clip-path="url(#clip4)">
+       id="g49">
       <path
-         id="path47"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 56.695531 -28.347875 L 56.695531 -42.51975 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path47" />
     </g>
     <g
-       id="g53"
+       clip-path="url(#clip5)"
        clip-rule="nonzero"
-       clip-path="url(#clip5)">
+       id="g53">
       <path
-         id="path51"
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
          d="M 56.695531 -42.51975 L 56.695531 -56.695531 "
-         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" />
+         transform="matrix(1,0,0,-1,0.199,0.199)"
+         id="path51" />
     </g>
   </g>
 </svg>

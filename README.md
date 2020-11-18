@@ -99,6 +99,12 @@ typesets
 
 ![](fig/mu-label.svg)
 
+## Colors on operators
+
+Colors can be specified with `fill=color` option, e.g.
+
+![](fig/fill.svg)
+
 ## Labels on wires
 
 The special operator `label` allows adding labels to wires. The option `d` or
