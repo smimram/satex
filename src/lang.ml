@@ -368,7 +368,7 @@ module Stack = struct
     let create fname id options =
       let options = String.concat "," options in
       let oc = open_out_gen [Open_creat; Open_append] 0o644 fname in
-      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[baseline=(current bounding box.center),yscale=-1,every path/.style={join=round,cap=round},%s]\n" id options);
+      output_string oc (Printf.sprintf "\\defsatexfig{%d}{\n  \\begin{tikzpicture}[baseline=(current bounding box.center),yscale=-1,scale=0.5,every path/.style={join=round,cap=round},%s]\n" id options);
       oc
 
     let close oc =
