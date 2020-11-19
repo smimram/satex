@@ -10,6 +10,6 @@
 \deftwocell[shape=blank,"\vdots "]{vdots : 1 -> 1}
 \deftwocell[dots]{dots : 2 -> 2}
 \deftwocell[rectangle,"\psi "]{psi : 2 -> 2}
-0:\twocell[]{(1 * dots) * (eps * psi) * dots}
+0:\twocell[]{((0->1) * (0->1)["a"]) * mu * (1->1)[rectangle,"f"]}
 1:\twocell[]{1*1*1*1}
 2:\twocell[]{(1 -> 0)*0*0*0}

@@ -9,8 +9,8 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="25.218pt"
-   height="30.164pt"
-   viewBox="0 0 25.218 30.164"
+   height="32.999pt"
+   viewBox="0 0 25.218 32.999"
    version="1.2"
    id="svg39"
    sodipodi:docname="mu-lwires.pdf">
@@ -97,23 +97,23 @@
     </g>
     <path
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M -0.000875 -14.174937 L -0.000875 -17.717906 "
-       transform="matrix(1,0,0,-1,5.579,-5.839)"
+       d="M -0.000875 -14.174906 L -0.000875 -17.717875 "
+       transform="matrix(1,0,0,-1,5.579,-4.421)"
        id="path26" />
     <path
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M 14.174906 -14.174937 L 14.174906 -17.717906 "
-       transform="matrix(1,0,0,-1,5.579,-5.839)"
+       d="M 14.174906 -14.174906 L 14.174906 -17.717875 "
+       transform="matrix(1,0,0,-1,5.579,-4.421)"
        id="path28" />
     <path
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M 7.085062 -24.803844 L 7.085062 -28.346812 "
-       transform="matrix(1,0,0,-1,5.579,-5.839)"
+       d="M 7.085062 -24.803812 L 7.085062 -28.346781 "
+       transform="matrix(1,0,0,-1,5.579,-4.421)"
        id="path30" />
     <path
        style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M -0.000875 -17.717906 L 14.174906 -17.717906 L 7.085062 -24.803844 Z M -0.000875 -17.717906 "
-       transform="matrix(1,0,0,-1,5.579,-5.839)"
+       d="M -0.000875 -17.717875 L 14.174906 -17.717875 L 7.085062 -24.803812 Z M -0.000875 -17.717875 "
+       transform="matrix(1,0,0,-1,5.579,-4.421)"
        id="path32" />
     <g
        style="fill:rgb(0%,0%,0%);fill-opacity:1;"
@@ -121,7 +121,7 @@
       <use
          xlink:href="#glyph0-3"
          x="10.62"
-         y="26.843"
+         y="29.678"
          id="use34" />
     </g>
   </g>
