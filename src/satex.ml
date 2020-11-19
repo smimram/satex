@@ -1,4 +1,4 @@
-let usage = "strit [options] file"
+let usage = "satex [options] file"
 
 let parse f =
   let ic = open_in f in

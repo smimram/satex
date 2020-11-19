@@ -539,9 +539,9 @@ module Stack = struct
           Draw.disk d ~options (x,y) (rx,ry)
         | `Triangle ->
           if G.target g = 1 then
-            Draw.polygon d [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
+            Draw.polygon d ~options [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
           else
-            Draw.polygon d [G.get_target g 0,y+.0.25; G.get_target g (G.target g-1), y+.0.25; G.get_source g 0, y-.0.25]
+            Draw.polygon d ~options [G.get_target g 0,y+.0.25; G.get_target g (G.target g-1), y+.0.25; G.get_source g 0, y-.0.25]
         | `Rectangle ->
           let x1 =
             min
