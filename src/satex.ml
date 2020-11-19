@@ -47,7 +47,12 @@ let parse f =
 let () =
   try
     let fname = ref "" in
-    Arg.parse (Arg.align []) (fun s -> fname := s) usage;
+    Arg.parse
+      (Arg.align
+         [
+           "--version", Arg.Unit (fun () -> print_endline "satex version 0.0"; exit 0), "Show version."
+         ]
+      ) (fun s -> fname := s) usage;
     if !fname = "" then Common.error "Please provide a .satex file name as input.";
     let satix_fname = Filename.chop_extension !fname ^ ".satix" in
     let decls = parse !fname in
