@@ -277,6 +277,9 @@ module Stack = struct
         last_target := G.get_target g (i+1)
       done;
       if G.shape g = `Space then last_target := !last_target +. G.get_float g "width";
+      (* Enforce propagation for nullary operations. *)
+      if G.source g = 0 then last_source := max !last_source !last_target;
+      if G.target g = 0 then last_target := max !last_target !last_source;
       (* Propagate down and up. *)
       if G.shape g = `Label || G.shape g = `Dots || G.shape g = `Crossing then
         (

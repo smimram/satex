@@ -1,5 +1,6 @@
-\deftwocell[cap,arrow]{eta : 0 -> 2}
-\deftwocell[cup,arrow]{eps : 2 -> 0}
+\deftwocell[cap,arrow]{cap : 0 -> 2}
+\deftwocell[cup,arrow]{cup : 2 -> 0}
+\deftwocell[circle]{eps : 1 -> 0}
 \deftwocell[triangle]{mu : 2 -> 1}
 \deftwocell[triangle]{delta : 1 -> 2}
 \deftwocell[cap,arrow=left]{I : 2 -> 0}
@@ -8,6 +9,7 @@
 \deftwocell[cap,arrow=left]{J- : 0 -> 2}
 \deftwocell[shape=blank,"\vdots "]{vdots : 1 -> 1}
 \deftwocell[dots]{dots : 2 -> 2}
-0:\twocell[]{(2->1)["x"]}
+\deftwocell[rectangle,"\psi "]{psi : 2 -> 2}
+0:\twocell[]{(1 * dots) * (eps * psi) * dots}
 1:\twocell[]{1*1*1*1}
 2:\twocell[]{(1 -> 0)*0*0*0}
