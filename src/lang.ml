@@ -50,6 +50,8 @@ module Generator = struct
           | "blank", "" -> "shape", "blank"
           | "dots", "" -> "shape", "dots"
           | "crossing", "" -> "shape", "crossing"
+          | "crossingr", "" -> "shape", "crossingr"
+          | "crossingl", "" -> "shape", "crossingl"
           | "braid", "" -> "shape", "braid"
           | "braid'", "" -> "shape", "braid'"
           | "mergeleft", "" -> "shape", "mergeleft"
@@ -68,6 +70,8 @@ module Generator = struct
           | "labelsize", x -> ["labelwidth", x; "labelheight", x]
           | "shape", "blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
           | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"]
+          | "shape", "crossingr" -> ["shape", "crossing"; "kind", "right"]
+          | "shape", "crossingl" -> ["shape", "crossing"; "kind", "left"]
           | "shape", "braid" -> ["shape", "crossing"; "kind", "braid"]
           | "shape", "braid'" -> ["shape", "crossing"; "kind", "braid'"]
           | lv -> [lv]
@@ -494,21 +498,21 @@ module Stack = struct
             let kind = try G.get g "kind" with Not_found -> "crossing" in
             let x = g.G.source in
             let n = Array.length x in
-            if kind = "braid" then
+            if kind = "braid" || kind = "right" then
               (
                 for i = 1 to n-1 do
                   Draw.line d (x.(i),y-.0.5) (x.(i-1),y+.0.5);
                   let a = float_of_int i /. float_of_int n in
-                  Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.0.5+.a) (0.1,0.1);
+                  if kind = "braid" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.0.5+.a) (0.1,0.1);
                 done;
                 Draw.line d (x.(0),y-.0.5) (x.(n-1),y+.0.5)
               )
-            else if kind = "braid'" then
+            else if kind = "braid'" || kind = "left" then
               (
                 for i = 0 to n-2 do
                   Draw.line d (x.(i),y-.0.5) (x.(i+1),y+.0.5);
                   let a = float_of_int (i+1) /. float_of_int n in
-                  Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.0.5-.a) (0.1,0.1);
+                  if kind = "braid'" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.0.5-.a) (0.1,0.1);
                 done;
                 Draw.line d (x.(n-1),y-.0.5) (x.(0),y+.0.5)
               )
