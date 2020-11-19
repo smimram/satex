@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="28.745pt"
-   height="14.572pt"
-   viewBox="0 0 28.745 14.572"
+   width="14.572pt"
+   height="7.485pt"
+   viewBox="0 0 14.572 7.485"
    version="1.2"
    id="svg12"
    sodipodi:docname="cap.pdf">
@@ -41,7 +41,7 @@
     <clipPath
        id="clip1">
       <path
-         d="M 0 0 L 28.746094 0 L 28.746094 14.570312 L 0 14.570312 Z M 0 0 "
+         d="M 0 0 L 14.570312 0 L 14.570312 7.484375 L 0 7.484375 Z M 0 0 "
          id="path2" />
     </clipPath>
   </defs>
@@ -53,8 +53,8 @@
        id="g9">
       <path
          style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-         d="M 0.00021875 -28.345094 C 0.00021875 -20.520875 6.343969 -14.173219 14.172094 -14.173219 C 22.000219 -14.173219 28.347875 -20.520875 28.347875 -28.345094 "
-         transform="matrix(1,0,0,-1,0.199,-13.974)"
+         d="M 0.00021875 -14.172156 C 0.00021875 -10.258094 3.172094 -7.086219 7.086156 -7.086219 C 11.000219 -7.086219 14.172094 -10.258094 14.172094 -14.172156 "
+         transform="matrix(1,0,0,-1,0.199,-6.887)"
          id="path7" />
     </g>
   </g>

@@ -7,14 +7,14 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="28.745pt"
-   height="28.745pt"
-   viewBox="0 0 28.745 28.745"
+   width="14.572pt"
+   height="14.572pt"
+   viewBox="0 0 14.572 14.572"
    version="1.2"
-   id="svg7"
+   id="svg14"
    sodipodi:docname="crossing.pdf">
   <metadata
-     id="metadata13">
+     id="metadata18">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -24,8 +24,6 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <defs
-     id="defs11" />
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -37,18 +35,32 @@
      inkscape:pageshadow="2"
      inkscape:window-width="640"
      inkscape:window-height="480"
-     id="namedview9" />
+     id="namedview16" />
+  <defs
+     id="defs5">
+    <clipPath
+       id="clip1">
+      <path
+         d="M 0 0 L 14.570312 0 L 14.570312 14.570312 L 0 14.570312 Z M 0 0 "
+         id="path2" />
+    </clipPath>
+  </defs>
   <g
      id="surface2">
-    <path
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M 0.00021875 -0.00021875 L 28.347875 -28.347875 "
-       transform="matrix(1,0,0,-1,0.199,0.199)"
-       id="path2" />
-    <path
-       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M 28.347875 -0.00021875 L 0.00021875 -28.347875 "
-       transform="matrix(1,0,0,-1,0.199,0.199)"
-       id="path4" />
+    <g
+       clip-path="url(#clip1)"
+       clip-rule="nonzero"
+       id="g11">
+      <path
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
+         d="M 0.00021875 0.00078125 L 14.172094 -14.175 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
+         id="path7" />
+      <path
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
+         d="M 14.172094 0.00078125 L 0.00021875 -14.175 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
+         id="path9" />
+    </g>
   </g>
 </svg>

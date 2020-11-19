@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="28.745pt"
-   height="14.572pt"
-   viewBox="0 0 28.745 14.572"
+   width="14.572pt"
+   height="7.485pt"
+   viewBox="0 0 14.572 7.485"
    version="1.2"
    id="svg12"
    sodipodi:docname="cup.pdf">
@@ -41,7 +41,7 @@
     <clipPath
        id="clip1">
       <path
-         d="M 0 0 L 28.746094 0 L 28.746094 14.570312 L 0 14.570312 Z M 0 0 "
+         d="M 0 0 L 14.570312 0 L 14.570312 7.484375 L 0 7.484375 Z M 0 0 "
          id="path2" />
     </clipPath>
   </defs>
@@ -53,8 +53,8 @@
        id="g9">
       <path
          style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-         d="M 0.00021875 0.00078125 C 0.00021875 -7.827344 6.343969 -14.175 14.172094 -14.175 C 22.000219 -14.175 28.347875 -7.827344 28.347875 0.00078125 "
-         transform="matrix(1,0,0,-1,0.199,0.2)"
+         d="M 0.00021875 -0.00021875 C 0.00021875 -3.914281 3.172094 -7.086156 7.086156 -7.086156 C 11.000219 -7.086156 14.172094 -3.914281 14.172094 -0.00021875 "
+         transform="matrix(1,0,0,-1,0.199,0.199)"
          id="path7" />
     </g>
   </g>

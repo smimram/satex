@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="28.745pt"
-   height="28.745pt"
-   viewBox="0 0 28.745 28.745"
+   width="14.572pt"
+   height="14.572pt"
+   viewBox="0 0 14.572 14.572"
    version="1.2"
    id="svg19"
    sodipodi:docname="mergeright.pdf">
@@ -41,13 +41,13 @@
     <clipPath
        id="clip1">
       <path
-         d="M 0 0 L 1 0 L 1 28.746094 L 0 28.746094 Z M 0 0 "
+         d="M 0 0 L 1 0 L 1 14.570312 L 0 14.570312 Z M 0 0 "
          id="path2" />
     </clipPath>
     <clipPath
        id="clip2">
       <path
-         d="M 0 0 L 28.746094 0 L 28.746094 15 L 0 15 Z M 0 0 "
+         d="M 0 0 L 14.570312 0 L 14.570312 8 L 0 8 Z M 0 0 "
          id="path5" />
     </clipPath>
   </defs>
@@ -59,8 +59,8 @@
        id="g12">
       <path
          style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-         d="M 0.00021875 -0.00021875 L 0.00021875 -28.347875 "
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 0.00021875 0.00078125 L 0.00021875 -14.175 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
          id="path10" />
     </g>
     <g
@@ -69,8 +69,8 @@
        id="g16">
       <path
          style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-         d="M 28.347875 -0.00021875 C 28.347875 -7.828344 15.656469 -14.172094 0.00021875 -14.172094 "
-         transform="matrix(1,0,0,-1,0.199,0.199)"
+         d="M 14.172094 0.00078125 C 14.172094 -3.913281 7.828344 -7.085156 0.00021875 -7.085156 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
          id="path14" />
     </g>
   </g>
