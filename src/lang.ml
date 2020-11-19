@@ -40,8 +40,8 @@ module Generator = struct
       List.map
         (function
           | "arrow","" -> "arrow","right"
-          | "up","" | "u","" -> "position","0.2"
-          | "down","" | "d","" -> "position","0.8"
+          | "up","" | "u","" -> "position","0.3"
+          | "down","" | "d","" -> "position","0.7"
           | "cap", ""
           | "cup", ""
           | "shape", "cup" -> "shape", "cap"
