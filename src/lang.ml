@@ -79,7 +79,7 @@ module Generator = struct
     in
     (* Set default options. *)
     let options = options@["arrow", "none"; "position", "0.5"] in
-    let options = options@(if List.mem_assoc "label" options then ["labelwidth", ".5"; "labelheight", ".5"] else ["labelwidth", ".2"; "labelheight", ".2"]) in
+    let options = options@(if List.mem_assoc "label" options then ["labelwidth", ".6"; "labelheight", ".6"] else ["labelwidth", ".3"; "labelheight", ".3"]) in
     (* Parse options. *)
     List.iter_right
       (function
@@ -560,10 +560,11 @@ module Stack = struct
               (if G.source g > 0 then G.get_source g (G.source g - 1) else Float.neg_infinity)
               (if G.target g > 0 then G.get_target g (G.target g - 1) else Float.neg_infinity)
           in
+          let h = G.label_height g in
           let x1 = x1 -. 0.25 in
           let x2 = x2 +. 0.25 in
-          let y1 = y -. 0.25 in
-          let y2 = y +. 0.25 in
+          let y1 = y -. h /. 2. in
+          let y2 = y +. h /. 2. in
           let options = `Rounded_corners::options in
           Draw.polygon d ~options [x1,y1; x2,y1; x2,y2; x1,y2]
         | _ -> ()
