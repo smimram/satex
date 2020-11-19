@@ -432,7 +432,7 @@ module Stack = struct
       output_string oc (Printf.sprintf "    \\filldraw[fill=white,%s] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
 
     let text oc (x,y) s =
-      output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$%s$};\n" x y s)
+      output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$\\scriptstyle %s$};\n" x y s)
   end
 
   let draw fname id options f =
@@ -443,7 +443,7 @@ module Stack = struct
         let x1 = if G.source g > 0 then Some (g.G.source.(0), g.G.source.(G.source g - 1)) else None in
         let x2 = if G.target g > 0 then Some (g.G.target.(0), g.G.target.(G.target g - 1)) else None in
         match x1, x2 with
-        | Some (x1,x1'), Some (x2,x2') -> Float.mean (min x1 x2) (max x2 x2')
+        | Some (x1,x1'), Some (x2,x2') -> Float.mean (min x1 x2) (max x1' x2')
         | Some (x1,x1'), None -> Float.mean x1 x1'
         | None, Some (x2,x2') -> Float.mean x2 x2'
         | None, None -> assert (G.shape g = `Space); 0.
