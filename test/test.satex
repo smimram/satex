@@ -8,6 +8,6 @@
 \deftwocell[cap,arrow=left]{J- : 0 -> 2}
 \deftwocell[shape=blank,"\vdots "]{vdots : 1 -> 1}
 \deftwocell[dots]{dots : 2 -> 2}
-0:\twocell[]{dots * mu}
+0:\twocell[]{(2->1)["x"]}
 1:\twocell[]{1*1*1*1}
 2:\twocell[]{(1 -> 0)*0*0*0}
