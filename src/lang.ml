@@ -53,10 +53,16 @@ module Generator = struct
           | "crossing", "" -> "shape", "crossing"
           | "crossingr", "" -> "shape", "crossingr"
           | "crossingl", "" -> "shape", "crossingl"
+          | "crossing'", "" -> "shape", "crossing'"
+          | "crossingr'", "" -> "shape", "crossingr'"
+          | "crossingl'", "" -> "shape", "crossingl'"
           | "braid", "" -> "shape", "braidr"
           | "shape", "braid" -> "shape", "braidr"
           | "braidr", "" -> "shape", "braidr"
           | "braidl", "" -> "shape", "braidl"
+          | "braid'", "" -> "shape", "braidr'"
+          | "braidr'", "" -> "shape", "braidr'"
+          | "braidl'", "" -> "shape", "braidl'"
           | "mergeleft", "" -> "shape", "mergeleft"
           | "mergeright", "" -> "shape", "mergeright"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
@@ -78,6 +84,11 @@ module Generator = struct
           | "shape", "crossingl" -> ["shape", "crossing"; "kind", "left"]
           | "shape", "braidr" -> ["shape", "crossing"; "kind", "braidr"]
           | "shape", "braidl" -> ["shape", "crossing"; "kind", "braidl"]
+          | "shape", "crossing'" -> ["shape", "crossing"; "kind", "crossing'"]
+          | "shape", "crossingr'" -> ["shape", "crossing"; "kind", "right'"]
+          | "shape", "crossingl'" -> ["shape", "crossing"; "kind", "left'"]
+          | "shape", "braidr'" -> ["shape", "crossing"; "kind", "braidr'"]
+          | "shape", "braidl'" -> ["shape", "crossing"; "kind", "braidl'"]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -532,30 +543,48 @@ module Stack = struct
         else if G.shape g = `Crossing then
           (
             let kind = try G.get g "kind" with Not_found -> "crossing" in
+            let kind, variant =
+              (* do we have a variant starting with straigt lines *)
+              if kind.[String.length kind-1] = '\'' then
+                String.sub kind 0 (String.length kind - 1), true
+              else
+                kind, false
+            in
             let x = g.G.source in
             let n = Array.length x in
+            let dy =
+              if variant then
+                (
+                  for i = 0 to n-1 do
+                    Draw.line d (x.(i),y-.0.5) (x.(i),y-.0.25);
+                    Draw.line d (x.(i),y+.0.25) (x.(i),y+.0.5);
+                  done;
+                  0.25
+                )
+              else 0.5
+            in
             if kind = "braidr" || kind = "right" then
               (
                 for i = 1 to n-1 do
-                  Draw.line d (x.(i),y-.0.5) (x.(i-1),y+.0.5);
+                  Draw.line d (x.(i),y-.dy) (x.(i-1),y+.dy);
                   let a = float_of_int i /. float_of_int n in
-                  if kind = "braidr" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.0.5+.a) (0.1,0.1);
+                  if kind = "braidr" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.dy+.(a*.2.*.dy)) (0.1,0.1);
                 done;
                 Draw.line d (x.(0),y-.0.5) (x.(n-1),y+.0.5)
               )
             else if kind = "braidl" || kind = "left" then
               (
                 for i = 0 to n-2 do
-                  Draw.line d (x.(i),y-.0.5) (x.(i+1),y+.0.5);
+                  Draw.line d (x.(i),y-.dy) (x.(i+1),y+.dy);
                   let a = float_of_int (i+1) /. float_of_int n in
-                  if kind = "braidl" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.0.5-.a) (0.1,0.1);
+                  if kind = "braidl" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.dy-.a*.2.*.dy) (0.1,0.1);
                 done;
-                Draw.line d (x.(n-1),y-.0.5) (x.(0),y+.0.5)
+                Draw.line d (x.(n-1),y-.dy) (x.(0),y+.dy)
               )
             else
               (
                 for i = 0 to n-1 do
-                  Draw.line d (x.(i),y-.0.5) (x.(n-1-i),y+.0.5);
+                  Draw.line d (x.(i),y-.dy) (x.(n-1-i),y+.dy);
                 done
               )
           )
