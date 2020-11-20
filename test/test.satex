@@ -11,6 +11,6 @@
 \deftwocell[shape=blank,"\vdots "]{vdots : 1 -> 1}
 \deftwocell[dots]{dots : 2 -> 2}
 \deftwocell[rectangle,"\psi "]{psi : 2 -> 2}
-0:\twocell[]{(2->2)[crossing']}
+0:\twocell[]{(2->2)[braidr']}
 1:\twocell[]{1*1*1*1}
 2:\twocell[]{(1 -> 0)*0*0*0}

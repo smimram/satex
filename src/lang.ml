@@ -570,7 +570,7 @@ module Stack = struct
                   let a = float_of_int i /. float_of_int n in
                   if kind = "braidr" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.dy+.(a*.2.*.dy)) (0.1,0.1);
                 done;
-                Draw.line d (x.(0),y-.0.5) (x.(n-1),y+.0.5)
+                Draw.line d (x.(0),y-.dy) (x.(n-1),y+.dy)
               )
             else if kind = "braidl" || kind = "left" then
               (
