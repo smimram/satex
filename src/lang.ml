@@ -141,7 +141,7 @@ module Generator = struct
 
   let shape g = g.shape
 
-  let id () = create 1 1 ["name", "1"; "shape","none"]
+  let id () = create 1 1 ["name", "1"; "shape", "none"]
 
   let get g o = List.assoc o g.options
 
