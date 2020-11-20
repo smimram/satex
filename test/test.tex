@@ -9,6 +9,7 @@
 \deftwocell[cap,arrow]{cap : 0 -> 2}
 \deftwocell[cup,arrow]{cup : 2 -> 0}
 \deftwocell[circle]{eps : 1 -> 0}
+\deftwocell[circle]{eta : 0 -> 1}
 \deftwocell[triangle]{mu : 2 -> 1}
 \deftwocell[triangle]{delta : 1 -> 2}
 \deftwocell[cap,arrow=left]{I : 2 -> 0}
@@ -23,16 +24,24 @@
 \maketitle
 
 \[
-  \twocell{
+  \twocell{dots * (2->6)[rectangle,"\psi"] * (dots * mu * dots)}
+\]
+
+% \[
+  % \twocell{(eta * eta * eta) * (1 * dots)}
+% \]
+
+% \[
+  % \twocell{
     % (delta * 2) *
-    (dots * 2) * (mu * 2)}
+    % (dots * 2) * (mu * 2)}
   % \twocell{
     % (2 * cup * 2)
     % * (dots * dots)
     % *
     % (2 * cap * 2)
   % }
-\]
+% \]
 
 % \[
   % \twocell{vdots}

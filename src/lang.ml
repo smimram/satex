@@ -256,7 +256,12 @@ module Stack = struct
     let y = ref 0. in
     List.iter
       (fun f ->
-         let height g = try Some (G.get_float g "height") with Not_found -> None in
+         let height g =
+           try Some (G.get_float g "height")
+           with Not_found ->
+             if G.shape g = `None then None (* Identities can have null height *)
+             else Some 1.
+         in
          let max h h' =
            match h, h' with
              | None, Some h

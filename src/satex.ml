@@ -50,7 +50,7 @@ let () =
     Arg.parse
       (Arg.align
          [
-           "--version", Arg.Unit (fun () -> print_endline "satex version 0.0 (2020-11-20 10:46)"; exit 0), "Show version."
+           "--version", Arg.Unit (fun () -> print_endline "satex version 0.0"; exit 0), "Show version."
          ]
       ) (fun s -> fname := s) usage;
     if !fname = "" then Common.error "Please provide a .satex file name as input.";

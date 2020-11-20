@@ -1,6 +1,7 @@
 \deftwocell[cap,arrow]{cap : 0 -> 2}
 \deftwocell[cup,arrow]{cup : 2 -> 0}
 \deftwocell[circle]{eps : 1 -> 0}
+\deftwocell[circle]{eta : 0 -> 1}
 \deftwocell[triangle]{mu : 2 -> 1}
 \deftwocell[triangle]{delta : 1 -> 2}
 \deftwocell[cap,arrow=left]{I : 2 -> 0}
@@ -10,6 +11,6 @@
 \deftwocell[shape=blank,"\vdots "]{vdots : 1 -> 1}
 \deftwocell[dots]{dots : 2 -> 2}
 \deftwocell[rectangle,"\psi "]{psi : 2 -> 2}
-0:\twocell[]{ (dots * 2) * (mu * 2)}
+0:\twocell[]{dots * (2->6)[rectangle,"\psi "] * (dots * mu * dots)}
 1:\twocell[]{1*1*1*1}
 2:\twocell[]{(1 -> 0)*0*0*0}
