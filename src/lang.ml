@@ -325,7 +325,7 @@ module Stack = struct
       if G.source g = 0 then last_source := max !last_source !last_target;
       if G.target g = 0 then last_target := max !last_target !last_source;
       (* Propagate down and up. *)
-      if G.shape g = `Label || G.shape g = `Dots || G.shape g = `Crossing then
+      if G.shape g = `Id || G.shape g = `Label || G.shape g = `Dots || G.shape g = `Crossing then
         (
           (* For labels we pairwaise align sources. *)
           assert (G.source g = G.target g);
