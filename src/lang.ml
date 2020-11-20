@@ -134,7 +134,7 @@ module Generator = struct
     List.map
       (function
         | "height", x when !shape <> `Dots -> "labelheight", x
-        | "width", x when !shape <> `Space -> "width", x
+        | "width", x when !shape <> `Space -> "labelwidth", x
         | lv -> lv
       ) options
     in
@@ -601,8 +601,8 @@ module Stack = struct
       (* Draw shape. *)
       (
         let options =
-          (try [`Color (List.assoc "labelbordercolor" g.G.options)] with Not_found -> [])@
-          (try [`Fill (List.assoc "labelcolor" g.G.options)] with Not_found -> [])
+          (try [`Color (G.get g "labelbordercolor")] with Not_found -> [])@
+          (try [`Fill (G.get g "labelcolor")] with Not_found -> [])
         in
         match G.shape g with
         | `Circle ->
@@ -625,9 +625,10 @@ module Stack = struct
               (if G.source g > 0 then G.get_source g (G.source g - 1) else Float.neg_infinity)
               (if G.target g > 0 then G.get_target g (G.target g - 1) else Float.neg_infinity)
           in
+          let w = G.label_width g in
           let h = G.label_height g in
-          let x1 = x1 -. 0.25 in
-          let x2 = x2 +. 0.25 in
+          let x1 = x1 -. w /. 2. in
+          let x2 = x2 +. w /. 2. in
           let y1 = y -. h /. 2. in
           let y2 = y +. h /. 2. in
           let options = `Rounded_corners::options in
