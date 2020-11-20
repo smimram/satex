@@ -478,6 +478,7 @@ module Stack = struct
       in
       (* y-coordinate of the center *)
       let y = g.G.y in
+      let h = g.G.height in
       (* Draw wires. *)
       (
         if G.shape g = `Cap then
@@ -553,13 +554,12 @@ module Stack = struct
           )
         else if G.shape g = `Dots then
           (
-            let h = g.G.height in
             Array.iter2 (fun x x' -> assert (x = x'); Draw.line d (x,y-.h/.2.) (x,y+.h/.2.)) g.G.source g.G.target
           )
         else
           (
-            Array.iter (fun x' -> Draw.line d (x',y-.0.5) (x,y)) g.G.source;
-            Array.iter (fun x' -> Draw.line d (x,y) (x',y+.0.5)) g.G.target;
+            Array.iter (fun x' -> Draw.line d (x',y-.h/.2.) (x,y)) g.G.source;
+            Array.iter (fun x' -> Draw.line d (x,y) (x',y+.h/.2.)) g.G.target;
           )
       );
       (* Draw shape. *)
