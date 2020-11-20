@@ -46,7 +46,7 @@
         anonymous n n o
 
       let space n o =
-        let o = o@["width", string_of_float n; "shape", "space"] in
+        let o = o@["height", "0"; "width", string_of_float n; "shape", "space"] in
         create ("shape"^string_of_float n) 0 0 o
     end
 %}
