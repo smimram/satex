@@ -10,6 +10,7 @@ module Generator = struct
       options : (string * string) list; (** list of optional parameters and their value (a=b) *)
       shape : (** shape of the node *)
         [
+          | `Id (** Identity *)
           | `Circle (** traditional circled node *)
           | `Triangle
           | `Rectangle
@@ -50,6 +51,7 @@ module Generator = struct
           | "rectangle", "" -> "shape", "rectangle"
           | "blank", "" -> "shape", "blank"
           | "dots", "" -> "shape", "dots"
+          | "id", "" -> "shape", "id"
           | "crossing", "" -> "shape", "crossing"
           | "crossingr", "" -> "shape", "crossingr"
           | "crossingl", "" -> "shape", "crossingl"
@@ -100,6 +102,8 @@ module Generator = struct
       (function
         | "shape", "none" ->
           assert ((source = 1 && target = 1) || (source = 2 && target = 2)); shape := `None
+        | "shape", "id" ->
+          assert (source = target); shape := `Id
         | "shape", "cap" ->
           assert ((source = 2 && target <= 1) || (source <= 1 && target = 2));
           shape := `Cap
@@ -186,12 +190,10 @@ module G = Generator
 (** Expression for a cell. *)
 type expr =
   | Gen of G.t (** a generator *)
-  | Id of int (** an object *)
   | Comp of int * expr * expr (** composite in given dimension *)
 
 let rec string_of_expr ?(p=false) = function
   | Gen g -> Printf.sprintf "(%d->%d)" (G.source g) (G.target g)
-  | Id n -> string_of_int n
   | Comp (n, f, g) ->
     Printf.sprintf "%s%s *%d %s%s"
       (if p then "(" else "")
@@ -210,7 +212,6 @@ exception Typing of string
 (** Type of a cell. *)
 let rec typ = function
   | Gen g -> G.source g, G.target g
-  | Id n -> n, n
   | Comp (n, e1, e2) ->
     let s1, t1 = typ e1 in
     let s2, t2 = typ e2 in
@@ -246,15 +247,8 @@ module Stack = struct
 
   let create e : t =
     let rec aux e =
-      let id n =
-        if n = 0 then [G.create 0 0 ["name", "0"; "shape", "space"; "width", "0"]]
-        else List.init n (fun _ -> G.id ())
-      in
       match e with
       | Gen g -> [[Generator.copy g]]
-      | Id n -> [id n]
-      | Comp (0, f, Id n) -> List.map (fun f -> f@(id n)) (aux f)
-      | Comp (0, Id n, f) -> List.map (fun f -> (id n)@f) (aux f)
       | Comp (0,f,g) ->
         let f = aux f in
         let g = aux g in
@@ -272,7 +266,7 @@ module Stack = struct
          let height g =
            try Some (G.get_float g "height")
            with Not_found ->
-             if G.shape g = `None then None (* Identities can have null height *)
+             if G.shape g = `Id then None (* Identities can have null height *)
              else Some 1.
          in
          let max h h' =
@@ -492,14 +486,26 @@ module Stack = struct
         | Some (x1,x1'), Some (x2,x2') -> Float.mean (min x1 x2) (max x1' x2')
         | Some (x1,x1'), None -> Float.mean x1 x1'
         | None, Some (x2,x2') -> Float.mean x2 x2'
-        | None, None -> assert (G.shape g = `Space); 0.
+        | None, None -> assert (G.shape g = `Id || G.shape g = `Space); 0.
       in
       (* y-coordinate of the center *)
       let y = g.G.y in
       let h = g.G.height in
       (* Draw wires. *)
       (
-        if G.shape g = `Cap then
+        if G.shape g = `Id then
+          (
+            let x = g.G.source in
+            let n = Array.length x in
+            assert (Array.length g.G.source = Array.length g.G.target);
+            if n = 0 then
+              Draw.line d ~options:[`Phantom] (0.,y-.h/.2.) (0.,y+.h/.2.)
+            else
+              for i = 0 to n - 1 do
+                Draw.line d (x.(i),y-.h/.2.) (x.(i),y+.h/.2.)
+              done
+        )
+        else if G.shape g = `Cap then
           let options =
             match G.get g "arrow" with
             | "right" -> [`Middle_arrow `Right]

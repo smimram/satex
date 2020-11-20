@@ -28,6 +28,11 @@
       let anonymous s t o =
         create (Printf.sprintf "(%d->%d)" s t) s t o
 
+      let id n o =
+        let o = o@(if n = 0 then ["labelheight", "1"] else []) in
+        let o = o@["shape","id"] in
+        create (string_of_int n) n n o
+
       let label o =
         let n =
           List.count
@@ -99,6 +104,6 @@ hexpr:
 base:
   | STRING opts { Gen (Generator.add_options (Generator.find $1) $2) }
   | LABEL opts { Gen (Generator.label $2) }
-  | INT { Id $1 }
+  | INT opts { Gen (Generator.id $1 $2) }
   | SPACE opts { Gen (Generator.space $1 $2) }
   | LPAR INT TO INT RPAR opts { Gen (Generator.anonymous $2 $4 $6) }
