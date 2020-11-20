@@ -59,6 +59,9 @@ module Generator = struct
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
+          | "size",x -> "labelsize",x
+          | "width",x -> "width",x
+          | "height",x -> "height",x
           | "bordercolor",x -> "labelbordercolor",x
           | "fill",x -> "labelcolor",x
           | lv -> lv
