@@ -24,6 +24,7 @@ module Generator = struct
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
       mutable y : float; (** vertical position *)
+      mutable height: float; (** height *)
     }
 
   let copy g =
@@ -60,8 +61,6 @@ module Generator = struct
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
           | "size",x -> "labelsize",x
-          | "width",x -> "width",x
-          | "height",x -> "height",x
           | "bordercolor",x -> "labelbordercolor",x
           | "fill",x -> "labelcolor",x
           | lv -> lv
@@ -72,7 +71,7 @@ module Generator = struct
         (function
           | "labelsize", x -> ["labelwidth", x; "labelheight", x]
           | "shape", "blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
-          | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"]
+          | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"; "height", "0"]
           | "shape", "crossingr" -> ["shape", "crossing"; "kind", "right"]
           | "shape", "crossingl" -> ["shape", "crossing"; "kind", "left"]
           | "shape", "braid" -> ["shape", "crossing"; "kind", "braid"]
@@ -117,6 +116,15 @@ module Generator = struct
           label := l
         | l, v -> ()
       ) options;
+    (* Some more shape-specific hacks. *)
+    let options =
+    List.map
+      (function
+        | "height", x when !shape <> `Dots -> "labelheight", x
+        | "width", x when !shape <> `Space -> "width", x
+        | lv -> lv
+      ) options
+    in
     (* Printf.printf "options for %s: %s\n%!" name (String.concat ", " (List.map (fun (l,v) -> l^"="^v) options)); *)
     {
       options;
@@ -124,6 +132,7 @@ module Generator = struct
       source = Array.init source (fun _ -> -1.);
       target = Array.init target (fun _ -> -1.);
       y = 0.;
+      height = 0.;
     }
 
   let source g = Array.length g.source
@@ -243,10 +252,26 @@ module Stack = struct
       | _ -> assert false
     in
     let ans = aux e in
-    (* Set the vertical position *)
-    List.iteri
-      (fun i f ->
-         List.iter (fun g -> g.G.y <- float_of_int i +. 0.5) f
+    (* Set height and vertical position. *)
+    let y = ref 0. in
+    List.iter
+      (fun f ->
+         let height g = try Some (G.get_float g "height") with Not_found -> None in
+         let max h h' =
+           match h, h' with
+             | None, Some h
+             | Some h, None -> Some h
+             | Some h, Some h' -> Some (max h h')
+             | None, None -> None
+         in
+         let h = List.fold_left (fun h g -> max h (height g)) None f in
+         let h = match h with Some h -> h | None -> 1. in
+         List.iter
+           (fun g ->
+              g.G.height <- h;
+              g.G.y <- !y +. h /. 2.
+           ) f;
+         y := !y +. h
       ) ans;
     ans
 
@@ -528,7 +553,8 @@ module Stack = struct
           )
         else if G.shape g = `Dots then
           (
-            Array.iter2 (fun x x' -> assert (x = x'); Draw.line d (x,y-.0.5) (x,y+.0.5)) g.G.source g.G.target
+            let h = g.G.height in
+            Array.iter2 (fun x x' -> assert (x = x'); Draw.line d (x,y-.h/.2.) (x,y+.h/.2.)) g.G.source g.G.target
           )
         else
           (
