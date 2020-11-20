@@ -12,10 +12,10 @@
    height="25.93pt"
    viewBox="0 0 9.408 25.93"
    version="1.2"
-   id="svg31"
+   id="svg38"
    sodipodi:docname="blank.pdf">
   <metadata
-     id="metadata35">
+     id="metadata42">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -36,9 +36,9 @@
      inkscape:pageshadow="2"
      inkscape:window-width="640"
      inkscape:window-height="480"
-     id="namedview33" />
+     id="namedview40" />
   <defs
-     id="defs10">
+     id="defs13">
     <g
        id="g8">
       <symbol
@@ -58,6 +58,12 @@
            id="path5" />
       </symbol>
     </g>
+    <clipPath
+       id="clip1">
+      <path
+         d="M 0 8 L 9.40625 8 L 9.40625 18 L 0 18 Z M 0 8 "
+         id="path10" />
+    </clipPath>
   </defs>
   <g
      id="surface2">
@@ -65,43 +71,52 @@
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M -0.000875 -0.00090625 L -0.000875 -3.543875 "
        transform="matrix(1,0,0,-1,4.704,5.878)"
-       id="path12" />
+       id="path15" />
     <path
        style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M -0.000875 -10.629812 L -0.000875 -14.172781 "
        transform="matrix(1,0,0,-1,4.704,5.878)"
-       id="path14" />
+       id="path17" />
     <path
-       style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;"
-       d="M -2.54775 -2.832937 L 2.546 -2.832937 C 3.096781 -2.832937 3.542094 -3.282156 3.542094 -3.829031 L 3.542094 -10.34075 C 3.542094 -10.891531 3.096781 -11.336844 2.546 -11.336844 L -2.54775 -11.336844 C -3.098531 -11.336844 -3.543844 -10.891531 -3.543844 -10.34075 L -3.543844 -3.829031 C -3.543844 -3.282156 -3.098531 -2.832937 -2.54775 -2.832937 Z M -2.54775 -2.832937 "
-       transform="matrix(1,0,0,-1,4.704,5.878)"
-       id="path16" />
+       style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;"
+       d="M 1.449219 8.710938 L 7.960938 8.710938 C 8.511719 8.710938 8.957031 9.160156 8.957031 9.707031 L 8.957031 16.21875 C 8.957031 16.769531 8.511719 17.214844 7.960938 17.214844 L 1.449219 17.214844 C 0.898438 17.214844 0.453125 16.769531 0.453125 16.21875 L 0.453125 9.707031 C 0.453125 9.160156 0.898438 8.710938 1.449219 8.710938 Z M 1.449219 8.710938 "
+       id="path19" />
+    <g
+       clip-path="url(#clip1)"
+       clip-rule="nonzero"
+       id="g23">
+      <path
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;"
+         d="M -3.254781 -2.832937 L 3.256938 -2.832937 C 3.807719 -2.832937 4.253031 -3.282156 4.253031 -3.829031 L 4.253031 -10.34075 C 4.253031 -10.891531 3.807719 -11.336844 3.256938 -11.336844 L -3.254781 -11.336844 C -3.805562 -11.336844 -4.250875 -10.891531 -4.250875 -10.34075 L -4.250875 -3.829031 C -4.250875 -3.282156 -3.805562 -2.832937 -3.254781 -2.832937 Z M -3.254781 -2.832937 "
+         transform="matrix(1,0,0,-1,4.704,5.878)"
+         id="path21" />
+    </g>
     <g
        style="fill:rgb(0%,0%,0%);fill-opacity:1;"
-       id="g20">
+       id="g27">
       <use
          xlink:href="#glyph0-1"
          x="3.321"
          y="10.35"
-         id="use18" />
+         id="use25" />
     </g>
     <g
        style="fill:rgb(0%,0%,0%);fill-opacity:1;"
-       id="g24">
+       id="g31">
       <use
          xlink:href="#glyph0-1"
          x="3.321"
          y="14.335"
-         id="use22" />
+         id="use29" />
     </g>
     <g
        style="fill:rgb(0%,0%,0%);fill-opacity:1;"
-       id="g28">
+       id="g35">
       <use
          xlink:href="#glyph0-1"
          x="3.321"
          y="18.32"
-         id="use26" />
+         id="use33" />
     </g>
   </g>
 </svg>

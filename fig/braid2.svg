@@ -11,10 +11,10 @@
    height="14.572pt"
    viewBox="0 0 14.572 14.572"
    version="1.2"
-   id="svg21"
+   id="svg44"
    sodipodi:docname="braid2.pdf">
   <metadata
-     id="metadata25">
+     id="metadata48">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -35,48 +35,101 @@
      inkscape:pageshadow="2"
      inkscape:window-width="640"
      inkscape:window-height="480"
-     id="namedview23" />
+     id="namedview46" />
   <defs
-     id="defs8">
+     id="defs17">
     <clipPath
        id="clip1">
       <path
-         d="M 0 0 L 14.570312 0 L 14.570312 14.570312 L 0 14.570312 Z M 0 0 "
+         d="M 0 10 L 1 10 L 1 14.570312 L 0 14.570312 Z M 0 10 "
          id="path2" />
     </clipPath>
     <clipPath
        id="clip2">
       <path
-         d="M 0 0 L 14.570312 0 L 14.570312 14.570312 L 0 14.570312 Z M 0 0 "
+         d="M 14 0 L 14.570312 0 L 14.570312 4 L 14 4 Z M 14 0 "
          id="path5" />
+    </clipPath>
+    <clipPath
+       id="clip3">
+      <path
+         d="M 14 10 L 14.570312 10 L 14.570312 14.570312 L 14 14.570312 Z M 14 10 "
+         id="path8" />
+    </clipPath>
+    <clipPath
+       id="clip4">
+      <path
+         d="M 0 3 L 14.570312 3 L 14.570312 12 L 0 12 Z M 0 3 "
+         id="path11" />
+    </clipPath>
+    <clipPath
+       id="clip5">
+      <path
+         d="M 0 3 L 14.570312 3 L 14.570312 12 L 0 12 Z M 0 3 "
+         id="path14" />
     </clipPath>
   </defs>
   <g
      id="surface2">
+    <path
+       style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
+       d="M 0.00021875 0.00078125 L 0.00021875 -3.542188 "
+       transform="matrix(1,0,0,-1,0.199,0.2)"
+       id="path19" />
     <g
        clip-path="url(#clip1)"
        clip-rule="nonzero"
-       id="g12">
+       id="g23">
       <path
          style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-         d="M 0.00021875 0.00078125 L 14.172094 -14.175 "
+         d="M 0.00021875 -10.628125 L 0.00021875 -14.175 "
          transform="matrix(1,0,0,-1,0.199,0.2)"
-         id="path10" />
+         id="path21" />
+    </g>
+    <g
+       clip-path="url(#clip2)"
+       clip-rule="nonzero"
+       id="g27">
+      <path
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
+         d="M 14.172094 0.00078125 L 14.172094 -3.542188 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
+         id="path25" />
+    </g>
+    <g
+       clip-path="url(#clip3)"
+       clip-rule="nonzero"
+       id="g31">
+      <path
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
+         d="M 14.172094 -10.628125 L 14.172094 -14.175 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
+         id="path29" />
+    </g>
+    <g
+       clip-path="url(#clip4)"
+       clip-rule="nonzero"
+       id="g35">
+      <path
+         style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
+         d="M 14.172094 -3.542188 L 0.00021875 -10.628125 "
+         transform="matrix(1,0,0,-1,0.199,0.2)"
+         id="path33" />
     </g>
     <path
        style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;"
        d="M 8.504125 -7.085156 C 8.504125 -7.870313 7.871313 -8.503125 7.086156 -8.503125 C 6.304906 -8.503125 5.668188 -7.870313 5.668188 -7.085156 C 5.668188 -6.303906 6.304906 -5.671094 7.086156 -5.671094 C 7.871313 -5.671094 8.504125 -6.303906 8.504125 -7.085156 Z M 8.504125 -7.085156 "
        transform="matrix(1,0,0,-1,0.199,0.2)"
-       id="path14" />
+       id="path37" />
     <g
-       clip-path="url(#clip2)"
+       clip-path="url(#clip5)"
        clip-rule="nonzero"
-       id="g18">
+       id="g41">
       <path
          style="fill:none;stroke-width:0.3985;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;"
-         d="M 14.172094 0.00078125 L 0.00021875 -14.175 "
+         d="M 0.00021875 -3.542188 L 14.172094 -10.628125 "
          transform="matrix(1,0,0,-1,0.199,0.2)"
-         id="path16" />
+         id="path39" />
     </g>
   </g>
 </svg>

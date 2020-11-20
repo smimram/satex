@@ -85,7 +85,8 @@ Various shapes are available for operators:
 - `mergeleft` / `mergeright`: ![](fig/mergeleft.svg) / ![](fig/mergeright.svg)
 - `cup` / `cap`: ![](fig/cup.svg) / ![](fig/cap.svg)
 - `crossing` / `crossingr`: ![](fig/crossing.svg) / ![](fig/crossingr.svg)
-- / `braid` / `braidl`: ![](fig/braid.svg) / ![](fig/braid2.svg)
+- `braid` / `braidl`: ![](fig/braid.svg) / ![](fig/braid2.svg)
+- `crossing'` / `braid'`:  ![](fig/crossing2.svg) / ![](fig/braid2.svg)
 - `blank`: ![](fig/blank.svg)
 
 ## Labels on operators
