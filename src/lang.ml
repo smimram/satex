@@ -266,7 +266,7 @@ module Stack = struct
          let height g =
            try Some (G.get_float g "height")
            with Not_found ->
-             if G.shape g = `Id then None (* Identities can have null height *)
+             if G.shape g = `Id || G.shape g = `Space then None (* Identities can have null height *)
              else Some 1.
          in
          let max h h' =
