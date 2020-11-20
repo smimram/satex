@@ -137,7 +137,7 @@ module Generator = struct
     let options =
     List.map
       (function
-        | "height", x when !shape <> `Id && !shape <> `Dots -> "labelheight", x
+        | "height", x when !shape <> `Id && !shape <> `Dots && !shape <> `Space -> "labelheight", x
         | "width", x when !shape <> `Space -> "labelwidth", x
         | lv -> lv
       ) options
