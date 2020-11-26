@@ -101,7 +101,6 @@ module Generator = struct
     in
     (* Set default options. *)
     let options = options@["arrow", "none"; "position", "0.5"] in
-    let options = options@(if List.mem_assoc "label" options then ["labelwidth", ".6"; "labelheight", ".6"] else ["labelwidth", ".3"; "labelheight", ".3"]) in
     (* Parse options. *)
     List.iter_right
       (function
@@ -139,6 +138,7 @@ module Generator = struct
         | l, v -> ()
       ) options;
     (* Some more shape-specific hacks. *)
+    let options = options@(if !shape = `Circle && not (List.mem_assoc "label" options) then ["labelwidth", ".3"; "labelheight", ".3"] else ["labelwidth", ".6"; "labelheight", ".6"]) in
     let options =
     List.map
       (function
@@ -633,10 +633,11 @@ module Stack = struct
             | _ -> Draw.disk d ~options (x,y) (rx,ry)
           )
         | `Triangle ->
+          let h = G.label_height g in
           if G.target g = 1 then
-            Draw.polygon d ~options [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
+            Draw.polygon d ~options [G.get_source g 0,y-.h/.2.; G.get_source g (G.source g-1), y-.h/.2.; G.get_target g 0, y+.h/.2.]
           else
-            Draw.polygon d ~options [G.get_target g 0,y+.0.25; G.get_target g (G.target g-1), y+.0.25; G.get_source g 0, y-.0.25]
+            Draw.polygon d ~options [G.get_target g 0,y+.h/.2.; G.get_target g (G.target g-1), y+.h/.2.; G.get_source g 0, y-.h/.2.]
         | `Rectangle ->
           let x1 =
             min
