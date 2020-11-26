@@ -678,9 +678,15 @@ end
 
 let draw fname cells =
   (try Sys.remove fname with _ -> ());
+  let drawn = ref [] in
   List.iter
     (fun (id,o,e) ->
-       let f = Stack.create e in
-       Stack.typeset f;
-       Stack.draw fname id o f
+       if List.mem id !drawn then
+         (* We sometimes have duplicates in the satex file, ignore them for now. *)
+         Printf.printf "figure %d already drawn, ignoring\n%!" id
+       else
+         let f = Stack.create e in
+         Stack.typeset f;
+         Stack.draw fname id o f;
+         drawn := id :: !drawn
     ) cells
