@@ -182,11 +182,11 @@ module Generator = struct
   let get_target g i = g.target.(i)
 
   let set_source g i x =
-    if x > get_source g i then Printf.printf "update source %d of %s: %f -> %f\n%!" i (name g) (get_source g i) x;
+    (* if x > get_source g i then Printf.printf "update source %d of %s: %f -> %f\n%!" i (name g) (get_source g i) x; *)
     g.source.(i) <- max g.source.(i) x
 
   let set_target g i x =
-    if x > get_target g i then Printf.printf "update target %d of %s: %f -> %f\n%!" i (name g) (get_target g i) x;
+    (* if x > get_target g i then Printf.printf "update target %d of %s: %f -> %f\n%!" i (name g) (get_target g i) x; *)
     g.target.(i) <- max g.target.(i) x
 end
 
@@ -402,7 +402,7 @@ module Stack = struct
     (* Iterate until we reach a fixpoint. *)
     while !f <> !prev && !i <= 100 do
       incr i;
-      Printf.printf "round %d\n%!" !i;
+      Printf.printf "round %d\r%!" !i;
       prev := copy !f;
       stack !f
     done
