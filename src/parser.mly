@@ -72,7 +72,7 @@ indecls:
   | { [] }
 
 gen:
-  | GEN opts LACC STRING COLON INT TO INT RACC { Printf.printf "add generator %s\n%!" $4; Generator.add $4 $6 $8 $2 }
+  | GEN opts LACC STRING COLON INT TO INT RACC { Printf.printf "add generator %s : %d -> %d [%s]\n%!" $4 $6 $8 (Generator.string_of_options $2); Generator.add $4 $6 $8 $2 }
 
 opts:
   | { [] }
