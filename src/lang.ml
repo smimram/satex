@@ -527,8 +527,9 @@ module Stack = struct
         else if G.shape g = `Label then ()
         else if G.shape g = `Triangle || G.shape g = `Rectangle then
           (
-            Array.iter (fun x -> Draw.line d (x,y-.0.5) (x,y-.0.25)) g.G.source;
-            Array.iter (fun x -> Draw.line d (x,y+.0.25) (x,y+.0.5)) g.G.target;
+            let h = G.label_height g in
+            Array.iter (fun x -> Draw.line d (x,y-.0.5) (x,y-.h/.2.)) g.G.source;
+            Array.iter (fun x -> Draw.line d (x,y+.h/.2.) (x,y+.0.5)) g.G.target;
           )
         else if G.shape g = `Merge `Left || G.shape g = `Merge `Right then
           (
