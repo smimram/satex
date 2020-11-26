@@ -49,6 +49,9 @@ module Generator = struct
           | "shape", "cup" -> "shape", "cap"
           | "triangle", "" -> "shape", "triangle"
           | "rectangle", "" -> "shape", "rectangle"
+          | "circle", "" -> "shape", "circle"
+          | "lefthalfcircle", "" -> "shape", "lefthalfcircle"
+          | "righthalfcircle", "" -> "shape", "righthalfcircle"
           | "blank", "" -> "shape", "blank"
           | "dots", "" -> "shape", "dots"
           | "id", "" -> "shape", "id"
@@ -91,6 +94,8 @@ module Generator = struct
           | "shape", "crossingl'" -> ["shape", "crossing"; "kind", "left'"]
           | "shape", "braidr'" -> ["shape", "crossing"; "kind", "braidr'"]
           | "shape", "braidl'" -> ["shape", "crossing"; "kind", "braidl'"]
+          | "shape", "lefthalfcircle" -> ["shape", "circle"; "kind", "lefthalf"]
+          | "shape", "righthalfcircle" -> ["shape", "circle"; "kind", "righthalf"]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -435,12 +440,14 @@ module Stack = struct
       let a = -.a in
       let b = -.b in
       (* The starting point is supposed to be horizontal for now... *)
-      assert (int_of_float a mod 180 = 0);
+      assert (int_of_float a mod 90 = 0);
       let options =
         List.map
           (function
             | `Middle_arrow `Right -> "middlearrow={>}"
             | `Middle_arrow `Left -> "middlearrow={<}"
+            | `Color c -> c
+            | `Fill c -> "fill="^c
           ) options
         |> String.concat ","
       in
@@ -615,7 +622,16 @@ module Stack = struct
         | `Circle ->
           let rx = G.label_width g /. 2. in
           let ry = G.label_height g /. 2. in
-          Draw.disk d ~options (x,y) (rx,ry)
+          (
+            match (try G.get g "kind" with _ -> "") with
+            | "lefthalf" ->
+              Draw.arc d ~options (x,y) (rx,ry) (90.,270.);
+              Draw.line d (x,y-.ry) (x,y+.ry)
+            | "righthalf" ->
+              Draw.arc d ~options (x,y) (rx,ry) (-90.,90.);
+              Draw.line d (x,y-.ry) (x,y+.ry)
+            | _ -> Draw.disk d ~options (x,y) (rx,ry)
+          )
         | `Triangle ->
           if G.target g = 1 then
             Draw.polygon d ~options [G.get_source g 0,y-.0.25; G.get_source g (G.source g-1), y-.0.25; G.get_target g 0, y+.0.25]
