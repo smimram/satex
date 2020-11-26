@@ -688,5 +688,6 @@ let draw fname cells =
          let f = Stack.create e in
          Stack.typeset f;
          Stack.draw fname id o f;
+         Printf.printf "figure %d drawn\n%!" id;
          drawn := id :: !drawn
     ) cells
