@@ -89,6 +89,9 @@ Various shapes are available for operators:
 - `crossing'` / `braid'`:  ![](fig/crossing2.svg) / ![](fig/braid2.svg)
 - `blank`: ![](fig/blank.svg)
 
+The dimension of the shape can be adjusted with the `labelwidth` and
+`labelheight` parameters.
+
 ## Labels on operators
 
 Labels are indicated between double quotes. For instance
@@ -100,6 +103,9 @@ Labels are indicated between double quotes. For instance
 typesets
 
 ![](fig/mu-label.svg)
+
+Their vertical position can be adjusted with the `position` parameter (between
+`0` and `1`).
 
 ## Colors on operators
 
@@ -134,3 +140,12 @@ options. For instance,
 typesets
 
 ![](fig/inline.svg)
+
+## Spacing
+
+Horizontal space can be adjusted by using operators of the form `space2.8` which
+adds an horizontal space of `2.8` (formally this is an operator with no inputs
+and outputs).
+
+Vertical space can be adjusted by changing the `height` parameter of one of the
+operators on the line.
