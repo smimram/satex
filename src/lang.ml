@@ -142,7 +142,6 @@ module Generator = struct
     let options =
     List.map
       (function
-        | "height", x when !shape <> `Id && !shape <> `Dots && !shape <> `Space -> "labelheight", x
         | "width", x when !shape <> `Space -> "labelwidth", x
         | lv -> lv
       ) options
@@ -534,9 +533,9 @@ module Stack = struct
         else if G.shape g = `Label then ()
         else if G.shape g = `Triangle || G.shape g = `Rectangle then
           (
-            let h = G.label_height g in
-            Array.iter (fun x -> Draw.line d (x,y-.0.5) (x,y-.h/.2.)) g.G.source;
-            Array.iter (fun x -> Draw.line d (x,y+.h/.2.) (x,y+.0.5)) g.G.target;
+            let lh = G.label_height g in
+            Array.iter (fun x -> Draw.line d (x,y-.h/.2.) (x,y-.lh/.2.)) g.G.source;
+            Array.iter (fun x -> Draw.line d (x,y+.lh/.2.) (x,y+.h/.2.)) g.G.target;
           )
         else if G.shape g = `Merge `Left || G.shape g = `Merge `Right then
           (
@@ -665,10 +664,12 @@ module Stack = struct
           let label = List.find_all (fun (l,_) -> l = "label") g.G.options |> List.map snd |> List.rev |> Array.of_list in
           for i = 0 to G.source g - 1 do
             let x = g.G.source.(i) in
-            let y = y -. 0.5 +. G.get_float g "position" in
+            let y = y +. h *. (G.get_float g "position" -. 0.5) in
             Draw.text d (x,y) label.(i)
           done
         else if G.label g <> "" then
+          let h = G.label_height g in
+          let y = y +. h *. (G.get_float g "position" -. 0.5) in
           Draw.text d (x,y) (G.label g)
       );
     in
