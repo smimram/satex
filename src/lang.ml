@@ -331,7 +331,7 @@ module Stack = struct
       (* Propagate down and up. *)
       if G.shape g = `Id || G.shape g = `Label || G.shape g = `Dots || G.shape g = `Crossing then
         (
-          (* For labels we pairwaise align sources. *)
+          (* Pairwaise align sources and targets. *)
           assert (G.source g = G.target g);
           for i = 0 to G.source g - 1 do
             G.set_target g i (G.get_source g i);
@@ -420,20 +420,21 @@ module Stack = struct
       close_out oc
 
     let line oc ?(options=[]) (x1,y1) (x2,y2) =
-      let options =
-        List.map
-          (function
-            | `Color c -> c
-            | `Thick 2 -> "very thick"
-            | `Thick 3 -> "ultra thick"
-            | `Thick _ -> "thick"
-            | `Width w -> "line width="^w
-            | `Phantom -> "opacity=0."
-          ) options
-        |> String.concat ","
-      in
-      let options = if options = "" then "" else Printf.sprintf "[%s]" options in
-      output_string oc (Printf.sprintf "    \\draw%s (%f,%f) -- (%f,%f);\n" options x1 y1 x2 y2)
+      if (x1,y1) <> (x2,y2) then
+        let options =
+          List.map
+            (function
+              | `Color c -> c
+              | `Thick 2 -> "very thick"
+              | `Thick 3 -> "ultra thick"
+              | `Thick _ -> "thick"
+              | `Width w -> "line width="^w
+              | `Phantom -> "opacity=0."
+            ) options
+          |> String.concat ","
+        in
+        let options = if options = "" then "" else Printf.sprintf "[%s]" options in
+        output_string oc (Printf.sprintf "    \\draw%s (%f,%f) -- (%f,%f);\n" options x1 y1 x2 y2)
 
     let arc oc ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = -.a in
@@ -499,7 +500,7 @@ module Stack = struct
       let h = g.G.height in
       (* Draw wires. *)
       (
-        if G.shape g = `Id then
+        if G.shape g = `Id || G.shape g = `Dots then
           (
             let x = g.G.source in
             let n = Array.length x in
@@ -600,10 +601,6 @@ module Stack = struct
                   Draw.line d (x.(i),y-.dy) (x.(n-1-i),y+.dy);
                 done
               )
-          )
-        else if G.shape g = `Dots then
-          (
-            Array.iter2 (fun x x' -> assert (x = x'); Draw.line d (x,y-.h/.2.) (x,y+.h/.2.)) g.G.source g.G.target
           )
         else
           (
