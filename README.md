@@ -12,7 +12,7 @@ generated using TikZ.
 It is inspired from [Catex](https://webusers.imj-prg.fr/~yves.guiraud/) (see
 also the
 [documentation](https://webusers.imj-prg.fr/~yves.guiraud/catex/catex.pdf)) for
-which the sources where unfortunately not available.
+which the sources were unfortunately not available.
 
 In case you have a problem, please file a bug report at the following url:
 <https://github.com/smimram/satex/issues>.
