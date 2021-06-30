@@ -84,7 +84,7 @@ module Generator = struct
         (function
           | "labelsize", x -> ["labelwidth", x; "labelheight", x]
           | "shape", "blank" -> ["shape", "rectangle"; "labelbordercolor", "white"]
-          | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"; "height", "0"]
+          | "shape", "dots" -> ["shape", "dots"; "label", "\\ldots"; "height", "0"; "width", "1"]
           | "shape", "crossingr" -> ["shape", "crossing"; "kind", "right"]
           | "shape", "crossingl" -> ["shape", "crossing"; "kind", "left"]
           | "shape", "braidr" -> ["shape", "crossing"; "kind", "braidr"]
