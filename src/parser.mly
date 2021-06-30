@@ -52,7 +52,7 @@
 %}
 
 %token LACC RACC LPAR RPAR LBRA RBRA EQ COLON COMMA COMP EOF
-%token GEN TO LABEL
+%token OPT GEN TO LABEL
 %token <int * string list> CELL
 %token <int> INT
 %token <string> STRING
@@ -67,9 +67,14 @@ decls:
   | indecls EOF { $1 }
 
 indecls:
+  | globalopt indecls { $2 }
   | gen indecls { $2 }
   | cell indecls { Printf.printf "add cell %d: %s\n%!" (fst3 $1) (string_of_expr (thd3 $1)); ignore (typ (thd3 $1)); $1::$2 }
   | { [] }
+
+globalopt:
+  | OPT LACC STRING EQ STRING RACC { add_global_option ($3 ^ "=" ^ $5) }
+  | OPT LACC STRING EQ INT RACC { add_global_option ($3 ^ "=" ^ string_of_int $5) }
 
 gen:
   | GEN opts LACC STRING COLON INT TO INT RACC { Printf.printf "add generator %s : %d -> %d [%s]\n%!" $4 $6 $8 (Generator.string_of_options $2); Generator.add $4 $6 $8 $2 }

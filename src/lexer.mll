@@ -21,11 +21,13 @@ let newline = '\n'
 
 rule token = parse
   | "\\deftwocell" { GEN }
+  | "\\twocellopt" { OPT }
   | (['0'-'9']+ as n)":\\twocell"("["[^']']*"]" as o)? { CELL (int_of_string n, parse_options o) }
   | "=" { EQ }
   | ":" { COLON }
   | "," { COMMA }
   | "->" { TO }
+  | "→" { TO }
   | "%"[^'\n']* { token lexbuf }
   | '{' { LACC }
   | '}' { RACC }

@@ -674,6 +674,9 @@ module Stack = struct
     Draw.close d
 end
 
+let global_options = ref []
+let add_global_option o = global_options := o :: !global_options
+
 let draw fname cells =
   (try Sys.remove fname with _ -> ());
   let drawn = ref [] in
@@ -685,6 +688,7 @@ let draw fname cells =
        else
          let f = Stack.create e in
          Stack.typeset f;
+         let o = o @ !global_options in
          Stack.draw fname id o f;
          Printf.printf "figure %d drawn\n%!" id;
          drawn := id :: !drawn

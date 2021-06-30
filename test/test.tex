@@ -20,12 +20,18 @@
 \deftwocell[dots]{dots : 2 -> 2}
 \deftwocell[rectangle,"\psi"]{psi : 2 -> 2}
 
+\twocellopt{xscale=0.5}
+
 \begin{document}
 \maketitle
 
 \[
-  \fbox{\twocell{dots * mu}}
+  \twocell{(mu * 1) * mu}
 \]
+
+% \[
+  % \fbox{\twocell{dots * mu}}
+% \]
 
 % \[
   % \twocell{(1 * space2[height=0] * 2) * (dots * 1) * ((2->1)[triangle,"\mu",labelheight=1.5,position=0.1] * 1[height=2]) * mu}
