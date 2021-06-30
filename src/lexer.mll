@@ -39,8 +39,8 @@ rule token = parse
   | "label" { LABEL }
   | "space"(['0'-'9''.']+ as n) { SPACE (float_of_string n) }
   | ('"'[^'"']*'"' as str) { STRING str }
-  | (['0'-'9']+ as n) { INT (int_of_string n) }
-  | (['0'-'9']*"."['0'-'9']+ as s) { STRING s } (* Floats are handled as strings for now *)
+  | ('-'?['0'-'9']+ as n) { INT (int_of_string n) }
+  | ('-'?['0'-'9']*"."['0'-'9']+ as s) { STRING s } (* Floats are handled as strings for now *)
   | (['a'-'z''A'-'Z']['a'-'z''A'-'Z''0'-'9''.''-''+''\'']* as str) { STRING str }
   | space+ { token lexbuf }
   | newline { on_newline lexbuf; token lexbuf }
