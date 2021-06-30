@@ -142,7 +142,7 @@ module Generator = struct
     let options =
     List.map
       (function
-        | "width", x when !shape <> `Space -> "labelwidth", x
+        | "width", x when !shape <> `Space && !shape <> `Dots -> "labelwidth", x
         | lv -> lv
       ) options
     in
@@ -313,6 +313,7 @@ module Stack = struct
         G.set_source g (i+1) (G.get_source g i +. 1.);
         last_source := G.get_source g (i+1)
       done;
+      if G.shape g = `Dots then G.set_source g 1 (G.get_source g 0 +. G.get_float g "width");
       if G.shape g = `Space then last_source := !last_source +. G.get_float g "width";
       (* Space up the targets. *)
       if G.target g > 0 then
