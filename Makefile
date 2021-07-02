@@ -8,9 +8,9 @@ clean:
 
 doc: satex.pdf
 
-install:
+install: all
 	$(MAKE) -C src $@
-	install -d statex.sty $(PREFIX)/share/texlive/texmf-dist/tex/latex/satex/
+	install -d satex.sty $(PREFIX)/share/texlive/texmf-dist/tex/latex/satex/
 
 test: all
 	$(MAKE) -C test
