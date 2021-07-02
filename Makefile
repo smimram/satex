@@ -10,6 +10,7 @@ doc: satex.pdf
 
 install: all
 	$(MAKE) -C src $@
+	install -d $(PREFIX)/share/texlive/texmf-dist/tex/latex/satex/
 	install satex.sty $(PREFIX)/share/texlive/texmf-dist/tex/latex/satex/
 
 test: all
