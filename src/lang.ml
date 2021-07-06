@@ -44,6 +44,7 @@ module Generator = struct
           | "arrow","" -> "arrow","right"
           | "up","" | "u","" -> "position","0.3"
           | "down","" | "d","" -> "position","0.7"
+          | "right","" -> "offset", "0.5"
           | "cap", ""
           | "cup", ""
           | "shape", "cup" -> "shape", "cap"
@@ -100,7 +101,7 @@ module Generator = struct
         ) options |> List.flatten
     in
     (* Set default options. *)
-    let options = options@["arrow", "none"; "position", "0.5"] in
+    let options = options@["arrow", "none"; "position", "0.5"; "offset", "0"] in
     (* Parse options. *)
     List.iter_right
       (function
@@ -661,7 +662,7 @@ module Stack = struct
         if G.shape g = `Label then
           let label = List.find_all (fun (l,_) -> l = "label") g.G.options |> List.map snd |> List.rev |> Array.of_list in
           for i = 0 to G.source g - 1 do
-            let x = g.G.source.(i) in
+            let x = g.G.source.(i) +. G.get_float g "offset" in
             let y = y +. h *. (G.get_float g "position" -. 0.5) in
             Draw.text d (x,y) label.(i)
           done
