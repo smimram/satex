@@ -1,0 +1,24 @@
+\documentclass{standalone}
+\usepackage{satex}
+
+\deftwocell[rectangle,"="]{eq1to2 : 1 -> 2}
+\deftwocell[rectangle,"="]{eq2to2 : 2 -> 2}
+\deftwocell["AAA",width=1.6]{cnode : 2 -> 0}
+
+\begin{document}
+$ \twocell{
+  (label["A","A","A"])
+  *
+  (eq1to2 * eq2to2)
+  *
+  (label["A","A","A","A"])
+  *
+  (1 * cnode * 1)
+  *
+  (eq2to2)
+  *
+  (1 * space2 * 1)
+  *
+  (label["A","A"])
+} $
+\end{document}

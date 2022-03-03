@@ -233,7 +233,7 @@ let rec typ = function
       (* n-dimensional diagrams with n>2 are not (yet) supported *)
       assert false
 
-(** Normalized form for expressions. *)
+(** Normalized form for expressions (as a stack of slices). *)
 module Stack = struct
   type slice = G.t list
 
@@ -271,7 +271,8 @@ module Stack = struct
          let height g =
            try Some (G.get_float g "height")
            with Not_found ->
-             if G.shape g = `Id || G.shape g = `Space then None (* Identities can have null height *)
+             if G.shape g = `Id then None (* Identities can have null height *)
+             else if G.shape g = `Space then Some 0.
              else Some 1.
          in
          let max h h' =
@@ -300,9 +301,13 @@ module Stack = struct
   let targets (f:t) =
     List.map (fun g -> g.G.target) (List.last f)
 
+  (** Repeatedly move things on the right in order for them not to overlap. *)
   let typeset (f:t) =
+    (* Last seen rightmost source. *)
     let last_source = ref (-1.) in
+    (* Last seen rightmost target. *)
     let last_target = ref (-1.) in
+    (* Typeset a generators by moving its input and output wires. *)
     let generator g =
       (* Space up the sources. *)
       if G.source g > 0 then
@@ -330,6 +335,8 @@ module Stack = struct
       (* Enforce propagation for nullary operations. *)
       if G.source g = 0 then last_source := max !last_source !last_target;
       if G.target g = 0 then last_target := max !last_target !last_source;
+      (* Ensure that next operator is not too close of a box. *)
+      if G.shape g = `Rectangle then (last_source := max !last_source !last_target; last_target := !last_source);
       (* Propagate down and up. *)
       if G.shape g = `Id || G.shape g = `Label || G.shape g = `Dots || G.shape g = `Crossing then
         (
@@ -352,7 +359,7 @@ module Stack = struct
               G.set_target g 1 (G.get_source g 0);
               G.set_source g 0 (G.get_target g 1)
             )
-              
+
         )
       else if G.shape g = `Merge `Right then
         (
@@ -366,19 +373,20 @@ module Stack = struct
         )
       else if G.target g = 1 && G.source g > 0 then
         (
-          G.set_target g 0 ((G.get_source g 0 +. G.get_source g (G.source g -1)) /. 2.);
-          G.set_source g (G.source g-1) (2. *. G.get_target g 0 -. G.get_source g 0)
+          G.set_target g 0 ((G.get_source g 0 +. G.get_source g (G.source g - 1)) /. 2.);
+          G.set_source g (G.source g - 1) (2. *. G.get_target g 0 -. G.get_source g 0)
         )
       else if G.source g = 1 && G.target g > 0 then
         (
-          G.set_source g 0 ((G.get_target g 0 +. G.get_target g (G.target g-1)) /. 2.);
-          G.set_target g (G.target g-1) (2. *. G.get_source g 0 -. G.get_target g 0)
+          G.set_source g 0 ((G.get_target g 0 +. G.get_target g (G.target g - 1)) /. 2.);
+          G.set_target g (G.target g - 1) (2. *. G.get_source g 0 -. G.get_target g 0)
         )
     in
+    (* Typeset a slice. *)
     let slice f =
       last_source := (-1.);
       last_target := (-1.);
-      List.iter generator f
+      List.iter generator f;
     in
     let rec stack = function
       | [] -> assert false
@@ -408,6 +416,7 @@ module Stack = struct
       stack !f
     done
 
+  (** Abstract basic drawing operations. *)
   module Draw = struct
     type t = out_channel
 
@@ -484,7 +493,8 @@ module Stack = struct
       output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$\\scriptstyle %s$};\n" x y s)
   end
 
-  let draw fname id options f =
+  (** Draw morphism. *)
+  let draw fname id options (f:t) =
     let d = Draw.create fname id options in
     let draw_generator g =
       (* x-coordinate of the center *)

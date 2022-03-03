@@ -1,6 +1,6 @@
 SATEX = dune exec ../src/satex.exe
 
-all: 2groups.pdf
+all: 2groups.pdf bug1.pdf
 	pdflatex test.tex > /dev/null
 	cat test.satex
 	$(SATEX) test.satex
