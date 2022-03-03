@@ -1,13 +1,7 @@
-SOURCES = extlib.ml common.ml lang.ml parser.mly lexer.mll satex.ml
-RESULT = satex
-PACKS = unix
-ANNOTATE = true
-PREFIX = /usr
+all: build
 
-all: dnc
-
-install:
-	install satex $(PREFIX)/bin
+build:
+	@dune build
 
 test ci:
 	$(MAKE) -C .. $@
@@ -16,5 +10,3 @@ conflicts:
 	menhir --explain parser.mly
 	@cat parser.conflicts
 	@rm -f parser.conflicts
-
-include OCamlMakefile

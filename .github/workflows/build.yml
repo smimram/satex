@@ -2,10 +2,10 @@ name: CI
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install packages
-      run: sudo DEBIAN_FRONTEND=noninteractive apt-get install ocaml-nox ocaml-findlib texlive-latex-base texlive-pictures
+      run: sudo apt-get -y install ocaml-nox ocaml-findlib texlive-latex-base texlive-pictures
     - name: Build
       run: make test

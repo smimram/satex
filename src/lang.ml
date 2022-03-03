@@ -8,7 +8,7 @@ module Generator = struct
   type t =
     {
       options : (string * string) list; (** list of optional parameters and their value (a=b) *)
-      shape : (** shape of the node *)
+      shape :
         [
           | `Id (** Identity *)
           | `Circle (** traditional circled node *)
@@ -21,7 +21,7 @@ module Generator = struct
           | `Dots (** horizontal dots between two wires *)
           | `Label (** labels only *)
           | `Space (** a space *)
-        ];
+        ]; (** shape of the node *)
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
       mutable y : float; (** vertical position *)
@@ -136,7 +136,7 @@ module Generator = struct
           shape := `Merge `Right
         | "label", l ->
           label := l
-        | l, v -> ()
+        | _ -> ()
       ) options;
     (* Some more shape-specific hacks. *)
     let options = options@(if !shape = `Circle && not (List.mem_assoc "label" options) then ["labelwidth", ".3"; "labelheight", ".3"] else ["labelwidth", ".6"; "labelheight", ".6"]) in

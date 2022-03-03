@@ -12,7 +12,7 @@ end
 module List = struct
   include List
 
-  let rec count p l =
+  let count p l =
     let rec aux n = function
       | x::l -> if p x then aux (n+1) l else aux n l
       | [] -> n

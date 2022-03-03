@@ -5,7 +5,7 @@ let parse f =
   let lexbuf = Lexing.from_channel ic in
   let line n =
     let ic = open_in f in
-    for i = 0 to n - 2 do ignore (input_line ic) done;
+    for _ = 0 to n - 2 do ignore (input_line ic) done;
     let ans =
       try input_line ic
       with _ -> "???"

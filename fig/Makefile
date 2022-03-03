@@ -1,7 +1,7 @@
 FIG = $(wildcard *.tex)
 PDF = $(FIG:.tex=.pdf)
 SVG = $(PDF:.pdf=.svg)
-SATEX = ../src/satex
+SATEX = dune exec ../src/satex.exe
 
 all: svg
 

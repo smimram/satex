@@ -1,4 +1,4 @@
-SATEX = ../src/satex
+SATEX = dune exec ../src/satex.exe
 
 all: 2groups.pdf
 	pdflatex test.tex > /dev/null
