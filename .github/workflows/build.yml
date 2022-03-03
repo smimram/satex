@@ -6,6 +6,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install packages
-      run: sudo apt-get -y install ocaml-nox ocaml-findlib texlive-latex-base texlive-pictures
+      run: sudo apt-get -y install ocaml-nox ocaml-findlib dune texlive-latex-base texlive-pictures
     - name: Build
       run: make test
