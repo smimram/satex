@@ -1,3 +1,6 @@
 (ocamllex (modules lexer))
 (ocamlyacc (modules parser))
-(executable (name satex))
+(executable
+ (name satex)
+ (public_name satex)
+)
