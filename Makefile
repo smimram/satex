@@ -4,6 +4,9 @@ all:
 clean:
 	@dune clean
 
+install:
+	@dune install
+
 doc: satex.pdf
 
 test: all
