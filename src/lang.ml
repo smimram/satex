@@ -24,6 +24,7 @@ module Generator = struct
         ]; (** shape of the node *)
       source : float array; (** horizontal position of the source ports *)
       target : float array; (** horizontal position of the target ports *)
+      mutable x : float; (** horizontal position (for operators without inputs nor outputs) *)
       mutable y : float; (** vertical position *)
       mutable height: float; (** height *)
     }
@@ -153,6 +154,7 @@ module Generator = struct
       shape = !shape;
       source = Array.init source (fun _ -> -1.);
       target = Array.init target (fun _ -> -1.);
+      x = 0.;
       y = 0.;
       height = 0.;
     }
@@ -320,7 +322,12 @@ module Stack = struct
         last_source := G.get_source g (i+1)
       done;
       if G.shape g = `Dots then G.set_source g 1 (G.get_source g 0 +. G.get_float g "width");
-      if G.shape g = `Space then last_source := !last_source +. G.get_float g "width";
+      if G.shape g = `Space then
+        (
+          let width = G.get_float g "width" in
+          g.G.x <- !last_source +. width /. 2. +. 0.5;
+          last_source := !last_source +. width
+        );
       (* Space up the targets. *)
       if G.target g > 0 then
         (
@@ -505,7 +512,7 @@ module Stack = struct
         | Some (x1,x1'), Some (x2,x2') -> Float.mean (min x1 x2) (max x1' x2')
         | Some (x1,x1'), None -> Float.mean x1 x1'
         | None, Some (x2,x2') -> Float.mean x2 x2'
-        | None, None -> assert (G.shape g = `Id || G.shape g = `Space); 0.
+        | None, None -> assert (G.shape g = `Id || G.shape g = `Space); g.G.x
       in
       (* y-coordinate of the center *)
       let y = g.G.y in
