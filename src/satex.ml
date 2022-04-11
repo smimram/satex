@@ -3,6 +3,7 @@ let usage = "satex [options] file"
 let parse f =
   let ic = open_in f in
   let lexbuf = Lexing.from_channel ic in
+  Lexing.set_filename lexbuf f;
   let line n =
     let ic = open_in f in
     for _ = 0 to n - 2 do ignore (input_line ic) done;
@@ -58,6 +59,16 @@ let () =
     let decls = parse !fname in
     Lang.draw satix_fname decls
   with
-  | Failure e ->
-    Printf.eprintf "%s\n%!" e;
+  | Lang.Error (pos, e) ->
+    let pos =
+      match pos with
+      | None -> ""
+      | Some (pos, _) ->
+        Printf.sprintf
+          " in \"%s\", at line %d, character %d"
+          pos.Lexing.pos_fname
+          pos.Lexing.pos_lnum
+          (pos.Lexing.pos_cnum - pos.Lexing.pos_bol)
+    in
+    Printf.eprintf "Error%s: %s\n%!" pos e;
     exit 1

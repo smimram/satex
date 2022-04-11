@@ -1,5 +1,9 @@
 open Extlib
 
+exception Error of (Lexing.position * Lexing.position) option * string
+
+let error ?pos e = raise (Error (pos, e))
+
 (** Generators. *)
 module Generator = struct
   type name = string

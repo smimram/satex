@@ -18,9 +18,9 @@ module Generator = struct
   let add name s t o =
     env := (name, create name s t o) :: !env
 
-  let find n =
+  let find ?pos n =
     try List.assoc n !env
-    with Not_found -> failwith ("Could not find generator "^n)
+    with Not_found -> error ?pos ("Could not find generator "^n)
 
   let add_options g o =
     create (G.name g) (G.source g) (G.target g) (o@g.G.options)
@@ -108,7 +108,7 @@ hexpr:
   | hexpr COMP hexpr { Comp (0,$1,$3) }
 
 base:
-  | STRING opts { Gen (Generator.add_options (Generator.find $1) $2) }
+  | STRING opts { Gen (Generator.add_options (Generator.find ~pos:$loc($1) $1) $2) }
   | LABEL opts { Gen (Generator.label $2) }
   | INT opts { Gen (Generator.id $1 $2) }
   | SPACE opts { Gen (Generator.space $1 $2) }
