@@ -11,7 +11,6 @@ homepage: "https://github.com/smimram/satex"
 bug-reports: "https://github.com/smimram/satex/issues"
 depends: [
   "dune" {>= "2.0"}
-  "menhir" {>= "2.0"}
 ]
 build: [
   ["dune" "subst"] {pinned}
