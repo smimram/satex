@@ -3,7 +3,8 @@ let usage = "satex [options] file"
 let parse f =
   let ic = open_in f in
   let lexbuf = Lexing.from_channel ic in
-  Lexing.set_filename lexbuf f;
+  (* Lexing.set_filename lexbuf f; *)
+  lexbuf.lex_curr_p <- {lexbuf.lex_curr_p with pos_fname = f};
   let line n =
     let ic = open_in f in
     for _ = 0 to n - 2 do ignore (input_line ic) done;
