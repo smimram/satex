@@ -6,7 +6,7 @@ module Generator = struct
   include Generator
 
   let string_of_options o =
-    o |> List.map (fun (l,v) -> l^"="^v) |> String.concat ","
+    o |> List.map (fun (l,v) -> l^(if v = "" then "" else "="^v)) |> String.concat ","
 
   let env = ref []
 
@@ -77,7 +77,7 @@ globalopt:
   | OPT LACC STRING EQ INT RACC { add_global_option ($3 ^ "=" ^ string_of_int $5) }
 
 gen:
-  | GEN opts LACC STRING COLON INT TO INT RACC { Printf.printf "add generator %s : %d -> %d [%s]\n%!" $4 $6 $8 (Generator.string_of_options $2); Generator.add $4 $6 $8 $2 }
+  | GEN opts LACC STRING COLON INT TO INT RACC { Printf.printf "add generator %s : %d -> %d [%s]\n%!" $4 $6 $8 (Generator.string_of_options (List.rev $2)); Generator.add $4 $6 $8 $2 }
 
 opts:
   | { [] }
