@@ -25,4 +25,6 @@ clean:
 	pdflatex $<
 
 %.svg: %.pdf
-	inkscape --pdf-poppler $< -o $@
+	# inkscape --pdf-poppler $< -o $@
+	pdftocairo -svg -f 1 -l 1 $< $@
+	rsvg-convert --zoom=2 $@ -o $@
