@@ -442,7 +442,7 @@ module Stack = struct
       close_out oc
 
     let line oc ?(options=[]) (x1,y1) (x2,y2) =
-      if (x1,y1) <> (x2,y2) then
+      if (x1,y1) <> (x2,y2) || List.mem `Phantom options then
         let options =
           List.map
             (function
@@ -692,6 +692,16 @@ module Stack = struct
           let y = y +. h *. (G.get_float g "position" -. 0.5) in
           Draw.text d (x,y) (G.label g)
       );
+      (* Ensure that bounding box is correct. *)
+      (
+        if G.shape g <> `Space && G.shape g <> `Label then
+          (
+            if G.source g = 0 then
+              Draw.line d ~options:[`Phantom] (x,y-.h/.2.) (x,y-.h/.2.);
+            if G.target g = 0 then
+              Draw.line d ~options:[`Phantom] (x,y+.h/.2.) (x,y+.h/.2.)
+          )
+      )
     in
     List.iter (List.iter draw_generator) f;
     Draw.close d
