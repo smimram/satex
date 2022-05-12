@@ -332,7 +332,7 @@ module Stack = struct
           g.G.x <- !last_source +. width /. 2. +. 0.5;
           last_source := !last_source +. width
         );
-      if G.source g = 0 && G.target g = 0 then
+      if G.shape g <> `Space && G.shape g <> `Label && G.source g = 0 && G.target g = 0 then
         (
           g.G.x <- max g.G.x (!last_source +. 1.);
           last_source := !last_source +. 1.
