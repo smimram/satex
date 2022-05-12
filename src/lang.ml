@@ -332,6 +332,11 @@ module Stack = struct
           g.G.x <- !last_source +. width /. 2. +. 0.5;
           last_source := !last_source +. width
         );
+      if G.source g = 0 && G.target g = 0 then
+        (
+          g.G.x <- max g.G.x (!last_source +. 1.);
+          last_source := !last_source +. 1.
+        );
       (* Space up the targets. *)
       if G.target g > 0 then
         (
@@ -516,7 +521,7 @@ module Stack = struct
         | Some (x1,x1'), Some (x2,x2') -> Float.mean (min x1 x2) (max x1' x2')
         | Some (x1,x1'), None -> Float.mean x1 x1'
         | None, Some (x2,x2') -> Float.mean x2 x2'
-        | None, None -> assert (G.shape g = `Id || G.shape g = `Space); g.G.x
+        | None, None -> g.G.x
       in
       (* y-coordinate of the center *)
       let y = g.G.y in
