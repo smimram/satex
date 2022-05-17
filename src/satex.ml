@@ -19,11 +19,12 @@ let parse f =
     try
       Parser.decls Lexer.token lexbuf
     with
+    | Parser.Error
     | Parsing.Parse_error ->
       let pos = Lexing.lexeme_end_p lexbuf in
       let err =
         Printf.sprintf
-          "Parse error at word \"%s\", line %d, character %d.\n%s"
+          "parse error at word \"%s\", line %d, character %d:\n%s"
           (Lexing.lexeme lexbuf)
           pos.Lexing.pos_lnum
           (pos.Lexing.pos_cnum - pos.Lexing.pos_bol)
@@ -34,7 +35,7 @@ let parse f =
       let pos = Lexing.lexeme_end_p lexbuf in
       let err =
         Printf.sprintf
-          "Typing error at word \"%s\", line %d, character %d: %s.\n%s"
+          "typing error at word \"%s\", line %d, character %d: %s:\n%s"
           (Lexing.lexeme lexbuf)
           pos.Lexing.pos_lnum
           (pos.Lexing.pos_cnum - pos.Lexing.pos_bol)
@@ -60,6 +61,9 @@ let () =
     let decls = parse !fname in
     Lang.draw satix_fname decls
   with
+  | Failure e ->
+    Printf.eprintf "Error: %s\n%!" e;
+    exit 1
   | Lang.Error (pos, e) ->
     let pos =
       match pos with
