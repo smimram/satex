@@ -6,6 +6,7 @@
 - Allow spaces with labels.
 - Ensure correct bounding box for nullary operations.
 - Preliminary support for nullary and conullary operations.
+- Add support for sqcap and sqcup.
 
 0.1.0 (2021-01-12)
 =====
