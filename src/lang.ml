@@ -53,6 +53,9 @@ module Generator = struct
           | "cap", ""
           | "cup", ""
           | "shape", "cup" -> "shape", "cap"
+          | "sqcup", ""
+          | "sqcap", ""
+          | "shape", "sqcup" -> "shape", "sqcap"
           | "triangle", "" -> "shape", "triangle"
           | "rectangle", "" -> "shape", "rectangle"
           | "r", "" -> "shape", "rectangle"
@@ -102,6 +105,7 @@ module Generator = struct
           | "shape", "crossingl'" -> ["shape", "crossing"; "kind", "left'"]
           | "shape", "braidr'" -> ["shape", "crossing"; "kind", "braidr'"]
           | "shape", "braidl'" -> ["shape", "crossing"; "kind", "braidl'"]
+          | "shape", "sqcap" -> ["shape", "cap"; "kind", "square"]
           | "shape", "lefthalfcircle" -> ["shape", "circle"; "kind", "lefthalf"]
           | "shape", "righthalfcircle" -> ["shape", "circle"; "kind", "righthalf"]
           | lv -> [lv]
@@ -173,7 +177,12 @@ module Generator = struct
 
   let id () = create 1 1 ["name", "1"; "shape", "none"]
 
-  let get g o = List.assoc o g.options
+  let get ?default g o =
+    try List.assoc o g.options
+    with Not_found ->
+    match default with
+    | Some d -> d
+    | None -> raise Not_found
 
   let get_float g o = float_of_string (get g o)
 
@@ -448,22 +457,26 @@ module Stack = struct
       output_string oc "  \\end{tikzpicture}\n}\n";
       close_out oc
 
+    let polyline oc ?(options=[]) l =
+      let options =
+        List.map
+          (function
+            | `Color c -> c
+            | `Thick 2 -> "very thick"
+            | `Thick 3 -> "ultra thick"
+            | `Thick _ -> "thick"
+            | `Width w -> "line width="^w
+            | `Phantom -> "opacity=0."
+          ) options
+        |> String.concat ","
+      in
+      let options = if options = "" then "" else Printf.sprintf "[%s]" options in
+      let l = List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) l |> String.concat " -- " in
+      output_string oc (Printf.sprintf "    \\draw%s %s;\n" options l)
+
     let line oc ?(options=[]) (x1,y1) (x2,y2) =
       if (x1,y1) <> (x2,y2) || List.mem `Phantom options then
-        let options =
-          List.map
-            (function
-              | `Color c -> c
-              | `Thick 2 -> "very thick"
-              | `Thick 3 -> "ultra thick"
-              | `Thick _ -> "thick"
-              | `Width w -> "line width="^w
-              | `Phantom -> "opacity=0."
-            ) options
-          |> String.concat ","
-        in
-        let options = if options = "" then "" else Printf.sprintf "[%s]" options in
-        output_string oc (Printf.sprintf "    \\draw%s (%f,%f) -- (%f,%f);\n" options x1 y1 x2 y2)
+        polyline oc ~options [x1,y1;x2,y2]
 
     let arc oc ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = -.a in
@@ -542,24 +555,41 @@ module Stack = struct
               Draw.line d (x.(i),y-.h/.2.) (x.(i),y+.h/.2.)
             done
         | `Cap ->
-          let options =
-            match G.get g "arrow" with
-            | "right" -> [`Middle_arrow `Right]
-            | "left"  -> [`Middle_arrow `Left]
-            | _ -> []
-          in
-          if G.source g = 2 then
-            (
-              let l = g.G.source.(1) -. g.G.source.(0) in
-              Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.);
-              if G.target g = 1 then Draw.line d (x,y) (x,y+.0.5)
-            )
+          let kind = G.get ~default:"" g "kind" in
+          if kind = "square" then
+            if G.source g = 2 then
+              (
+                assert (G.target g = 0);
+                let x0 = g.G.source.(0) in
+                let x1 = g.G.source.(1) in
+                Draw.polyline d [x0,y-.0.5; x0,y; x1,y; x1,y-.0.5]
+              )
+            else
+              (
+                assert (G.source g = 0 && G.target g = 2);
+                let x0 = g.G.target.(0) in
+                let x1 = g.G.target.(1) in
+                Draw.polyline d [x0,y+.0.5; x0,y; x1,y; x1,y+.0.5]
+              )
           else
-            (
-              let l = g.G.target.(1) -. g.G.target.(0) in
-              Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.);
-              if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
-            )
+            let options =
+              match G.get g "arrow" with
+              | "right" -> [`Middle_arrow `Right]
+              | "left"  -> [`Middle_arrow `Left]
+              | _ -> []
+            in
+            if G.source g = 2 then
+              (
+                let l = g.G.source.(1) -. g.G.source.(0) in
+                Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.);
+                if G.target g = 1 then Draw.line d (x,y) (x,y+.0.5)
+              )
+            else
+              (
+                let l = g.G.target.(1) -. g.G.target.(0) in
+                Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.);
+                if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
+              )
         | `Label -> ()
         | `Triangle | `Rectangle ->
           let lh = G.label_height g in
@@ -578,7 +608,7 @@ module Stack = struct
           (* Take some vertical space. *)
           Draw.line d ~options:[`Phantom] (0.,y-.0.5) (0.,y+.0.5)
         | `Crossing ->
-          let kind = try G.get g "kind" with Not_found -> "crossing" in
+          let kind = G.get ~default:"crossing" g "kind" in
           let kind, variant =
             (* do we have a variant starting with straigt lines *)
             if kind.[String.length kind-1] = '\'' then
