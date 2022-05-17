@@ -530,19 +530,18 @@ module Stack = struct
       let h = g.G.height in
       (* Draw wires. *)
       (
-        if G.shape g = `Id || G.shape g = `Dots then
-          (
-            let x = g.G.source in
-            let n = Array.length x in
-            assert (Array.length g.G.source = Array.length g.G.target);
-            if n = 0 then
-              Draw.line d ~options:[`Phantom] (0.,y-.h/.2.) (0.,y+.h/.2.)
-            else
-              for i = 0 to n - 1 do
-                Draw.line d (x.(i),y-.h/.2.) (x.(i),y+.h/.2.)
-              done
-        )
-        else if G.shape g = `Cap then
+        match G.shape g with
+        | `Id | `Dots ->
+          let x = g.G.source in
+          let n = Array.length x in
+          assert (Array.length g.G.source = Array.length g.G.target);
+          if n = 0 then
+            Draw.line d ~options:[`Phantom] (0.,y-.h/.2.) (0.,y+.h/.2.)
+          else
+            for i = 0 to n - 1 do
+              Draw.line d (x.(i),y-.h/.2.) (x.(i),y+.h/.2.)
+            done
+        | `Cap ->
           let options =
             match G.get g "arrow" with
             | "right" -> [`Middle_arrow `Right]
@@ -561,15 +560,12 @@ module Stack = struct
               Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.);
               if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
             )
-        else if G.shape g = `Label then ()
-        else if G.shape g = `Triangle || G.shape g = `Rectangle then
-          (
-            let lh = G.label_height g in
-            Array.iter (fun x -> Draw.line d (x,y-.h/.2.) (x,y-.lh/.2.)) g.G.source;
-            Array.iter (fun x -> Draw.line d (x,y+.lh/.2.) (x,y+.h/.2.)) g.G.target;
-          )
-        else if G.shape g = `Merge `Left || G.shape g = `Merge `Right then
-          (
+        | `Label -> ()
+        | `Triangle | `Rectangle ->
+          let lh = G.label_height g in
+          Array.iter (fun x -> Draw.line d (x,y-.h/.2.) (x,y-.lh/.2.)) g.G.source;
+          Array.iter (fun x -> Draw.line d (x,y+.lh/.2.) (x,y+.h/.2.)) g.G.target;
+        | `Merge _ ->
             let x1, x2 =
               if G.source g = 2 then G.get_source g 0, G.get_source g 1
               else G.get_target g 0, G.get_target g 1
@@ -578,65 +574,58 @@ module Stack = struct
             Draw.line d (x2,y-.0.5) (x2,y+.0.5);
             if G.source g = 2 then Draw.arc d (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
             else Draw.arc d (x2,y+.0.5) (x2-.x1,0.5) (180.,90.)
-          )
-        else if G.shape g = `Space && G.get_float g "width" = 0. then
-          (
-            (* Take some vertical space. *)
-            Draw.line d ~options:[`Phantom] (0.,y-.0.5) (0.,y+.0.5)
-          )
-        else if G.shape g = `Crossing then
-          (
-            let kind = try G.get g "kind" with Not_found -> "crossing" in
-            let kind, variant =
-              (* do we have a variant starting with straigt lines *)
-              if kind.[String.length kind-1] = '\'' then
-                String.sub kind 0 (String.length kind - 1), true
-              else
-                kind, false
-            in
-            let x = g.G.source in
-            let n = Array.length x in
-            let dy =
-              if variant then
-                (
-                  for i = 0 to n-1 do
-                    Draw.line d (x.(i),y-.0.5) (x.(i),y-.0.25);
-                    Draw.line d (x.(i),y+.0.25) (x.(i),y+.0.5);
-                  done;
-                  0.25
-                )
-              else 0.5
-            in
-            if kind = "braidr" || kind = "right" then
-              (
-                for i = 1 to n-1 do
-                  Draw.line d (x.(i),y-.dy) (x.(i-1),y+.dy);
-                  let a = float_of_int i /. float_of_int n in
-                  if kind = "braidr" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.dy+.(a*.2.*.dy)) (0.1,0.1);
-                done;
-                Draw.line d (x.(0),y-.dy) (x.(n-1),y+.dy)
-              )
-            else if kind = "braidl" || kind = "left" then
-              (
-                for i = 0 to n-2 do
-                  Draw.line d (x.(i),y-.dy) (x.(i+1),y+.dy);
-                  let a = float_of_int (i+1) /. float_of_int n in
-                  if kind = "braidl" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.dy-.a*.2.*.dy) (0.1,0.1);
-                done;
-                Draw.line d (x.(n-1),y-.dy) (x.(0),y+.dy)
-              )
+        | `Space when G.get_float g "width" = 0. ->
+          (* Take some vertical space. *)
+          Draw.line d ~options:[`Phantom] (0.,y-.0.5) (0.,y+.0.5)
+        | `Crossing ->
+          let kind = try G.get g "kind" with Not_found -> "crossing" in
+          let kind, variant =
+            (* do we have a variant starting with straigt lines *)
+            if kind.[String.length kind-1] = '\'' then
+              String.sub kind 0 (String.length kind - 1), true
             else
+              kind, false
+          in
+          let x = g.G.source in
+          let n = Array.length x in
+          let dy =
+            if variant then
               (
                 for i = 0 to n-1 do
-                  Draw.line d (x.(i),y-.dy) (x.(n-1-i),y+.dy);
-                done
+                  Draw.line d (x.(i),y-.0.5) (x.(i),y-.0.25);
+                  Draw.line d (x.(i),y+.0.25) (x.(i),y+.0.5);
+                done;
+                0.25
               )
-          )
-        else
-          (
-            Array.iter (fun x' -> Draw.line d (x',y-.h/.2.) (x,y)) g.G.source;
-            Array.iter (fun x' -> Draw.line d (x,y) (x',y+.h/.2.)) g.G.target;
-          )
+            else 0.5
+          in
+          if kind = "braidr" || kind = "right" then
+            (
+              for i = 1 to n-1 do
+                Draw.line d (x.(i),y-.dy) (x.(i-1),y+.dy);
+                let a = float_of_int i /. float_of_int n in
+                if kind = "braidr" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y-.dy+.(a*.2.*.dy)) (0.1,0.1);
+              done;
+              Draw.line d (x.(0),y-.dy) (x.(n-1),y+.dy)
+            )
+          else if kind = "braidl" || kind = "left" then
+            (
+              for i = 0 to n-2 do
+                Draw.line d (x.(i),y-.dy) (x.(i+1),y+.dy);
+                let a = float_of_int (i+1) /. float_of_int n in
+                if kind = "braidl" then Draw.disk d ~options:[`Color "white"] (x.(0)+.(x.(n-1)-.x.(0))*.a,y+.dy-.a*.2.*.dy) (0.1,0.1);
+              done;
+              Draw.line d (x.(n-1),y-.dy) (x.(0),y+.dy)
+            )
+          else
+            (
+              for i = 0 to n-1 do
+                Draw.line d (x.(i),y-.dy) (x.(n-1-i),y+.dy);
+              done
+            )
+        | _ ->
+          Array.iter (fun x' -> Draw.line d (x',y-.h/.2.) (x,y)) g.G.source;
+          Array.iter (fun x' -> Draw.line d (x,y) (x',y+.h/.2.)) g.G.target;
       );
       (* Draw shape. *)
       (
