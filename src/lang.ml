@@ -81,6 +81,7 @@ module Generator = struct
           | "braidl'", "" -> "shape", "braidl'"
           | "mergeleft", "" -> "shape", "mergeleft"
           | "mergeright", "" -> "shape", "mergeright"
+          | "none", "" -> "shape", "none"
           | l, _ when String.length l >= 2 && l.[0] = '"' && l.[String.length l - 1] = '"' ->
             "label", String.sub l 1 (String.length l - 2)
           | "ls",x -> "labelsize",x
@@ -117,7 +118,8 @@ module Generator = struct
     List.iter_right
       (function
         | "shape", "none" ->
-          assert ((source = 1 && target = 1) || (source = 2 && target = 2)); shape := `None
+          assert (source > 0 || target > 0);
+          shape := `None
         | "shape", "id" ->
           assert (source = target); shape := `Id
         | "shape", "cap" ->
