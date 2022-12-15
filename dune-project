@@ -13,4 +13,7 @@
  (name satex)
  (synopsis "String diagram generator for LaTeX")
  (description "Satex takes descriptions of string diagrams in the form of categorical compositions and converts them to string diagrams drawn in TikZ.")
+ (depends
+  (menhir :build)
+ )
 )
