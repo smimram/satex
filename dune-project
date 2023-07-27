@@ -1,6 +1,6 @@
 (lang dune 2.0)
 (name satex)
-(version 0.1.1)
+(version 0.1.2)
 (source (github smimram/satex))
 (license GPL-3.0)
 (authors "Samuel Mimram <smimram@gmail.com>")
