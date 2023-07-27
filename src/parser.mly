@@ -28,6 +28,8 @@ module Generator = struct
   let anonymous s t o =
     create (Printf.sprintf "(%d->%d)" s t) s t o
 
+  let empty () = create "0" 0 0 ["shape","id"]
+
   let id n o =
     let o = o@(if n = 0 then ["labelheight", "1"] else []) in
     let o = o@["shape","id"] in
@@ -99,6 +101,7 @@ cell:
   | CELL LACC expr RACC { fst $1,snd $1,$3 }
 
 expr:
+  | { Gen (Generator.empty ()) }
   | base { $1 }
   | expr COMP expr { Comp (1,$1,$3) }
   | LPAR hexpr RPAR { $2 }
