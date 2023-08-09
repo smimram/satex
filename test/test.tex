@@ -10,7 +10,6 @@
 \deftwocell[cup,arrow]{cup : 2 -> 0}
 \deftwocell[circle]{eps : 1 -> 0}
 \deftwocell[circle]{eta : 0 -> 1}
-\deftwocell[circle]{sigma : 1 -> 1}
 \deftwocell[triangle]{mu : 2 -> 1}
 \deftwocell[triangle]{delta : 1 -> 2}
 \deftwocell[cap,arrow=left]{I : 2 -> 0}
@@ -23,28 +22,14 @@
 
 \begin{document}
 \maketitle
-\[
-  \twocell[xscale=3]{sigma}
-\]
-\[
-  \begin{tikzpicture}[baseline=(current bounding box.center),yscale=-1,scale=0.5,every path/.style={join=round,cap=round},xscale=1]
-    \draw (0.000000,0.000000) -- (0.000000,0.500000);
-    \draw (0.000000,0.500000) -- (0.000000,1.000000);
-    \filldraw[fill=white] (0,0) circle(0.15);
-    \draw (1,0) circle (1);
-    % \node[circle,draw=red,fill=white,inner xsep=1cm,inner ysep=0] at (1,0) {};
-    \node[circle,draw=red,inner xsep=0.075cm,inner ysep=0cm] at (1,0) {};
-  \end{tikzpicture}
-\]
-
 % \[
   % \twocell{(1->2)[none]}
 % \]
 
-% empty:
-% \[
-  % \twocell{}
-% \]
+empty:
+\[
+  \twocell{}
+\]
 
 % \[
   % \twocell{(0->2)[sqcap]}
@@ -113,7 +98,7 @@
 
 % \twocell{(1 * dots) * (sigma * psi) * (1 * dots)}
 
-% we are here:
+we are here:
 % \[
   % \twocell{(eta * (1->1)["f"]) * (1 * eps)}
 % \]

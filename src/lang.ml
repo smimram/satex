@@ -152,7 +152,7 @@ module Generator = struct
         | _ -> ()
       ) options;
     (* Some more shape-specific hacks. *)
-    let options = options@(if !shape = `Circle && not (List.mem_assoc "label" options) then ["labelwidth", ".3"; "labelheight", ".3"; "labelabsolutedimensions", "true"] else ["labelwidth", ".6"; "labelheight", ".6"]) in
+    let options = options@(if !shape = `Circle && not (List.mem_assoc "label" options) then ["labelwidth", ".3"; "labelheight", ".3"] else ["labelwidth", ".6"; "labelheight", ".6"]) in
     let options =
     List.map
       (function
@@ -522,20 +522,6 @@ module Stack = struct
       in
       output_string oc (Printf.sprintf "    \\filldraw[fill=white,%s] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
 
-    (** Circle which does not scale. *)
-    let absolute_circle oc ?(options=[]) (x,y) r =
-      let options =
-        List.map
-          (function
-            | `Color c -> "draw="^c
-            | `Fill c -> "fill="^c
-          ) options
-        |> String.concat ","
-      in
-      (* to compensate the global /2 scaling. *)
-      let r = r /. 2. in
-      output_string oc (Printf.sprintf "    \\node[circle,draw=black,fill=white,inner xsep=%fcm,inner ysep=0cm,%s] at (%f,%f) {};\n" r options x y)
-
     let text oc (x,y) s =
       output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$\\scriptstyle %s$};\n" x y s)
   end
@@ -691,11 +677,7 @@ module Stack = struct
             | "righthalf" ->
               Draw.arc d ~options (x,y) (rx,ry) (-90.,90.);
               Draw.line d (x,y-.ry) (x,y+.ry)
-            | _ ->
-              if rx = ry && G.get ~default:"false" g "labelabsolutedimensions" = "true" then
-                Draw.absolute_circle d ~options (x,y) rx
-              else
-                Draw.disk d ~options (x,y) (rx,ry)
+            | _ -> Draw.disk d ~options (x,y) (rx,ry)
           )
         | `Triangle ->
           let h = G.label_height g in
