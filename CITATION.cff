@@ -1,0 +1,15 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: satex
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Samuel
+    family-names: Mimram
+    orcid: 'https://orcid.org/0000-0002-0767-2569'
+repository-code: 'https://github.com/smimram/satex/'
+license: GPL-3.0
