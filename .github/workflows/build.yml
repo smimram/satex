@@ -11,3 +11,12 @@ jobs:
         sudo apt-get -y install ocaml-nox ocaml-findlib dune menhir texlive-latex-base texlive-pictures texlive-latex-extra
     - name: Build
       run: make test
+    - name: Generate website
+      run: |
+        sudo apt-get -y install pandoc
+        make -C website
+   - name: Deploy website
+     uses: peaceiris/actions-gh-pages@v3
+     with:
+       github_token: ${{ secrets.GITHUB_TOKEN }}
+       publish_dir: ./website
