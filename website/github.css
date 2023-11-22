@@ -40,8 +40,25 @@ body h1 {
   margin: 0.67em 0;
 }
 
+.title {
+  font-size: 2.5em;
+  text-align: center;
+}
+
+.author {
+  text-align: center;
+}
+
+#TOC {
+  padding-top: 2em;
+  padding-bottom: 2em;
+}
+
 body img {
   border: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 body hr {
