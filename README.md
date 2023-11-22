@@ -17,6 +17,14 @@ which the sources were unfortunately not available.
 In case you have a problem, please file a bug report at the following url:
 <https://github.com/smimram/satex/issues>.
 
+# Installation
+
+Installing with [opam](https://opam.ocaml.org/) is as simple as
+
+```bash
+opam install satex
+```
+
 # General usage
 
 In order to use satex in your LaTeX file, you should first include the style
