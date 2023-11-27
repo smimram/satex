@@ -109,6 +109,7 @@ module Generator = struct
           | "shape", "sqcap" -> ["shape", "cap"; "kind", "square"]
           | "shape", "lefthalfcircle" -> ["shape", "circle"; "kind", "lefthalf"]
           | "shape", "righthalfcircle" -> ["shape", "circle"; "kind", "righthalf"]
+          | "color", x -> ["labelbordercolor", x; "wirecolor", x; "textcolor", x]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -179,11 +180,14 @@ module Generator = struct
 
   let id () = create 1 1 ["name", "1"; "shape", "none"]
 
+  let get_opt ?default g o =
+    match List.assoc_opt o g.options with
+    | Some o -> Some o
+    | None -> default
+
   let get ?default g o =
-    try List.assoc o g.options
-    with Not_found ->
-    match default with
-    | Some d -> d
+    match get_opt ?default g o with
+    | Some o -> o
     | None -> raise Not_found
 
   let get_float g o = float_of_string (get g o)
@@ -503,15 +507,28 @@ module Stack = struct
         List.map
           (function
             | `Rounded_corners -> "rounded corners=1pt"
-            | `Color c -> c
+            | `Color c -> "draw="^c
             | `Fill c -> "fill="^c
           ) options
-        |> String.concat ","
+        |> List.map (fun s -> ","^s)
+        |> String.concat ""
       in
       let p = p |> List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) |> String.concat " -- " in
-      output_string oc (Printf.sprintf "    \\filldraw[fill=white,%s] %s -- cycle;\n" options p)
+      output_string oc (Printf.sprintf "    \\filldraw[fill=white%s] %s -- cycle;\n" options p)
 
     let disk oc ?(options=[]) (x,y) (rx,ry) =
+      let options =
+        List.map
+          (function
+            | `Color c -> "draw="^c
+            | `Fill c -> "fill="^c
+          ) options
+        |> List.map (fun s -> ","^s)
+        |> String.concat ""
+      in
+      output_string oc (Printf.sprintf "    \\filldraw[fill=white%s] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
+
+    let text oc ?(options=[]) (x,y) s =
       let options =
         List.map
           (function
@@ -520,10 +537,7 @@ module Stack = struct
           ) options
         |> String.concat ","
       in
-      output_string oc (Printf.sprintf "    \\filldraw[fill=white,%s] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
-
-    let text oc (x,y) s =
-      output_string oc (Printf.sprintf "    \\draw (%f,%f) node {$\\scriptstyle %s$};\n" x y s)
+      output_string oc (Printf.sprintf "    \\draw (%f,%f) node[%s] {$\\scriptstyle %s$};\n" x y options s)
   end
 
   (** Draw morphism. *)
@@ -543,6 +557,11 @@ module Stack = struct
       (* y-coordinate of the center *)
       let y = g.G.y in
       let h = g.G.height in
+      let wire_options =
+        match G.get_opt g "wirecolor" with
+        | Some c -> [`Color c]
+        | None -> []
+      in
       (* Draw wires. *)
       (
         match G.shape g with
@@ -554,7 +573,7 @@ module Stack = struct
             Draw.line d ~options:[`Phantom] (0.,y-.h/.2.) (0.,y+.h/.2.)
           else
             for i = 0 to n - 1 do
-              Draw.line d (x.(i),y-.h/.2.) (x.(i),y+.h/.2.)
+              Draw.line ~options:wire_options d (x.(i),y-.h/.2.) (x.(i),y+.h/.2.)
             done
         | `Cap ->
           let kind = G.get ~default:"" g "kind" in
@@ -575,10 +594,18 @@ module Stack = struct
               )
           else
             let options =
-              match G.get g "arrow" with
-              | "right" -> [`Middle_arrow `Right]
-              | "left"  -> [`Middle_arrow `Left]
-              | _ -> []
+              (
+                match G.get g "arrow" with
+                | "right" -> [`Middle_arrow `Right]
+                | "left"  -> [`Middle_arrow `Left]
+                | _ -> []
+              )
+              @
+              (
+                match G.get_opt g "wirecolor" with
+                | Some c -> [`Color c]
+                | None -> []
+              )
             in
             if G.source g = 2 then
               (
@@ -595,17 +622,17 @@ module Stack = struct
         | `Label -> ()
         | `Triangle | `Rectangle ->
           let lh = G.label_height g in
-          Array.iter (fun x -> Draw.line d (x,y-.h/.2.) (x,y-.lh/.2.)) g.G.source;
-          Array.iter (fun x -> Draw.line d (x,y+.lh/.2.) (x,y+.h/.2.)) g.G.target;
+          Array.iter (fun x -> Draw.line d ~options:wire_options (x,y-.h/.2.) (x,y-.lh/.2.)) g.G.source;
+          Array.iter (fun x -> Draw.line d ~options:wire_options (x,y+.lh/.2.) (x,y+.h/.2.)) g.G.target;
         | `Merge _ ->
             let x1, x2 =
               if G.source g = 2 then G.get_source g 0, G.get_source g 1
               else G.get_target g 0, G.get_target g 1
             in
             let x1, x2 = if G.shape g = `Merge `Left then x1, x2 else x2, x1 in
-            Draw.line d (x2,y-.0.5) (x2,y+.0.5);
-            if G.source g = 2 then Draw.arc d (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
-            else Draw.arc d (x2,y+.0.5) (x2-.x1,0.5) (180.,90.)
+            Draw.line d ~options:wire_options (x2,y-.0.5) (x2,y+.0.5);
+            if G.source g = 2 then Draw.arc d ~options:wire_options (x2,y-.0.5) (x2-.x1,0.5) (180.,270.)
+            else Draw.arc d ~options:wire_options (x2,y+.0.5) (x2-.x1,0.5) (180.,90.)
         | `Space when G.get_float g "width" = 0. ->
           (* Take some vertical space. *)
           Draw.line d ~options:[`Phantom] (0.,y-.0.5) (0.,y+.0.5)
@@ -656,8 +683,8 @@ module Stack = struct
               done
             )
         | _ ->
-          Array.iter (fun x' -> Draw.line d (x',y-.h/.2.) (x,y)) g.G.source;
-          Array.iter (fun x' -> Draw.line d (x,y) (x',y+.h/.2.)) g.G.target;
+          Array.iter (fun x' -> Draw.line d ~options:wire_options (x',y-.h/.2.) (x,y)) g.G.source;
+          Array.iter (fun x' -> Draw.line d ~options:wire_options (x,y) (x',y+.h/.2.)) g.G.target;
       );
       (* Draw shape. *)
       (
@@ -673,10 +700,10 @@ module Stack = struct
             match (try G.get g "kind" with _ -> "") with
             | "lefthalf" ->
               Draw.arc d ~options (x,y) (rx,ry) (90.,270.);
-              Draw.line d (x,y-.ry) (x,y+.ry)
+              Draw.line d ~options:wire_options (x,y-.ry) (x,y+.ry)
             | "righthalf" ->
               Draw.arc d ~options (x,y) (rx,ry) (-90.,90.);
-              Draw.line d (x,y-.ry) (x,y+.ry)
+              Draw.line d ~options:wire_options (x,y-.ry) (x,y+.ry)
             | _ -> Draw.disk d ~options (x,y) (rx,ry)
           )
         | `Triangle ->
@@ -708,17 +735,22 @@ module Stack = struct
       );
       (* Draw label. *)
       (
+        let options =
+          match G.get_opt g "textcolor" with
+          | Some c -> [`Color c]
+          | None -> []
+        in
         if G.shape g = `Label then
           let label = List.find_all (fun (l,_) -> l = "label") g.G.options |> List.map snd |> List.rev |> Array.of_list in
           for i = 0 to G.source g - 1 do
             let x = g.G.source.(i) +. G.get_float g "offset" in
             let y = y +. h *. (G.get_float g "position" -. 0.5) in
-            Draw.text d (x,y) label.(i)
+            Draw.text d ~options (x,y) label.(i)
           done
         else if G.label g <> "" then
           let h = G.label_height g in
           let y = y +. h *. (G.get_float g "position" -. 0.5) in
-          Draw.text d (x,y) (G.label g)
+          Draw.text d ~options (x,y) (G.label g)
       );
       (* Ensure that bounding box is correct. *)
       (

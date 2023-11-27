@@ -1,6 +1,8 @@
+TEX = $(filter-out test.tex,$(wildcard *.tex))
+PDF = $(TEX:.tex=.pdf)
 SATEX = dune exec ../src/satex.exe
 
-all: 2groups.pdf bug1.pdf
+all: $(PDF)
 	pdflatex test.tex > /dev/null
 	cat test.satex
 	$(SATEX) test.satex
