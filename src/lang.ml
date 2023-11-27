@@ -109,7 +109,7 @@ module Generator = struct
           | "shape", "sqcap" -> ["shape", "cap"; "kind", "square"]
           | "shape", "lefthalfcircle" -> ["shape", "circle"; "kind", "lefthalf"]
           | "shape", "righthalfcircle" -> ["shape", "circle"; "kind", "righthalf"]
-          | "color",x -> ["labelbordercolor",x;"wirecolor",x;"textcolor",x]
+          | "color", x -> ["labelbordercolor", x; "wirecolor", x; "textcolor", x]
           | lv -> [lv]
         ) options |> List.flatten
     in
@@ -180,11 +180,14 @@ module Generator = struct
 
   let id () = create 1 1 ["name", "1"; "shape", "none"]
 
+  let get_opt ?default g o =
+    match List.assoc_opt o g.options with
+    | Some o -> Some o
+    | None -> default
+
   let get ?default g o =
-    try List.assoc o g.options
-    with Not_found ->
-    match default with
-    | Some d -> d
+    match get_opt ?default g o with
+    | Some o -> o
     | None -> raise Not_found
 
   let get_float g o = float_of_string (get g o)
@@ -503,10 +506,11 @@ module Stack = struct
       let options =
         List.map
           (function
-            | `Rounded_corners -> ",rounded corners=1pt"
-            | `Color c -> ",draw="^c
-            | `Fill c -> ",fill="^c
+            | `Rounded_corners -> "rounded corners=1pt"
+            | `Color c -> "draw="^c
+            | `Fill c -> "fill="^c
           ) options
+        |> List.map (fun s -> ","^s)
         |> String.concat ""
       in
       let p = p |> List.map (fun (x,y) -> Printf.sprintf "(%f,%f)" x y) |> String.concat " -- " in
@@ -516,9 +520,10 @@ module Stack = struct
       let options =
         List.map
           (function
-            | `Color c -> ",draw="^c
-            | `Fill c -> ",fill="^c
+            | `Color c -> "draw="^c
+            | `Fill c -> "fill="^c
           ) options
+        |> List.map (fun s -> ","^s)
         |> String.concat ""
       in
       output_string oc (Printf.sprintf "    \\filldraw[fill=white%s] (%f,%f) ellipse (%f and %f);\n" options x y rx ry)
@@ -553,7 +558,9 @@ module Stack = struct
       let y = g.G.y in
       let h = g.G.height in
       let wire_options =
-        try [`Color (G.get g "wirecolor")] with Not_found -> []
+        match G.get_opt g "wirecolor" with
+        | Some c -> [`Color c]
+        | None -> []
       in
       (* Draw wires. *)
       (
@@ -587,12 +594,18 @@ module Stack = struct
               )
           else
             let options =
-              match G.get g "arrow" with
-              | "right" -> [`Middle_arrow `Right]
-              | "left"  -> [`Middle_arrow `Left]
-              | _ -> []
+              (
+                match G.get g "arrow" with
+                | "right" -> [`Middle_arrow `Right]
+                | "left"  -> [`Middle_arrow `Left]
+                | _ -> []
+              )
               @
-              try [`Color (G.get g "wirecolor")] with Not_found -> []
+              (
+                match G.get_opt g "wirecolor" with
+                | Some c -> [`Color c]
+                | None -> []
+              )
             in
             if G.source g = 2 then
               (
@@ -723,7 +736,9 @@ module Stack = struct
       (* Draw label. *)
       (
         let options =
-          (try [`Color (G.get g "textcolor")] with Not_found -> [])
+          match G.get_opt g "textcolor" with
+          | Some c -> [`Color c]
+          | None -> []
         in
         if G.shape g = `Label then
           let label = List.find_all (fun (l,_) -> l = "label") g.G.options |> List.map snd |> List.rev |> Array.of_list in
