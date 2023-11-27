@@ -117,7 +117,17 @@ Their vertical position can be adjusted with the `position` parameter (between
 
 ## Colors on operators
 
-Colors can be specified with `fill=color` option, e.g.
+The color of operators and wire can be changed with `color=...` options, e.g.
+
+```
+\twocell{((1->1)["\alpha",color=red] * 1) * (1[color=red] * (1->1)["\beta"])}
+```
+
+typesets
+
+![](fig/color.svg)
+
+Filling colors can also be specified with `fill=color` option, e.g.
 
 ![](fig/fill.svg)
 
