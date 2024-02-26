@@ -537,7 +537,9 @@ module Stack = struct
           ) options
         |> String.concat ","
       in
-      output_string oc (Printf.sprintf "    \\draw (%f,%f) node[%s] {$\\scriptstyle %s$};\n" x y options s)
+      (* See bug #3 for shape=rectangle,anchor=center: this is to be able to use
+         inside tikzcd. *)
+      output_string oc (Printf.sprintf "    \\draw (%f,%f) node[shape=rectangle,anchor=center,%s] {$\\scriptstyle %s$};\n" x y options s)
   end
 
   (** Draw morphism. *)
