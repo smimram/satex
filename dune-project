@@ -1,4 +1,4 @@
-(lang dune 2.7)
+(lang dune 3.14)
 (name satex)
 (version 0.1.2)
 (source (github smimram/satex))

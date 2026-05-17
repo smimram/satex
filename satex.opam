@@ -10,7 +10,7 @@ license: "GPL-3.0-or-later"
 homepage: "https://github.com/smimram/satex"
 bug-reports: "https://github.com/smimram/satex/issues"
 depends: [
-  "dune" {>= "2.7"}
+  "dune" {>= "3.14"}
   "ocaml" {>= "4.07.0"}
   "menhir" {>= "20180703"}
   "odoc" {with-doc}
