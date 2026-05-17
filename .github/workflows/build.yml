@@ -8,7 +8,7 @@ jobs:
     - name: Install packages
       run: |
         sudo apt-get -y update
-        sudo apt-get -y install ocaml-nox ocaml-findlib dune menhir texlive-latex-base texlive-pictures texlive-latex-extra
+        sudo apt-get -y install ocaml ocaml-dune menhir texlive-latex-base texlive-pictures texlive-latex-extra
     - name: Build
       run: make test
     - name: Generate website
