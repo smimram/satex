@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Install packages
       run: |
         sudo apt-get -y update
@@ -16,7 +16,7 @@ jobs:
         sudo apt-get -y install pandoc
         make -C website
     - name: Upload website artifact
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: website
   deploy:
@@ -31,4 +31,4 @@ jobs:
     steps:
       - name: Deploy website
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
