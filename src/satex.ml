@@ -53,7 +53,8 @@ let () =
     Arg.parse
       (Arg.align
          [
-           "--version", Arg.Unit (fun () -> print_endline "satex version 0.0"; exit 0), "Show version."
+           "--horizontal", Arg.Set Settings.horizontal, " Horizontal layout for composition.";
+           "--version", Arg.Unit (fun () -> print_endline "satex version 0.0"; exit 0), " Show version."
          ]
       ) (fun s -> fname := s) usage;
     if !fname = "" then Common.error "Please provide a .satex file name as input.";

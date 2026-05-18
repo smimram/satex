@@ -147,3 +147,9 @@ typesets
 Horizontal space can be adjusted by using operators of the form `space2.8` which adds an horizontal space of `2.8` (formally this is an operator with no inputs and outputs).
 
 Vertical space can be adjusted by changing the `height` parameter of one of the operators on the line.
+
+# Program options
+
+## Horizontal layout
+
+You can have a horizontal layout by passing the `--horizontal` option to `satex`.
