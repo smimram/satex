@@ -54,6 +54,7 @@ let () =
       (Arg.align
          [
            "--horizontal", Arg.Set Settings.horizontal, " Horizontal layout for composition.";
+           "--tikzpicture-option", Arg.String (fun o -> Lang.global_options := o :: !Lang.global_options), " Option for tikzpicture.";
            "--version", Arg.Unit (fun () -> print_endline "satex version 0.0"; exit 0), " Show version."
          ]
       ) (fun s -> fname := s) usage;

@@ -4,6 +4,7 @@
 - Refined handling of colors (#2).
 - Set node shapes so that satex can be used inside tikzcd (#3).
 - Add `--horizontal` option.
+- Add `--tikzpicture-option` option.
 
 0.1.1 (2023-07-21)
 =====
