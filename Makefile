@@ -6,6 +6,7 @@ clean:
 
 install:
 	@dune build @install
+	@dune install
 
 doc: satex.pdf
 
