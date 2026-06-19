@@ -2,7 +2,9 @@ TEX = $(filter-out test.tex,$(wildcard *.tex))
 PDF = $(TEX:.tex=.pdf)
 SATEX = dune exec ../src/satex.exe
 
-all: $(PDF)
+all: $(PDF) test.pdf
+
+test.pdf: test.tex
 	pdflatex test.tex > /dev/null
 	cat test.satex
 	$(SATEX) test.satex
@@ -10,7 +12,9 @@ all: $(PDF)
 	pdflatex test.tex > /dev/null
 
 clean:
+	rm -f *.aux *.log
 	rm -f *.satex *.satix
+	rm -f $(PDF)
 
 ci:
 	$(MAKE) -C .. $@
