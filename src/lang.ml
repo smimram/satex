@@ -294,16 +294,18 @@ module Stack = struct
          let height g =
            try Some (G.get_float g "height")
            with Not_found ->
-             if G.shape g = `Id then None (* Identities can have null height *)
-             else if G.shape g = `Space then Some 0.
-             else Some 1.
+           match G.shape g with
+           | `Id -> None (* Identities can have null height *)
+           | `Space -> Some 0.
+           | `Cap -> Some (float (max (G.source g) (G.target g)) /. 2.)
+           | _ -> Some 1.
          in
          let max h h' =
            match h, h' with
-             | None, Some h
-             | Some h, None -> Some h
-             | Some h, Some h' -> Some (max h h')
-             | None, None -> None
+           | None, Some h
+           | Some h, None -> Some h
+           | Some h, Some h' -> Some (max h h')
+           | None, None -> None
          in
          let h = List.fold_left (fun h g -> max h (height g)) None f in
          let h = match h with Some h -> h | None -> 1. in
@@ -613,18 +615,20 @@ module Stack = struct
             if G.source g >= 2 then
               (
                 let n = G.source g in
+                let y = y -. float n /. 4. in
                 for i = 0 to n / 2 - 1 do
                   let l = g.G.source.(n-1 - i) -. g.G.source.(i) in
-                  Draw.arc d ~options (x,y-.0.5) (l /. 2., float (n/2-1-i) +. 0.5) (-180.,0.)
+                  Draw.arc d ~options (x,y) (l /. 2., float (n/2-1-i) +. 0.5) (-180.,0.)
                 done;
                 if G.target g = 1 then Draw.line d (x,y) (x,y+.0.5)
               )
             else
               (
                 let n = G.target g in
+                let y = y +. float n /. 4. in
                 for i = 0 to n / 2 - 1 do
                   let l = g.G.target.(n-1 - i) -. g.G.target.(i) in
-                  Draw.arc d ~options (x,y+.0.5) (l /. 2., float (n/2-1-i) +. 0.5) (180.,0.)
+                  Draw.arc d ~options (x,y) (l /. 2., float (n/2-1-i) +. 0.5) (180.,0.)
                 done;
                 if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
               )
