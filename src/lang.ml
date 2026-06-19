@@ -124,7 +124,7 @@ module Generator = struct
         | "shape", "id" ->
           assert (source = target); shape := `Id
         | "shape", "cap" ->
-          assert ((source mod 2 = 0 && target <= 1) || (source <= 1 && target mod 2 = 0));
+          assert ((source >= 2 && source mod 2 = 0 && target <= 1) || (source <= 1 && target >= 2 && target mod 2 = 0));
           shape := `Cap
         | "shape", "label" ->
           shape := `Label
