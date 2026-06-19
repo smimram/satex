@@ -124,7 +124,7 @@ module Generator = struct
         | "shape", "id" ->
           assert (source = target); shape := `Id
         | "shape", "cap" ->
-          assert ((source = 2 && target <= 1) || (source <= 1 && target = 2));
+          assert ((source mod 2 = 0 && target <= 1) || (source <= 1 && target mod 2 = 0));
           shape := `Cap
         | "shape", "label" ->
           shape := `Label
@@ -610,16 +610,22 @@ module Stack = struct
                 | None -> []
               )
             in
-            if G.source g = 2 then
+            if G.source g >= 2 then
               (
-                let l = g.G.source.(1) -. g.G.source.(0) in
-                Draw.arc d ~options (x,y-.0.5) (l /. 2., 0.5) (-180.,0.);
+                let n = G.source g in
+                for i = 0 to n / 2 - 1 do
+                  let l = g.G.source.(n-1 - i) -. g.G.source.(i) in
+                  Draw.arc d ~options (x,y-.0.5) (l /. 2., float (n/2-1-i) +. 0.5) (-180.,0.)
+                done;
                 if G.target g = 1 then Draw.line d (x,y) (x,y+.0.5)
               )
             else
               (
-                let l = g.G.target.(1) -. g.G.target.(0) in
-                Draw.arc d ~options (x,y+.0.5) (l /. 2., 0.5) (180.,0.);
+                let n = G.target g in
+                for i = 0 to n / 2 - 1 do
+                  let l = g.G.target.(n-1 - i) -. g.G.target.(i) in
+                  Draw.arc d ~options (x,y+.0.5) (l /. 2., float (n/2-1-i) +. 0.5) (180.,0.)
+                done;
                 if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
               )
         | `Label -> ()
