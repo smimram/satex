@@ -5,6 +5,7 @@
 - Set node shapes so that satex can be used inside tikzcd (#3).
 - Add `--horizontal` option.
 - Add `--tikzpicture-option` option.
+- Add support for n-ary caps and cups (#4).
 
 0.1.1 (2023-07-21)
 =====
