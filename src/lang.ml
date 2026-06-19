@@ -618,7 +618,11 @@ module Stack = struct
                 let y = y -. float n /. 4. in
                 for i = 0 to n / 2 - 1 do
                   let l = g.G.source.(n-1 - i) -. g.G.source.(i) in
-                  Draw.arc d ~options (x,y) (l /. 2., float (n/2-1-i) +. 0.5) (-180.,0.)
+                  let ry =
+                    if kind = "circle" then l /. 2.
+                    else float (n/2-1-i) +. 0.5
+                  in
+                  Draw.arc d ~options (x,y) (l /. 2., ry) (-180.,0.)
                 done;
                 if G.target g = 1 then Draw.line d (x,y) (x,y+.0.5)
               )
@@ -628,7 +632,11 @@ module Stack = struct
                 let y = y +. float n /. 4. in
                 for i = 0 to n / 2 - 1 do
                   let l = g.G.target.(n-1 - i) -. g.G.target.(i) in
-                  Draw.arc d ~options (x,y) (l /. 2., float (n/2-1-i) +. 0.5) (180.,0.)
+                  let ry =
+                    if kind = "circle" then l /. 2.
+                    else float (n/2-1-i) +. 0.5
+                  in
+                  Draw.arc d ~options (x,y) (l /. 2., ry) (180.,0.)
                 done;
                 if G.source g = 1 then Draw.line d (x,y-.0.5) (x,y)
               )

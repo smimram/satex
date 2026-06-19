@@ -6,6 +6,7 @@
 - Add `--horizontal` option.
 - Add `--tikzpicture-option` option.
 - Add support for n-ary caps and cups (#4).
+- Add `circle` kind for caps and cups.
 
 0.1.1 (2023-07-21)
 =====
