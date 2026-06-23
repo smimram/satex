@@ -487,6 +487,7 @@ module Stack = struct
       if (x1,y1) <> (x2,y2) || List.mem `Phantom options then
         polyline oc ~options [x1,y1;x2,y2]
 
+    (** Draw an arc with given center, radius and angles. *)
     let arc oc ?(options=[]) (x,y) (rx,ry) (a,b) =
       let a = -.a in
       let b = -.b in
@@ -617,6 +618,7 @@ module Stack = struct
                 let n = G.source g in
                 let y = y -. float n /. 4. in
                 for i = 0 to n / 2 - 1 do
+                  let x = (g.G.source.(i) +. g.G.source.(n-1 - i)) /. 2. in
                   let l = g.G.source.(n-1 - i) -. g.G.source.(i) in
                   let ry =
                     if kind = "circle" then l /. 2.
@@ -631,6 +633,7 @@ module Stack = struct
                 let n = G.target g in
                 let y = y +. float n /. 4. in
                 for i = 0 to n / 2 - 1 do
+                  let x = (g.G.target.(i) +. g.G.target.(n-1 - i)) /. 2. in
                   let l = g.G.target.(n-1 - i) -. g.G.target.(i) in
                   let ry =
                     if kind = "circle" then l /. 2.
