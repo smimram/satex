@@ -1,6 +1,6 @@
 (lang dune 3.14)
 (name satex)
-(version 0.1.2)
+(version 0.1.3)
 (source (github smimram/satex))
 (license GPL-3.0-or-later)
 (authors "Samuel Mimram <smimram@gmail.com>")
