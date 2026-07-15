@@ -15,7 +15,7 @@ In order to get started, you can have a look at
 - [the manual](https://smimram.github.io/satex/satex.pdf)
 - [the examples](https://smimram.github.io/satex/examples.pdf)
 
-In case you have a problem, please file a bug report at the following url: <https://github.com/smimram/satex/issues>.
+In case you have a problem, please [file a bug report](https://github.com/smimram/satex/issues).
 
 This is inspired from [catex](https://plmlab.math.cnrs.fr/guiraud/catex/) (when the sources were not available).
 
