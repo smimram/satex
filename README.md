@@ -10,7 +10,7 @@ Satex is a [string diagram](https://en.wikipedia.org/wiki/String_diagram) genera
 
 generated using TikZ.
 
-In order to get started you can have a look at
+In order to get started, you can have a look at
 
 - [the manual](https://smimram.github.io/satex/satex.pdf)
 - [the examples](https://smimram.github.io/satex/examples.pdf)
