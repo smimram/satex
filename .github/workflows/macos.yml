@@ -1,0 +1,36 @@
+name: macOS
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    permissions: write-all
+    strategy:
+      matrix:
+        os: [macos-13, macos-14]
+        ocaml-compiler: [5]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up OCaml
+      uses: ocaml/setup-ocaml@v3
+      with:
+        ocaml-compiler: ${{ matrix.ocaml-compiler }}
+
+    - name: Install dependencies
+      run: opam install . --deps-only --with-test
+
+    - name: Build project
+      run: opam exec -- dune build --profile release
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: binary-${{ matrix.os }}
+        path: _build/default/src/satex.exe
