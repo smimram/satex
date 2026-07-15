@@ -17,6 +17,8 @@ jobs:
         make -C website
         make doc
         cp satex.pdf website
+        make -C examples
+        cp examples/examples.pdf website
     - name: Upload website artifact
       uses: actions/upload-pages-artifact@v5
       with:
