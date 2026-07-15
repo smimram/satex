@@ -22,6 +22,13 @@ Installing with [opam](https://opam.ocaml.org/) is as simple as
 opam install satex
 ```
 
+If you are on mac, you can first install opam with [brew](https://brew.sh/) with
+
+```bash
+brew install opam
+opam init
+```
+
 # General usage
 
 In order to use satex in your LaTeX file, you should first include the style file:
