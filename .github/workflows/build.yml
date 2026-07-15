@@ -13,7 +13,7 @@ jobs:
       run: make test
     - name: Generate website
       run: |
-        sudo apt-get -y install pandoc poppler-utils librsvg2-bin
+        sudo apt-get -y install pandoc poppler-utils librsvg2-bin latexmk
         make -C website
         make doc
         cp satex.pdf website
