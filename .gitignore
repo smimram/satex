@@ -1,6 +1,8 @@
 *~
 *#
 *.aux
+*.fdb*
+*.fls
 *.log
 *.pdf
 *.satex
