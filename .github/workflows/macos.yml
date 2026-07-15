@@ -29,8 +29,11 @@ jobs:
     - name: Build project
       run: opam exec -- dune build --profile release
 
+    - name: Rename binary
+      run: cp _build/default/src/satex.exe /tmp/satex
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: binary-${{ matrix.os }}
-        path: _build/default/src/satex.exe
+        path: /tmp/satex
