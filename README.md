@@ -79,14 +79,31 @@ Various shapes are available for operators:
 - `circle` (default one): ![](fig/circle.svg)
 - `triangle`: ![](fig/mu.svg)
 - `rectangle`: ![](fig/rectangle.svg)
+- `lefthalfcircle` / `righthalfcircle`: ![](fig/lefthalfcircle.svg) / ![](fig/righthalfcircle.svg)
 - `mergeleft` / `mergeright`: ![](fig/mergeleft.svg) / ![](fig/mergeright.svg)
 - `cup` / `cap`: ![](fig/cup.svg) / ![](fig/cap.svg)
-- `crossing` / `crossingr`: ![](fig/crossing.svg) / ![](fig/crossingr.svg)
-- `braid` / `braidl`: ![](fig/braid.svg) / ![](fig/braid2.svg)
+- `sqcup` / `sqcap`: ![](fig/sqcup.svg) / ![](fig/sqcap.svg)
+- `crossing` / `crossingl` / `crossingr`: ![](fig/crossing.svg) / ![](fig/crossingl.svg) / ![](fig/crossingr.svg)
+- `braid` / `braidl`: ![](fig/braid.svg) / ![](fig/braidl.svg)
 - `crossing'` / `braid'`:  ![](fig/crossing2.svg) / ![](fig/braid2.svg)
+- `dots` (horizontal dots between two wires): ![](fig/dots.svg)
 - `blank`: ![](fig/blank.svg)
 
-The dimension of the shape can be adjusted with the `labelwidth` and `labelheight` parameters.
+## Other variants of shapes
+
+The primed variants `crossingl'` / `crossingr'` and `braidl'` / `braidr'` behave as above but leave the wires straight before and after the crossing. The shapes `id` (plain identity wires) and `none` (wires meeting at the center, with no node decoration) are also available, although wires are more commonly written using the numeric identity notation.
+
+Caps and cups can have any (even) number of wires: the arcs are then nested. For instance `(0 -> 4)[cap]` typesets
+
+![](fig/capn.svg)
+
+The `circle` option makes the arcs perfect half-circles and the `arrow` option adds an orientation in the middle of the arc:
+
+![](fig/capcircle.svg) / ![](fig/caparrow.svg)
+
+## Dimension
+
+The dimension of the shape can be adjusted with the `labelwidth` and `labelheight` parameters, or both at once with `labelsize` (also spelled `size` or `ls`).
 
 ## Labels on operators
 
@@ -117,6 +134,8 @@ typesets
 Filling colors can also be specified with `fill=color` option, e.g.
 
 ![](fig/fill.svg)
+
+The color of the border of the node alone can be set with `bordercolor=color`.
 
 ## Labels on wires
 
