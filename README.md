@@ -101,7 +101,7 @@ Various shapes are available for operators:
 - `dots` (horizontal dots between two wires): ![](fig/dots.svg)
 - `blank`: ![](fig/blank.svg)
 
-## Other variants of shapes
+## Variants of shapes
 
 The primed variants `crossingl'` / `crossingr'` and `braidl'` / `braidr'` behave as above but leave the wires straight before and after the crossing. The shapes `id` (plain identity wires) and `none` (wires meeting at the center, with no node decoration) are also available, although wires are more commonly written using the numeric identity notation.
 
