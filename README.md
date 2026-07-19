@@ -145,6 +145,12 @@ typesets
 
 Filling colors can also be specified with `fill=color` option, e.g.
 
+```
+\twocell{((2->1)[r,fill=lightgray,"f"] * (2->1)[r,fill=blue,"g"] * (2 -> 1)[r,fill="red!20!white","h"])
+```
+
+typesets
+
 ![](fig/fill.svg)
 
 The color of the border of the node alone can be set with `bordercolor=color`.
