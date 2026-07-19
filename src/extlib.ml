@@ -40,6 +40,11 @@ module String = struct
   include String
 
   let last s = s.[String.length s - 1]
+
+  let unquote s =
+    let n = String.length s in
+    if n >= 2 && s.[0] = '"' && s.[n-1] = '"' then String.sub s 1 (n-2)
+    else s
 end
 
 (** Operations on lists of arrays. *)

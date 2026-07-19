@@ -565,7 +565,7 @@ module Stack = struct
       let h = g.G.height in
       let wire_options =
         match G.get_opt g "wirecolor" with
-        | Some c -> [`Color c]
+        | Some c -> [`Color (String.unquote c)]
         | None -> []
       in
       (* Draw wires. *)
@@ -609,7 +609,7 @@ module Stack = struct
               @
               (
                 match G.get_opt g "wirecolor" with
-                | Some c -> [`Color c]
+                | Some c -> [`Color (String.unquote c)]
                 | None -> []
               )
             in
@@ -713,8 +713,8 @@ module Stack = struct
       (* Draw shape. *)
       (
         let options =
-          (try [`Color (G.get g "labelbordercolor")] with Not_found -> [])@
-          (try [`Fill (G.get g "labelcolor")] with Not_found -> [])
+          (try [`Color (String.unquote @@ G.get g "labelbordercolor")] with Not_found -> [])@
+          (try [`Fill (String.unquote @@ G.get g "labelcolor")] with Not_found -> [])
         in
         match G.shape g with
         | `Circle ->
@@ -761,7 +761,7 @@ module Stack = struct
       (
         let options =
           match G.get_opt g "textcolor" with
-          | Some c -> [`Color c]
+          | Some c -> [`Color (String.unquote c)]
           | None -> []
         in
         if G.shape g = `Label then

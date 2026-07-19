@@ -1,6 +1,8 @@
 0.1.3 (unreleased)
 =====
 
+- Allow quote around colors (to be able to use complex colors such as "red!50!blue").
+
 0.1.2 (2023-07-15)
 =====
 
