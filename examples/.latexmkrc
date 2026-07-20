@@ -9,18 +9,13 @@ sub satex_latex {
     my $ret = system @_;
     my $satex = $dir_string . $root . '.satex';
     my $satix = $dir_string . $root . '.satix';
-    if ( (-e $satex) && (-s $satex) ) {
-        rdb_ensure_file( $rule, $satix );
-    }
+    if ( (-e $satex) && (-s $satex) ) { rdb_ensure_file( $rule, $satix ); }
     return $ret;
 }
 
 add_cus_dep('satex', 'satix', 0, 'generate_satix');
 
-sub generate_satix {
-    my ($base) = @_;
-    return system("../satex \"$base.satex\"");
-}
+sub generate_satix { return system("../satex \"@_.satex\""); }
 
 push @generated_exts, 'satex';
 push @generated_exts, 'satix';
