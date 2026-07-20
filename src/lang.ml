@@ -274,6 +274,7 @@ module Stack = struct
     let slice f = String.concat ", " (List.map generator f) in
     String.concat "\n" (List.map slice f)
 
+  (** Create a stack from a formal expression. *)
   let create e : t =
     let rec aux e =
       match e with
