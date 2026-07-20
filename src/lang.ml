@@ -88,6 +88,7 @@ module Generator = struct
           | "size",x -> "labelsize",x
           | "bordercolor",x -> "labelbordercolor",x
           | "fill",x -> "labelcolor",x
+          | "hatched", "" -> "labelpattern", "north east lines"
           | lv -> lv
         ) options
     in
@@ -500,6 +501,7 @@ module Stack = struct
             | `Middle_arrow `Left -> "middlearrow={<}"
             | `Color c -> c
             | `Fill c -> "fill="^c
+            | `Pattern _ -> ""
           ) options
         |> String.concat ","
       in
@@ -513,6 +515,8 @@ module Stack = struct
             | `Rounded_corners -> "rounded corners=1pt"
             | `Color c -> "draw="^c
             | `Fill c -> "fill="^c
+            | `Pattern p -> "pattern="^p
+            | `Pattern_color c -> "pattern color="^c
           ) options
         |> List.map (fun s -> ","^s)
         |> String.concat ""
@@ -526,6 +530,8 @@ module Stack = struct
           (function
             | `Color c -> "draw="^c
             | `Fill c -> "fill="^c
+            | `Pattern p -> "pattern="^p
+            | `Pattern_color c -> "pattern color="^c
           ) options
         |> List.map (fun s -> ","^s)
         |> String.concat ""
@@ -714,7 +720,8 @@ module Stack = struct
       (
         let options =
           (try [`Color (String.unquote @@ G.get g "labelbordercolor")] with Not_found -> [])@
-          (try [`Fill (String.unquote @@ G.get g "labelcolor")] with Not_found -> [])
+          (try [`Fill (String.unquote @@ G.get g "labelcolor")] with Not_found -> [])@
+          (try [`Pattern (String.unquote @@ G.get g "labelpattern")] with Not_found -> [])
         in
         match G.shape g with
         | `Circle ->

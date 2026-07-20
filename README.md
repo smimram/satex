@@ -155,6 +155,18 @@ typesets
 
 The color of the border of the node alone can be set with `bordercolor=color`.
 
+Operators can be hatched by passing the `hatch` option, e.g.
+
+```
+\twocell{(1->1)[r,hatched]}
+```
+
+typesets
+
+![](fig/hatched.svg)
+
+In order for this to work, you need to add `\usetikzlibrary{patterns}` in the preamble of your latex file.
+
 ## Labels on wires
 
 The special operator `label` allows adding labels to wires. The option `d` or `u` indicates whether the labels should be put down or up, and the above syntax is used for labels. For instance

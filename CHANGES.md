@@ -2,6 +2,7 @@
 =====
 
 - Allow quote around colors (to be able to use complex colors such as "red!50!blue").
+- Add support for hatched labels.
 
 0.1.2 (2023-07-15)
 =====
